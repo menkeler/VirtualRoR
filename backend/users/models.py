@@ -49,3 +49,30 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
+    
+class Staff(models.Model):
+    POSITION_DIRECTOR = 'Director'
+
+    POSITION_CHOICES = [
+        ('Program Officer', 'Program Officer'),
+        ('Director', 'Director'),
+    ]
+
+    user = models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True,)
+
+    position = models.CharField(max_length=255, choices=POSITION_CHOICES)
+    date_hired = models.DateField()
+
+    class Meta:
+        verbose_name_plural = 'Staff Members'
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name} - {self.position}"
+
+    def save(self, *args, **kwargs):
+        # Ensure only one director exists at a time
+        if self.position == self.POSITION_DIRECTOR:
+            Staff.objects.filter(position=self.POSITION_DIRECTOR).exclude(user=self.user).delete()
+        super().save(*args, **kwargs)
+    

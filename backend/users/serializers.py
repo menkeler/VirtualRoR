@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework.serializers import ValidationError
-
+from .models import Staff
 UserModel = get_user_model()
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -29,7 +29,14 @@ class UserLoginSerializer(serializers.Serializer):
         return user
 
 #retrieve data from table
+class StaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Staff
+        fields = '__all__'
+
 class UserSerializer(serializers.ModelSerializer):
+    staff = StaffSerializer(read_only=True)
+
     class Meta:
         model = UserModel
         fields = '__all__'

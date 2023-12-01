@@ -69,7 +69,7 @@ class UserLogout(APIView):
 class UserView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, id=None):  # Change 'user_id' to 'id'
+    def get(self, request, id=None): 
         if id is not None:
             user = get_object_or_404(User, user_id=id)
         else:

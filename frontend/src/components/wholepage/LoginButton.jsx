@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import client from '../api/client';
+import client from '../../api/client';
 import Cookies from 'js-cookie';
 
 function LoginButton() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // For Logged in state
   useEffect(() => {
     const authToken = Cookies.get('authToken');
     if (authToken) {
@@ -63,7 +64,7 @@ function LoginButton() {
     try {
       const response = await client.post('users/login', { email });
   
-      // Assuming the server returns the token in the 'token' field of the response
+
       const authToken = response.data.token;
       console.log(authToken);
 
@@ -95,6 +96,7 @@ function LoginButton() {
   
       // Always remove the authentication token cookie
       Cookies.remove('authToken');
+      console.log("Token Removed");
       setIsLoggedIn(false);
     } catch (error) {
       // Even if there's an error, remove the authentication token cookie
