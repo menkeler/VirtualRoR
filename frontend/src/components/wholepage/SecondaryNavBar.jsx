@@ -1,5 +1,7 @@
 import React from 'react';
 import useUserData from '../../hooks/useUserData';
+import UsersList from '../../pages/UserProfiling/UsersListPage';
+import { Link } from 'react-router-dom';
 
 const SecondaryNavBar = () => {
   const userData = useUserData();
@@ -15,7 +17,9 @@ const SecondaryNavBar = () => {
           {/* Only Displays if Director */}
           {userData && userData.user && userData.user.staff && (
             <li>
-              <a href="#">Users</a>
+              <Link to="/alluserslist" className="justify-between">
+                  Users
+              </Link>
             </li>
           )}
         </ul>

@@ -14,7 +14,6 @@ const Navbar = () => {
     <>
       <div className="navbar bg-base-100 w-full">
         <div className="flex-1">
-          
           <Link to="/home" className="justify-between">
 
             <img
@@ -57,7 +56,7 @@ const Navbar = () => {
             </div>
           </div>
         ) : (
-          <div className="flex-1">
+          <div className="flex-2">
             <LoginButton />
           </div>
         )}

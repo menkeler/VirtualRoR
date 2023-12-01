@@ -8,6 +8,7 @@ from rest_framework import permissions, status
 from django.shortcuts import get_object_or_404
 from .models import User
 
+
 class UserRegister(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
@@ -18,6 +19,7 @@ class UserRegister(APIView):
             if user:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -32,7 +34,6 @@ class UserLogin(APIView):
             # Create or retrieve an existing token for the user
             token, created = Token.objects.get_or_create(user=user)
 
-            # Use Django's built-in login function
             login(request, user)
 
             # Return the user data along with the token
@@ -78,6 +79,14 @@ class UserView(APIView):
 
         serializer = UserSerializer(user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+    
+class UserViewAll(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, id=None):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response({'users': serializer.data}, status=status.HTTP_200_OK)
+
 
 class UserCheckRegister(APIView):
     permission_classes = (permissions.AllowAny,)

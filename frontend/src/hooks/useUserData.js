@@ -2,14 +2,23 @@ import { useState, useEffect } from 'react';
 import client from '../api/client';
 import Cookies from 'js-cookie';
 
-const useUserData = () => {
+// Purpose is to get the data of the current logged in user
+
+const useUserData = (userid) => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const authToken = Cookies.get('authToken');
-        const res = await client.get('users/userProfile', {
+        let url = 'users/userProfile';
+
+        // If userid is provided, append it to the URL
+        if (userid) {
+          url += `/${userid}`;
+        }
+
+        const res = await client.get(url, {
           headers: {
             Authorization: `Token ${authToken}`,
           },
@@ -22,8 +31,7 @@ const useUserData = () => {
     }
 
     fetchData();
-
-  }, []);
+  }, [userid]);
 
   return userData;
 };

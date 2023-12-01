@@ -88,7 +88,7 @@ function LoginButton() {
   
     try {
       const authToken = Cookies.get('authToken');
-      const res = await client.post('users/logout', {}, {
+      await client.post('users/logout', {}, {
         headers: {
           Authorization: `Token ${authToken}`,
         },
@@ -113,7 +113,7 @@ function LoginButton() {
       {isLoggedIn ? (
         <>
           <button onClick={submitLogout}>Logout</button>
-          <br />
+
         </>
       ) : (
         <div className="btn btn-accent">
