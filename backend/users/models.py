@@ -31,7 +31,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.CharField(max_length=200, unique=True)
-    contact = models.CharField(max_length=15, default=None)
+    contact = models.CharField(max_length=15, default='', blank=True)
+    department = models.CharField(max_length=255, default='', blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(default='user.png')
     date_joined = models.DateTimeField(default=timezone.now)
@@ -41,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = []
 
     class Meta:
         ordering = ['-date_joined']
