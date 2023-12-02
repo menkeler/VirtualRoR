@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'corsheaders',
     #Internal Apps
     'users',
+    'inventory',
 ]
 
 MIDDLEWARE = [
@@ -95,7 +96,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'test',
+        'NAME': 'test2',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',

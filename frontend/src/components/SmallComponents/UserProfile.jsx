@@ -213,11 +213,11 @@ const removeProgramOfficer = async () => {
             </button>
           </>
         ) : (
-          (userDataLogged?.user?.staff?.position === 'Director' && (
+          (userDataLogged?.user?.staff?.position === 'Director' || userDataLogged?.user?.user_id === userData?.user?.user_id) && (
             <button className="btn btn-accent" onClick={handleEdit}>
               Edit Profile
             </button>
-          ))
+          )   
         )}
       </div>
 
