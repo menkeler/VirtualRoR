@@ -99,3 +99,19 @@ class UserCheckRegister(APIView):
             user = serializer.check_user(data)
             print(f"User logged in: {user.email}")
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    
+class EditUser(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def put(self, request, id=None):
+        user = User.objects.get(pk=id)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# class BecomeStaff(APIView):
+#     make the user into a program officer staff

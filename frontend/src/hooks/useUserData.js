@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
 import client from '../api/client';
 import Cookies from 'js-cookie';
-
+import useAuth from './useAuth';
 // Purpose is to get the data of the current logged in user
 
 const useUserData = (userid) => {
   const [userData, setUserData] = useState(null);
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     async function fetchData() {
       try {
+        // Check if the user is logged in before making the API request
+        if (!isLoggedIn) {
+          return;
+        }
+
         const authToken = Cookies.get('authToken');
         let url = 'users/userProfile';
 
@@ -31,7 +37,7 @@ const useUserData = (userid) => {
     }
 
     fetchData();
-  }, [userid]);
+  }, [userid, isLoggedIn]);
 
   return userData;
 };

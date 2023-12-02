@@ -5,15 +5,12 @@ import client from '../../api/client';
 import Cookies from 'js-cookie';
 
 function LoginButton() {
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
-  // For Logged in state
   useEffect(() => {
     const authToken = Cookies.get('authToken');
-    if (authToken) {
-      setIsLoggedIn(true);
-    }
+    setIsLoggedIn(!!authToken); 
   }, []);
 
   const Login = useGoogleLogin({
@@ -40,6 +37,7 @@ function LoginButton() {
   async function submitLogin(userInfoData) {
     const { email } = userInfoData;
     try {
+      console.log('Checking registration...');
       const res = await client.post('users/check-registration', { email });
       loginUser(userInfoData);
     } catch (error) {
@@ -51,6 +49,7 @@ function LoginButton() {
     const { email, given_name, family_name } = userInfoData;
 
     try {
+      console.log('Registering user...');
       const res = await client.post('users/register', { email, first_name: given_name, last_name: family_name });
       loginUser(userInfoData);
     } catch (error) {
@@ -62,28 +61,26 @@ function LoginButton() {
     const { email } = userInfoData;
 
     try {
+      console.log('Logging in user...');
       const response = await client.post('users/login', { email });
-  
-
       const authToken = response.data.token;
-      console.log(authToken);
 
       const expirationDate = new Date();
       expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000);  // 1 hour in milliseconds
 
       // Store the token in a cookie
       Cookies.set('authToken', authToken, { expires: expirationDate, secure: true, sameSite: 'Strict' });
-  
-  
+
       setIsLoggedIn(true);
-  
+
       // Redirect or navigate to the profile page
-      // navigate('/Profile');
+      navigate('/Profile');
     } catch (error) {
       console.error('Login error:', error);
     }
   }
   async function submitLogout(e) {
+    console.log("Logging out...");
     e.preventDefault();
   
     try {
@@ -96,24 +93,23 @@ function LoginButton() {
   
       // Always remove the authentication token cookie
       Cookies.remove('authToken');
+      navigate('/home');
       console.log("Token Removed");
-      setIsLoggedIn(false);
     } catch (error) {
       // Even if there's an error, remove the authentication token cookie
       Cookies.remove('authToken');
-      setIsLoggedIn(false);
       console.error('Logout error:', error);
+    } finally {
+      // This will execute regardless of success or failure
+      setIsLoggedIn(false);
     }
   }
   
-  
-
   return (
     <div>
       {isLoggedIn ? (
         <>
           <button onClick={submitLogout}>Logout</button>
-
         </>
       ) : (
         <div className="btn btn-accent">
@@ -121,7 +117,7 @@ function LoginButton() {
         </div>
       )}
     </div>
-  );
+  );  
 }
 
 export default LoginButton;

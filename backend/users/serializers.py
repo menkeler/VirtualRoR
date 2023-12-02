@@ -35,7 +35,7 @@ class StaffSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
-    staff = StaffSerializer(read_only=True)
+    staff = StaffSerializer()
 
     class Meta:
         model = UserModel
