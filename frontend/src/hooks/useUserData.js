@@ -15,7 +15,7 @@ const useUserData = (userid) => {
         if (!isLoggedIn) {
           return;
         }
-
+        // get token okay to use for api access
         const authToken = Cookies.get('authToken');
         let url = 'users/userProfile';
 
@@ -23,7 +23,7 @@ const useUserData = (userid) => {
         if (userid) {
           url += `/${userid}`;
         }
-
+        // submit headers for access
         const res = await client.get(url, {
           headers: {
             Authorization: `Token ${authToken}`,

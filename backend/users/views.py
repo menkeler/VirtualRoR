@@ -3,10 +3,10 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer,StaffSerializer
 from rest_framework import permissions, status
 from django.shortcuts import get_object_or_404
-from .models import User
+from .models import User,Staff
 
 
 class UserRegister(APIView):
@@ -113,5 +113,32 @@ class EditUser(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# class BecomeStaff(APIView):
-#     make the user into a program officer staff
+class BecomeStaff(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    def post(self, request, id=None):
+        try:
+            user = User.objects.get(pk=id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if Staff.objects.filter(user=user).exists():
+            return Response({"error": "User is already a staff"}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+        # Create a new staff instance and associate it with the user
+        staff = Staff.objects.create(user=user, position="Program Officer")
+        serializer = StaffSerializer(staff)
+
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, id=None):
+        try:
+            staff = Staff.objects.get(user__pk=id)
+        except Staff.DoesNotExist:
+            return Response({"error": "User not found in staff"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Delete the user from the staff
+        staff.delete()
+
+        return Response({"message": "User removed from staff"}, status=status.HTTP_200_OK)

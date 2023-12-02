@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
 
+
+
 function LoginButton() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
@@ -75,6 +77,7 @@ function LoginButton() {
 
       // Redirect or navigate to the profile page
       navigate('/Profile');
+      window.location.reload()
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -90,10 +93,11 @@ function LoginButton() {
           Authorization: `Token ${authToken}`,
         },
       });
-  
+      navigate('/home');
       // Always remove the authentication token cookie
       Cookies.remove('authToken');
       navigate('/home');
+      window.location.reload()
       console.log("Token Removed");
     } catch (error) {
       // Even if there's an error, remove the authentication token cookie

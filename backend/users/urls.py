@@ -10,5 +10,6 @@ urlpatterns = [
  	path('userShowAll/', views.UserViewAll.as_view(), name='user_show_all'),
  	path('check-registration', views.UserCheckRegister.as_view(), name='check-registration'),
    	path('edit-user/<int:id>/', views.EditUser.as_view(), name='edit-user'),
-    
+    path('become-staff/<int:id>/', views.BecomeStaff.as_view(), name='become_staff_with_id'),
 ]
+

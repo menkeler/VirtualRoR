@@ -62,7 +62,7 @@ class Staff(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True,)
 
     position = models.CharField(max_length=255, choices=POSITION_CHOICES)
-    date_hired = models.DateField()
+    date_hired = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name_plural = 'Staff Members'
