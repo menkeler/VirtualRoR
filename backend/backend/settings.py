@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     #Internal Apps
     'users',
     'inventory',
+    'transactions',
 ]
 
 MIDDLEWARE = [

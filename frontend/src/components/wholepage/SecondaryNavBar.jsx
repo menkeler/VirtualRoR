@@ -11,10 +11,15 @@ const SecondaryNavBar = () => {
     <div className="navbar bg-base-100">
       <div className="navbar-end">
         <ul className="menu menu-horizontal px-1">
-          <li><a>Inventory</a></li>
+          <li>
+            <Link to="/Inventory" className="justify-between">
+                  Inventory
+            </Link> 
+          </li>
           <li><a>Transactions</a></li>
-          <li><a>Inquiries</a></li>
-          <li><a>Donation Board</a></li>
+          <li> <Link to="/Inquiry" className="justify-between">
+                  Inquiry
+            </Link> </li>
           {/* Only Displays if Director */}
           {userData && userData.user && userData.user.staff && (
             <li>

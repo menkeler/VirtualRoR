@@ -7,14 +7,12 @@ class Inquiry(models.Model):
         ('Reservation', 'Reservation'),
         ('Donation', 'Donation'),
     ]
-    
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected'),
         ('Cancelled', 'Cancelled'),
     ]
-
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='inquiries')
     message = models.TextField()
     inquiry_type = models.CharField(max_length=20, choices=INQUIRY_TYPES)
@@ -24,7 +22,7 @@ class Inquiry(models.Model):
 
     def __str__(self):
         return f"{self.inquiry_type} Inquiry by {self.user.first_name} {self.user.last_name}"
-
+    
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
         ('Release', 'Release'),
@@ -38,7 +36,6 @@ class Transaction(models.Model):
     transaction_items = models.ManyToManyField('TransactionItem', related_name='transactions')
 
 class TransactionItem(models.Model):
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction_items')
-    inventory_item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item_copies')
+    inventory_item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='TransactionItem')
     quantity = models.PositiveIntegerField()
-
+    
