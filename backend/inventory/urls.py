@@ -2,10 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-	path('inventoryItemsProfile', views.ViewItems.as_view(), name='Inventory'),
-	path('additem', views.AddItem.as_view(), name='AddItem'),
-    path('Viewinventory', views.ViewInventory.as_view(), name='ViewInventory'),
-    path('additemininventory', views.AddInventoryItem.as_view(), name='Inventoryadditem'),
-    path('viewBorrowableCopies', views.ViewBorrowableItemCopies.as_view(), name='viewBorrowableCopies'),
+    path('categories/', views.HandleCategory.as_view(), name='category-list'),
+    path('itemprofilings/', views.HandleItemProfiling.as_view(), name='itemprofiling-list'),
+    path('itemcopies/', views.HandleItemCopy.as_view(), name='itemcopy-list'),
+    path('inventories/', views.HandleInventory.as_view(), name='inventory-list'),
 ]
-

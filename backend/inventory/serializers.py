@@ -1,29 +1,28 @@
 from rest_framework import serializers
-from .models import Category, Item, BorrowableItemCopy, Inventory
+from django.db import models
+from .models import ItemProfiling, Category, Inventory, ItemCopy
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemProfilingSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+
     class Meta:
-        model = Item
+        model = ItemProfiling
         fields = '__all__'
 
-class BorrowableItemCopySerializer(serializers.ModelSerializer):
+class ItemCopySerializer(serializers.ModelSerializer):
     class Meta:
-        model = BorrowableItemCopy
+        model = ItemCopy
         fields = '__all__'
 
 class InventorySerializer(serializers.ModelSerializer):
-    available_quantity = serializers.SerializerMethodField()
+    item = serializers.PrimaryKeyRelatedField(queryset=ItemProfiling.objects.all())
+    item_copies = ItemCopySerializer(many=True, read_only=True)
 
     class Meta:
         model = Inventory
         fields = '__all__'
-
-    def get_available_quantity(self, obj):
-        borrowed_items = BorrowableItemCopy.objects.filter(item=obj.item, is_borrowed=True).count()
-        return obj.quantity - borrowed_items
-

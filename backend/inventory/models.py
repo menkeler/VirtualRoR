@@ -1,50 +1,81 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Category(models.Model):
     name = models.CharField(max_length=150)
 
-class Item(models.Model):
-    ITEM_TYPES = [
-        ('B', 'Borrowable'),
-        ('C', 'Consumable'),
-    ]
+    def __str__(self):
+        return self.name
 
+class ItemProfiling(models.Model):   
     name = models.CharField(max_length=150, unique=True)
-    type = models.CharField(max_length=1, choices=ITEM_TYPES)
+    returnable = models.BooleanField(default=False)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     image = models.ImageField(upload_to='items/', default='default.png')
-
-class BorrowableItemCopy(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    description = models.TextField()
-    is_borrowed = models.BooleanField(default=False)
-    is_lost = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.name
 
 class Inventory(models.Model):
-    item = models.OneToOneField(Item, on_delete=models.CASCADE, primary_key=True)
+    item = models.ForeignKey(ItemProfiling, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
+    borrowed_quantity = models.PositiveIntegerField(default=0)
 
-    def update_copies(self):
-        # Ensure the number of BorrowableItemCopy instances matches the quantity
-        current_copies = BorrowableItemCopy.objects.filter(item=self.item).count()
-
-        if self.item.type == 'B':  # Check if the item is of type 'Borrowable'
-            if current_copies < self.quantity:
-                # Create additional copies if needed
-                for _ in range(self.quantity - current_copies):
-                    BorrowableItemCopy.objects.create(
-                        item=self.item,
-                        description="Some description for the copy",
-                        is_borrowed=False,
-                        is_lost=False,
-                    )
-            elif current_copies > self.quantity:
-                # Delete extra copies if there are more than needed
-                extra_copies = BorrowableItemCopy.objects.filter(item=self.item).order_by('id')[self.quantity:]
-                extra_copies.delete()
+    def __str__(self):
+        return f"{self.item.name} - Available: {self.quantity} - Borrowed: {self.borrowed_quantity}"
 
     def save(self, *args, **kwargs):
-        # Call the update_copies method before saving
-        self.update_copies()
-        super().save(*args, **kwargs)
+        # Check if there is an existing inventory item with the same item ID
+        existing_inventory = Inventory.objects.filter(item=self.item).exclude(id=self.id).first()
+
+        if existing_inventory:
+            # Combine the quantities and borrowed quantities
+            existing_inventory.quantity += self.quantity
+            existing_inventory.borrowed_quantity += self.borrowed_quantity
+            existing_inventory.save()
+        else:
+            super(Inventory, self).save(*args, **kwargs)
+
+            # Automatically generate ItemCopy entries for returnable items
+            if self.item.returnable:
+                # Check if there are lost copies and update the quantity accordingly
+                lost_copies = ItemCopy.objects.filter(inventory=self, condition="Lost")
+                if lost_copies.exists():
+                    self.quantity -= lost_copies.count()
+                    self.save()
+
+                # Create ItemCopy entries for the remaining available quantity
+                available_copies = self.quantity - ItemCopy.objects.filter(inventory=self).count()
+                for _ in range(available_copies):
+                    ItemCopy.objects.create(inventory=self, condition="Good", is_borrowed=False)
+
+    def get_item(self, quantity):
+        if quantity <= self.quantity:
+            self.quantity -= quantity
+            # If the item is returnable, put the item in the Borrowed quantity
+            if self.item.returnable:
+                self.borrowed_quantity += quantity
+            self.save()
+            return True
+        return False
+
+    def return_item(self, quantity):
+        if self.borrowed_quantity >= quantity:
+            self.quantity += quantity
+            # If the item is returnable, update the borrowed quantity
+            if self.item.returnable:
+                self.borrowed_quantity -= quantity
+            self.save()
+            return True
+        return False
+
+
+class ItemCopy(models.Model):
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item_copies')
+    condition = models.CharField(max_length=50, default='Good')
+    is_borrowed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.inventory.item.name} Copy - Condition: {self.condition} - Borrowed: {self.is_borrowed}"
