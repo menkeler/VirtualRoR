@@ -79,3 +79,4 @@ class ItemCopy(models.Model):
 
     def __str__(self):
         return f"{self.inventory.item.name} Copy - Condition: {self.condition} - Borrowed: {self.is_borrowed}"
+
