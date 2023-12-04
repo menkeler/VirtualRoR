@@ -33,6 +33,7 @@ class Transaction(models.Model):
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
     remarks = models.TextField()
     is_active = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
 
 class TransactionItem(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction_items')

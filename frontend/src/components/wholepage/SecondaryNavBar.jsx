@@ -16,7 +16,12 @@ const SecondaryNavBar = () => {
                   Inventory
             </Link> 
           </li>
-          <li><a>Transactions</a></li>
+          <li>
+            
+          <Link to="/Transactions" className="justify-between">
+                  Transactions
+            </Link>
+          </li>
           <li> <Link to="/Inquiry" className="justify-between">
                   Inquiry
             </Link> </li>

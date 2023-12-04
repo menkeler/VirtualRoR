@@ -46,8 +46,9 @@ const InquiryPage = () => {
 
   return (
     <>
+    <Navbar />
       <div>InquiryPage</div>
-      <Navbar />
+      
       <div>
         <button className="btn" onClick={()=>document.getElementById('InquiryModal').showModal()}>Make Inquiry</button>
         <dialog id="InquiryModal" className="modal">

@@ -87,7 +87,7 @@ const InventoryPage = () => {
                   <td>
                     {getItemInfoById(item.item).returnable && (
                       <>
-                         <button className="btn" onClick={() => document.getElementById(`my_modal`).showModal()}>
+                        <button className="btn" onClick={() => document.getElementById(`my_modal`).showModal()}>
                          View Copies
                        </button>
                        <dialog id={`my_modal`} className="modal">

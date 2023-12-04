@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Inquiry,Transaction, TransactionItem
 from .serializers import InquirySerializer,TransactionSerializer, TransactionItemSerializer
-
+from rest_framework.generics import RetrieveUpdateAPIView
 class InquiryView(APIView):
     def post(self, request):
         # Handle POST request to create a new inquiry
@@ -33,6 +33,20 @@ class TransactionView(APIView):
         transactions = Transaction.objects.all()
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+#Handle Individual Transaction based on id    
+class SingleTransactionView(RetrieveUpdateAPIView):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
+
 
 class TransactionItemView(APIView):
     def post(self, request):
