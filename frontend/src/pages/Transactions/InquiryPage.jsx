@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/wholepage/Navbar';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
-
+import DonationInquiryForm from '../../components/Forms/DonationInquiryForm';
 const InquiryPage = () => {
 const [InquiriesData, setInquiriesData] = useState([]);
     const [usersData, setUsersData] = useState([]);
@@ -42,7 +42,20 @@ const [InquiriesData, setInquiriesData] = useState([]);
       <div>InquiryPage</div>
       <Navbar />
       <div>
-        <h1>Inquiry page</h1>
+        <button className="btn" onClick={()=>document.getElementById('InquiryModal').showModal()}>Make Inquiry</button>
+        <dialog id="InquiryModal" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Choose Inquiry</h3>
+            <div>
+                <DonationInquiryForm/>
+                <button className="btn btn-accent">Reservation</button>
+            </div> 
+          </div>
+          
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>      
         <div className="overflow-x-auto">
           <table className="table">
             {/* head */}
@@ -51,9 +64,9 @@ const [InquiriesData, setInquiriesData] = useState([]);
                 <th>ID</th>
                 <th>Message</th>
                 <th>Type</th>
-                <th>Status</th>
                 <th>User</th>
                 <th>Preferred Date</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -78,7 +91,7 @@ const [InquiriesData, setInquiriesData] = useState([]);
                     </dialog>
                   </td>
                   <td>{inquiry.inquiry_type}</td>
-                  <td>{inquiry.status}</td>
+                  
                   {/* Find the user with the matching ID */}
                   <td>
                     {Array.isArray(usersData.users) ? (
@@ -92,6 +105,7 @@ const [InquiriesData, setInquiriesData] = useState([]);
                     )}
                  </td>
                   <td>{inquiry.date_preferred}</td>
+                  <td>{inquiry.status}</td>
                 </tr>
               ))}
             </tbody>

@@ -36,6 +36,14 @@ class HandleItemProfiling(APIView):
         serializer = ItemProfilingSerializer(item_profiling, many=True)
         return Response(serializer.data)
 
+class HandleSingleItemProfiling(APIView):
+    def get(self, request, id):
+        try:
+            item = ItemProfiling.objects.get(id=id)
+            serializer = ItemProfilingSerializer(item)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ItemProfiling.DoesNotExist:
+            return Response({"detail": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
 
    
 class HandleItemCopy(APIView):

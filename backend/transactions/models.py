@@ -17,7 +17,7 @@ class Inquiry(models.Model):
     message = models.TextField()
     inquiry_type = models.CharField(max_length=20, choices=INQUIRY_TYPES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    date_preferred = models.DateTimeField()
+    date_preferred = models.DateField()
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
