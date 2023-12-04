@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import client from '../../api/client';
 import useUserData from '../../hooks/useUserData';
 
-const DonationInquiryForm = () => {
+const DonationInquiryForm = ({ onInquiryAdded }) => {
     const userDataLogged = useUserData();
     const [formData, setFormData] = useState({
         message: '',
@@ -16,7 +16,8 @@ const DonationInquiryForm = () => {
         setFormData({ ...formData, [e.target.id]: e.target.value, user: userDataLogged.user.user_id });
       };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!formData.message || !formData.date_preferred || !formData.user) {
         window.alert('Please fill in all required fields.');
         return;
@@ -30,6 +31,7 @@ const DonationInquiryForm = () => {
 
       document.getElementById('DonationFormModal').close();
       document.getElementById('InquiryModal').close();
+      onInquiryAdded();
     } catch (error) {
       console.error('Error submitting data:', error);
 

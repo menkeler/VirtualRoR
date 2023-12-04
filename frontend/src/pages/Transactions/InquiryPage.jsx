@@ -4,38 +4,45 @@ import client from '../../api/client';
 import Cookies from 'js-cookie';
 import DonationInquiryForm from '../../components/Forms/DonationInquiryForm';
 const InquiryPage = () => {
-const [InquiriesData, setInquiriesData] = useState([]);
+    const [InquiriesData, setInquiriesData] = useState([]);
     const [usersData, setUsersData] = useState([]);
-    useEffect(() => {
-      async function fetchData() {
-        try {
-          const authToken = Cookies.get('authToken');
-          let url = 'transactions/inquiries/';
-  
-          const res = await client.get(url, {
-            headers: {
-              Authorization: `Token ${authToken}`,
-            },
-          });
 
-          const resuser = await client.get('users/userShowAll', {
-            headers: {
-              Authorization: `Token ${authToken}`,
-            },
-          });
-          
-  
-          console.log("Inquiry DATA",res.data);
-          setInquiriesData(res.data); // Assuming the API response is an array of inventory items
-          console.log("users DATA",resuser.data);
-          setUsersData(resuser.data)
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      }
-  
+    useEffect(() => {
+      
       fetchData();
     }, []);
+    //get data from backend
+    async function fetchData() {
+      try {
+        const authToken = Cookies.get('authToken');
+        let url = 'transactions/inquiries/';
+
+        const res = await client.get(url, {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        });
+
+        const resuser = await client.get('users/userShowAll', {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        });
+        
+
+        console.log("Inquiry DATA",res.data);
+        setInquiriesData(res.data); // Assuming the API response is an array of inventory items
+        console.log("users DATA",resuser.data);
+        setUsersData(resuser.data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+    const handleInquiryAdded = async () => {
+      await fetchData();
+    };
+
+
 
   return (
     <>
@@ -47,7 +54,7 @@ const [InquiriesData, setInquiriesData] = useState([]);
           <div className="modal-box">
             <h3 className="font-bold text-lg">Choose Inquiry</h3>
             <div>
-                <DonationInquiryForm/>
+                <DonationInquiryForm onInquiryAdded={handleInquiryAdded} />
                 <button className="btn btn-accent">Reservation</button>
             </div> 
           </div>

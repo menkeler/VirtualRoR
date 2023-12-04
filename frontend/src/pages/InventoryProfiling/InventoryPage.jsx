@@ -54,8 +54,6 @@ const InventoryPage = () => {
           category: 'Unknown Category',
         };
   };
-  
-
 
   return (
     <>
@@ -88,7 +86,20 @@ const InventoryPage = () => {
                   <td>{item.borrowed_quantity}</td>
                   <td>
                     {getItemInfoById(item.item).returnable && (
-                      <button className="btn btn-accent">View Copies</button>
+                      <>
+                         <button className="btn" onClick={() => document.getElementById(`my_modal`).showModal()}>
+                         View Copies
+                       </button>
+                       <dialog id={`my_modal`} className="modal">
+                         <div className="modal-box">
+                           <h3 className="font-bold text-lg">Message</h3>
+                           <p className="py-4">test</p>
+                         </div>
+                         <form method="dialog" className="modal-backdrop">
+                           <button>close</button>
+                         </form>
+                       </dialog>
+                       </>
                     )}
                   </td>
                 </tr>
@@ -126,3 +137,8 @@ export default InventoryPage;
                     //     <button onClick={() => document.getElementById(`my_modal_${user.user_id}`).close()}>close</button>
                     //   </form>
                     // </dialog>
+
+
+
+
+                  
