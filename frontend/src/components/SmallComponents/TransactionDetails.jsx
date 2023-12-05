@@ -92,6 +92,15 @@ useEffect(() => {
                 ))}
                 </tbody>
             </table>
+            <div>
+                <h1>REMARKS</h1>
+                {transaction && (
+        
+                        <p>{transaction.remarks}</p>
+
+                    )}
+                
+            </div>
           </div>
         </>
     </>
