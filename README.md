@@ -1,25 +1,27 @@
 # React/DjangoRF Authentication App
+Virtaul Room of Requirements
 
-Authentication app using React and Django REST framework with session authentication.
-
+I will add the requirements text int the future
 ## Installations
+on file root
+python -m venv env
+env\scripts\activate
 
 * backend
 ```
-pip install djangorestframework
-pip install django-cors-
+pip install django 
+pip install djangorestframework django-cors-headers
 pip install pylance
 pip install Pillow
-pip install psycopg
 pip install psycopg2
 ```
 
 * frontend
 ```
-npm install axios
-npm i -D daisyui@latest
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
+npm i -D daisyui@latest
+npm install axios
 npm install react-router-dom
 npm install @react-oauth/google
 npm i js-cookie
