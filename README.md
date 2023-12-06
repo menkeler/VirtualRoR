@@ -1,4 +1,6 @@
 # React/DjangoRF Authentication App
+Just create a bracnh 
+
 Virtaul Room of Requirements
 
 will gradually improve code readability through patching
