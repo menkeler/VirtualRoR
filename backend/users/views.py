@@ -66,7 +66,7 @@ class UserLogout(APIView):
             return Response({'detail': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
+#do not change this
 class UserView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 

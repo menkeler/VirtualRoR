@@ -9,36 +9,35 @@ const useUserData = (userid) => {
   const { isLoggedIn } = useAuth();
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        // Check if the user is logged in before making the API request
-        if (!isLoggedIn) {
-          return;
-        }
-        // get token okay to use for api access
-        const authToken = Cookies.get('authToken');
-        let url = 'users/userProfile';
-
-        // If userid is provided, append it to the URL
-        if (userid) {
-          url += `/${userid}`;
-        }
-        // submit headers for access
-        const res = await client.get(url, {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
-        });
-
-        setUserData(res.data);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    }
-
     fetchData();
   }, [userid, isLoggedIn]);
+  
+  async function fetchData() {
+    try {
+      // Check if the user is logged in before making the API request
+      if (!isLoggedIn) {
+        return;
+      }
+      // get token okay to use for api access
+      const authToken = Cookies.get('authToken');
+      let url = 'users/userProfile';
 
+      // If userid is provided, append it to the URL
+      if (userid) {
+        url += `/${userid}`;
+      }
+      // submit headers for access
+      const res = await client.get(url, {
+        headers: {
+          Authorization: `Token ${authToken}`,
+        },
+      });
+
+      setUserData(res.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
   return userData;
 };
 

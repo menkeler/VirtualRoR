@@ -78,5 +78,20 @@ class ItemCopy(models.Model):
     is_borrowed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.inventory.item.name} Copy - Condition: {self.condition} - Borrowed: {self.is_borrowed}"
+        return f"Copy {self.id} - Condition: {self.condition} - Borrowed: {self.is_borrowed}"
+
+    def save(self, *args, **kwargs):
+        # If the item is marked as borrowed, update the inventory's borrowed quantity
+        if self.is_borrowed:
+            self.inventory.borrowed_quantity += 1
+            self.inventory.save()
+        super(ItemCopy, self).save(*args, **kwargs)
+
+    def return_item(self):
+        # If the item is returned, update the inventory's borrowed quantity
+        if self.is_borrowed:
+            self.inventory.borrowed_quantity -= 1
+            self.inventory.save()
+        self.is_borrowed = False
+        self.save()
 

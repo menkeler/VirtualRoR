@@ -31,26 +31,46 @@ class HandleItemProfiling(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def get(self, request):
-        item_profiling = ItemProfiling.objects.all()
-        serializer = ItemProfilingSerializer(item_profiling, many=True)
-        return Response(serializer.data)
-
-class HandleSingleItemProfiling(APIView):
-    def get(self, request, id):
-        try:
-            item = ItemProfiling.objects.get(id=id)
+    def get(self, request, id=None):
+        # Get one item
+        if id is not None:
+            item = get_object_or_404(ItemProfiling, id=id)
             serializer = ItemProfilingSerializer(item)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except ItemProfiling.DoesNotExist:
-            return Response({"detail": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            # Retrieve all items
+            item_profiling = ItemProfiling.objects.all()
+            serializer = ItemProfilingSerializer(item_profiling, many=True)
+            return Response(serializer.data)
 
-   
+
 class HandleItemCopy(APIView):
-    def get(self, request):
-        item_copies = ItemCopy.objects.all()
+    def get(self, request, inventory_id=None):
+        if inventory_id is not None:
+            item_copies = ItemCopy.objects.filter(inventory__id=inventory_id)
+        else:
+            item_copies = ItemCopy.objects.all()
+
         serializer = ItemCopySerializer(item_copies, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class EditItemCopyStatus(APIView):
+    
+    def get(self, request, inventory_id=None, item_id=None):
+        item_copy = get_object_or_404(ItemCopy, inventory__id=inventory_id, id=item_id)
+        serializer = ItemCopySerializer(item_copy)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, inventory_id=None, item_id=None):
+        item_copy = get_object_or_404(ItemCopy, inventory__id=inventory_id, id=item_id)
+        
+        # To Update Values
+        item_copy.condition = request.data.get('condition', item_copy.condition)
+        item_copy.is_borrowed = request.data.get('is_borrowed', item_copy.is_borrowed)
+        item_copy.save()
+
+        serializer = ItemCopySerializer(item_copy)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 

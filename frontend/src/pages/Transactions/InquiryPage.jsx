@@ -3,6 +3,7 @@ import Navbar from '../../components/wholepage/Navbar';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
 import DonationInquiryForm from '../../components/Forms/DonationInquiryForm';
+import ReservationInquiryform from '../../components/Forms/ReservationInquiryform';
 const InquiryPage = () => {
     const [InquiriesData, setInquiriesData] = useState([]);
     const [usersData, setUsersData] = useState([]);
@@ -15,9 +16,7 @@ const InquiryPage = () => {
     async function fetchData() {
       try {
         const authToken = Cookies.get('authToken');
-        let url = 'transactions/inquiries/';
-
-        const res = await client.get(url, {
+        const res = await client.get('transactions/inquiries/', {
           headers: {
             Authorization: `Token ${authToken}`,
           },
@@ -56,7 +55,8 @@ const InquiryPage = () => {
             <h3 className="font-bold text-lg">Choose Inquiry</h3>
             <div>
                 <DonationInquiryForm onInquiryAdded={handleInquiryAdded} />
-                <button className="btn btn-accent">Reservation</button>
+                <ReservationInquiryform/>
+                
             </div> 
           </div>
           
@@ -70,7 +70,6 @@ const InquiryPage = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Message</th>
                 <th>Type</th>
                 <th>User</th>
                 <th>Preferred Date</th>
@@ -81,23 +80,6 @@ const InquiryPage = () => {
               {InquiriesData.map((inquiry) => (
                 <tr key={inquiry.id}>
                   <td>{inquiry.id}</td>
-                  <td>
-                    <button
-                      className="btn"
-                      onClick={() => document.getElementById(`my_modal_${inquiry.id}`).showModal()}
-                    >
-                      View Message
-                    </button>
-                    <dialog id={`my_modal_${inquiry.id}`} className="modal">
-                      <div className="modal-box">
-                        <h3 className="font-bold text-lg">Message</h3>
-                        <p className="py-4"> {inquiry.message}</p>
-                      </div>
-                      <form method="dialog" className="modal-backdrop">
-                        <button>close</button>
-                      </form>
-                    </dialog>
-                  </td>
                   <td>{inquiry.inquiry_type}</td>
                   
                   {/* Find the user with the matching ID */}

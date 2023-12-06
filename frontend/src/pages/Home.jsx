@@ -15,6 +15,7 @@ return (
             <br/>
             <h1 className="text-5xl font-bold">If Logged out Display Welcome To the Room of Requirements</h1>
             </div>
+            
         </div>
         </div>
         <Footer />

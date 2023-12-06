@@ -24,6 +24,7 @@ const Navbar = () => {
           </Link>
          
         </div>
+        
         {isLoggedIn ? (
           
           <div className="flex-none gap-2">
