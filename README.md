@@ -1,6 +1,8 @@
 # React/DjangoRF Authentication App
 Virtaul Room of Requirements
 
+will gradually improve code readability through patching
+
 you need to install postgresql to test
 
 Check the settings in backend folder
