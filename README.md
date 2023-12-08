@@ -26,4 +26,5 @@ npm install react-router-dom
 npm install @react-oauth/google
 npm i js-cookie
 npm i jwt-decode
+npm install react-select
 ```

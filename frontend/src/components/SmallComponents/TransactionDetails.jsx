@@ -18,7 +18,7 @@ useEffect(() => {
             },
           });
 
-          const resUser = await client.get(`/users/userProfile/${userId}/`, {
+          const resUser = await client.get(`/users/users/${userId}/`, {
             headers: {
               Authorization: `Token ${authToken}`,
             },
@@ -58,11 +58,11 @@ useEffect(() => {
             <div className="grid h-80 flex-grow card bg-base-300 rounded-box place-items-center">
             {userData && (
             <>
-                <h1>Name: {userData.user.first_name}</h1>
-                <h1>Course: {userData.user.department}</h1>
-                <h1>Role: {userData?.user?.staff?.position || 'Client'}</h1>
-                <h1>Email: {userData.user.email}</h1>
-                <h1>Contact: {userData.user.contact}</h1>
+                <h1>Name: {userData.first_name}</h1>
+                <h1>Course: {userData.department}</h1>
+                <h1>Role: {userData?.staff?.position || 'Client'}</h1>
+                <h1>Email: {userData.email}</h1>
+                <h1>Contact: {userData.contact}</h1>
             </>
             )}
             </div>

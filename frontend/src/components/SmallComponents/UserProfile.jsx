@@ -4,28 +4,22 @@ import useUserData from '../../hooks/useUserData'
 
 const UserProfile = ({userid}) => {
     
-    const userIdToFetch = userid || null;
-    const userDataLogged = useUserData();
-
-    const userData = useUserData(userIdToFetch);
-
-   
-    
-    
-    const [isEditing, setIsEditing] = useState(false);
-    
-    const [editedData, setEditedData] = useState({
-      department: userData?.user?.department || '',
-      contact: userData?.user?.contact || '',
-      first_name: userData?.user?.first_name || '',
+  const userIdToFetch = userid || useUserData()?.user_id;
+  const userDataLogged = useUserData();
+  const userData = useUserData(userIdToFetch);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState({
+      department: userData?.department || '',
+      contact: userData?.contact || '',
+      first_name: userData?.first_name || '',
       
     });
     
     const handleEdit = () => {
       setEditedData({
-        department: userData?.user?.department || '',
-        contact: userData?.user?.contact || '',
-        first_name: userData?.user?.first_name || '',
+        department: userData?.department || '',
+      contact: userData?.contact || '',
+      first_name: userData?.first_name || '',
       });
       setIsEditing(true);
     };
@@ -35,9 +29,9 @@ const UserProfile = ({userid}) => {
 
       // Reset editedData
       setEditedData({
-        department: userData?.user?.department || '',
-        contact: userData?.user?.contact || '',
-        first_name: userData?.user?.first_name || '',
+        department: userData?.department || '',
+      contact: userData?.contact || '',
+      first_name: userData?.first_name || '',
       });
   };
 
@@ -48,14 +42,13 @@ const UserProfile = ({userid}) => {
         [name]: value,
       }));
     }
-
     
 const handleSubmit = async () => {
   console.log('Submitting data:', editedData);
 
   try {
-    const response = await client.put(`users/edit-user/${userIdToFetch}/`, editedData);
-    console.log('Server response:', response.data);
+    const response = await client.put(`users/users/${userIdToFetch}/edit_user/`, editedData);
+    // console.log('Server response:', response.data);
 
     // Update the local state with the updated data
     setEditedData({
@@ -72,11 +65,8 @@ const handleSubmit = async () => {
 
 const makeProgramOfficer = async () => {
   try {
-    const response = await client.post(`users/become-staff/${userIdToFetch}/`);
-    console.log('Server response:', response.data);
-
-    // You may want to refetch user data after the change
-  
+    const response = await client.post(`users/users/${userIdToFetch}/become_staff/`);
+    // console.log('Server response:', response.data);
 
   } catch (error) {
     console.error('Error setting as Program Officer:', error);
@@ -85,11 +75,8 @@ const makeProgramOfficer = async () => {
 
 const removeProgramOfficer = async () => {
   try {
-    const response = await client.delete(`users/become-staff/${userIdToFetch}/`);
+    const response = await client.delete(`users/users/${userIdToFetch}/remove_staff/`);
     
-
-    // You may want to refetch user data after the change
-
   } catch (error) {
     console.error('Error removing Program Officer status:', error);
   }
@@ -112,7 +99,7 @@ const removeProgramOfficer = async () => {
         ) : (
           userData ? (
             <div>
-              Name: {userData.user.first_name} {userData.user.last_name}
+              Name: {userData.first_name} {userData.last_name}
             </div>
           ) : (
             'Loading...'
@@ -135,7 +122,7 @@ const removeProgramOfficer = async () => {
         ) : (
           userData ? (
             <div>
-              Department: {userData.user.department}
+              Department: {userData.department}
             </div>
           ) : (
             'Loading...'
@@ -146,24 +133,23 @@ const removeProgramOfficer = async () => {
       <div>
         {userData ? (
           <div>
-            Role: {userData?.user?.staff?.position || 'Client  '}
+            Role: {userData?.staff?.position || 'Client  '}
 
             {/* First Check if the Logged user is Director if Yes Then PRoceed to check the selected User from TAble 
             then If user is not the Director You are able to change the role of the user */}
 
-            {userDataLogged?.user?.staff?.position === 'Director' &&
-              userData?.user?.staff?.position !== 'Director' && (
-                <label htmlFor={`my_inner_modal_${userData.user.user_id}`} className="btn btn-accent">
+            {userDataLogged?.user.staff?.position === 'Director' &&
+              userData?.staff?.position !== 'Director' && (
+                <label htmlFor={`my_inner_modal_${userData.user_id}`} className="btn btn-accent">
                   Change Role
                 </label>
               )
             }
           
-            {/* Put this part before </body> tag */}
-            <input type="checkbox" id={`my_inner_modal_${userData.user.user_id}`} className="modal-toggle" />
+            <input type="checkbox" id={`my_inner_modal_${userData.user_id}`} className="modal-toggle" />
             <div className="modal" role="dialog">
               <div className="modal-box">
-                <h3 className="text-lg font-bold">Set Role For: {userData.user.first_name} {userData.user.last_name}</h3>
+                <h3 className="text-lg font-bold">Set Role For: {userData.first_name} {userData.last_name}</h3>
 
 
               <button className="btn btn-accent" onClick={makeProgramOfficer}>
@@ -175,7 +161,7 @@ const removeProgramOfficer = async () => {
               </button>
 
               </div>
-              <label className="modal-backdrop" htmlFor={`my_inner_modal_${userData.user.user_id}`}>
+              <label className="modal-backdrop" htmlFor={`my_inner_modal_${userData.user_id}`}>
                 Close
               </label>
             </div>
@@ -184,10 +170,8 @@ const removeProgramOfficer = async () => {
           'Loading...'
         )}
       </div>
-
     
-    
-        <div>{userData ? userData.user.email : 'Loading...'}</div>
+        <div>{userData ? userData.email : 'Loading...'}</div>
     
         <div>
           Contact: {isEditing ? (
@@ -198,7 +182,7 @@ const removeProgramOfficer = async () => {
               onChange={handleInputChange}
             />
           ) : (
-            userData ? userData.user.contact : 'Loading...'
+            userData ? userData.contact : 'Loading...'
           )}
         </div>
 
@@ -213,7 +197,7 @@ const removeProgramOfficer = async () => {
             </button>
           </>
         ) : (
-          (userDataLogged?.user?.staff?.position === 'Director' || userDataLogged?.user?.user_id === userData?.user?.user_id) && (
+          (userDataLogged?.user?.staff?.position === 'Director' || userDataLogged?.user.user_id === userData?.user_id) && (
             <button className="btn btn-accent" onClick={handleEdit}>
               Edit Profile
             </button>

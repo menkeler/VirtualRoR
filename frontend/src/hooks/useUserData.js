@@ -2,42 +2,43 @@ import { useState, useEffect } from 'react';
 import client from '../api/client';
 import Cookies from 'js-cookie';
 import useAuth from './useAuth';
-// Purpose is to get the data of the current logged in user
+
+// If userid is empty, it will retrieve the currently logged-in user
 
 const useUserData = (userid) => {
   const [userData, setUserData] = useState(null);
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth(); // Move the useAuth hook inside the functional component
 
   useEffect(() => {
     fetchData();
   }, [userid, isLoggedIn]);
-  
+
   async function fetchData() {
     try {
-      // Check if the user is logged in before making the API request
       if (!isLoggedIn) {
         return;
       }
-      // get token okay to use for api access
       const authToken = Cookies.get('authToken');
-      let url = 'users/userProfile';
 
-      // If userid is provided, append it to the URL
-      if (userid) {
-        url += `/${userid}`;
+      let url = `users/users/get_logged_in_user_details/`;
+
+      if (userid !== null && userid !== undefined) {
+        url = `users/users/${userid}/`;
       }
-      // submit headers for access
+
       const res = await client.get(url, {
         headers: {
           Authorization: `Token ${authToken}`,
         },
       });
 
+      console.log(res.data);
       setUserData(res.data);
     } catch (error) {
       console.error('Error:', error);
     }
   }
+
   return userData;
 };
 

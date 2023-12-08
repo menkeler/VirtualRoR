@@ -7,9 +7,8 @@ import useAuth from '../../hooks/useAuth';
 const Navbar = () => {
  
     const { isLoggedIn } = useAuth();
-    const userData = useUserData();
-
-
+    const userData = useUserData(null);
+    
   return (
     <>
       <div className="navbar bg-base-100 w-full">

@@ -4,7 +4,7 @@ import UserProfile from '../../components/SmallComponents/UserProfile';
 import useUserData from '../../hooks/useUserData'
 
 function UserProfilePage() {
-  const userData = useUserData();
+  const userData = useUserData(1);
 
   if (!userData) {
     return <div>Loading...</div>;
@@ -20,7 +20,7 @@ function UserProfilePage() {
               <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
             </div>
           </div>
-          <UserProfile userid={userData.user.user_id}/>
+          <UserProfile userid={userData.user_id}/>
           {/* Add additional content or components here */}
         </div>
       </div>

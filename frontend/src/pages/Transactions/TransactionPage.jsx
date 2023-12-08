@@ -20,15 +20,14 @@ const TransactionPage = () => {
     async function fetchData() {
       try {
         const authToken = Cookies.get('authToken');
-        let url = 'transactions/transactions/';
 
-        const res = await client.get(url, {
+        const res = await client.get('transactions/transactions/', {
           headers: {
             Authorization: `Token ${authToken}`,
           },
         });
 
-        const resuser = await client.get('users/userShowAll', {
+        const resuser = await client.get('users/users/', {
           headers: {
             Authorization: `Token ${authToken}`,
           },

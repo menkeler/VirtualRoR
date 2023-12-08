@@ -40,7 +40,8 @@ function LoginButton() {
     const { email } = userInfoData;
     try {
       console.log('Checking registration...');
-      const res = await client.post('users/check-registration', { email });
+      const res = await client.post('users/users/checkregister/', { email });
+      console.log(userInfoData);
       loginUser(userInfoData);
     } catch (error) {
       createAccountAndLogin(userInfoData);
@@ -52,7 +53,7 @@ function LoginButton() {
 
     try {
       console.log('Registering user...');
-      const res = await client.post('users/register', { email, first_name: given_name, last_name: family_name });
+      const res = await client.post('users/users/register/', { email, first_name: given_name, last_name: family_name });
       loginUser(userInfoData);
     } catch (error) {
       console.error('Registration error:', error);
@@ -64,7 +65,7 @@ function LoginButton() {
 
     try {
       console.log('Logging in user...');
-      const response = await client.post('users/login', { email });
+      const response = await client.post('users/users/login/', { email });
       const authToken = response.data.token;
 
       const expirationDate = new Date();
@@ -88,7 +89,7 @@ function LoginButton() {
   
     try {
       const authToken = Cookies.get('authToken');
-      await client.post('users/logout', {}, {
+      await client.post('users/users/logout/', {}, {
         headers: {
           Authorization: `Token ${authToken}`,
         },

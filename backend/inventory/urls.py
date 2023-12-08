@@ -1,16 +1,14 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('categories', views.CategoryViewSet, basename='category')
+router.register('item-profiling', views.ItemProfilingViewSet, basename='item-profiling')
+router.register('item-copies', views.ItemCopyViewSet, basename='item-copy')
+router.register('edit-item-copy-status', views.EditItemCopyStatusViewSet, basename='edit-item-copy-status')
+router.register('inventories',views.InventoryViewSet, basename='inventory')
 
 urlpatterns = [
-    #categories
-    path('categories/', views.HandleCategory.as_view(), name='category-list'),
-    #Item Profiling
-    path('itemprofilings/', views.HandleItemProfiling.as_view(), name='itemprofiling-list'),
-    path('itemprofilings/<int:id>/', views.HandleItemProfiling.as_view(), name='item-profiling-detail'),
-    #Item Copies
-    path('itemcopies/', views.HandleItemCopy.as_view(), name='itemcopy-list'),
-    path('itemcopies/<int:inventory_id>/', views.HandleItemCopy.as_view(), name='itemcopy-details'),
-    path('itemcopies/<int:inventory_id>/<int:item_id>/', views.EditItemCopyStatus.as_view(), name='edit-item-copy-status'),
-    #Inventory 
-    path('inventories/', views.HandleInventory.as_view(), name='inventory-list'),
+    path('', include(router.urls)),
 ]

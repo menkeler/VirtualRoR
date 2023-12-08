@@ -21,7 +21,6 @@ const InventoryPage = () => {
     try {
       const authToken = Cookies.get('authToken');
       let url = 'inventory/inventories/';
-
       const res = await client.get(url, {
         headers: {
           Authorization: `Token ${authToken}`,
@@ -29,14 +28,14 @@ const InventoryPage = () => {
       }); 
       setInventoryData(res.data); 
 
-      const itemRes = await client.get('inventory/itemprofilings/');  
+      const itemRes = await client.get('/inventory/item-profiling/');  
       setItemData(itemRes.data);
-      const categRes = await client.get('inventory/categories/');
+      const categRes = await client.get('/inventory/categories/');
       setcategoryData(categRes.data);
 
       // console.log("INVENTORY DATA",res.data);
       // console.log("itemDAta",itemRes.data);
-      // console.log("category Data",categRes.data);
+      console.log("category Data",categRes.data);
     } catch (error) {
       console.error('Error:', error);
     }
