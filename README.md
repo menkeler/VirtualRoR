@@ -14,6 +14,7 @@ pip install djangorestframework django-cors-headers
 pip install pylance
 pip install Pillow
 pip install psycopg2
+pip install factory-boy
 ```
 
 * frontend

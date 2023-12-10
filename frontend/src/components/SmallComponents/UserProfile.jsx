@@ -1,90 +1,78 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react';
 import client from '../../api/client';
-import useUserData from '../../hooks/useUserData'
+import useUserData from '../../hooks/useUserData';
 
-const UserProfile = ({userid}) => {
-    
+const UserProfile = ({ userid }) => {
   const userIdToFetch = userid || useUserData()?.user_id;
   const userDataLogged = useUserData();
   const userData = useUserData(userIdToFetch);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({
+    department: userData?.department || '',
+    contact: userData?.contact || '',
+    first_name: userData?.first_name || '',
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleEdit = () => {
+    setEditedData({
       department: userData?.department || '',
       contact: userData?.contact || '',
       first_name: userData?.first_name || '',
-      
     });
-    
-    const handleEdit = () => {
-      setEditedData({
-        department: userData?.department || '',
-      contact: userData?.contact || '',
-      first_name: userData?.first_name || '',
-      });
-      setIsEditing(true);
-    };
-
-    const cancelEdit = () => {
-      setIsEditing(false);
-
-      // Reset editedData
-      setEditedData({
-        department: userData?.department || '',
-      contact: userData?.contact || '',
-      first_name: userData?.first_name || '',
-      });
+    setIsEditing(true);
   };
 
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setEditedData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
-    
-const handleSubmit = async () => {
-  console.log('Submitting data:', editedData);
-
-  try {
-    const response = await client.put(`users/users/${userIdToFetch}/edit_user/`, editedData);
-    // console.log('Server response:', response.data);
-
-    // Update the local state with the updated data
-    setEditedData({
-      department: response.data.department,
-      contact: response.data.contact,
-      first_name: response.data.first_name,
-    });
-
+  const cancelEdit = () => {
     setIsEditing(false);
-  } catch (error) {
-    console.error('Error submitting data:', error);
-  }
-};
+    setEditedData({
+      department: userData?.department || '',
+      contact: userData?.contact || '',
+      first_name: userData?.first_name || '',
+    });
+  };
 
-const makeProgramOfficer = async () => {
-  try {
-    const response = await client.post(`users/users/${userIdToFetch}/become_staff/`);
-    // console.log('Server response:', response.data);
+  const handleSubmit = async () => {
+    try {
+      const response = await client.put(`users/users/${userIdToFetch}/edit_user/`, editedData);
+      setEditedData({
+        department: response.data.department,
+        contact: response.data.contact,
+        first_name: response.data.first_name,
+      });
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error submitting data:', error);
+    }
+  };
 
-  } catch (error) {
-    console.error('Error setting as Program Officer:', error);
-  }
-};
+  const makeProgramOfficer = async () => {
+    try {
+      await client.post(`users/users/${userIdToFetch}/become_staff/`);
+    } catch (error) {
+      console.error('Error setting as Program Officer:', error);
+    }
+  };
 
-const removeProgramOfficer = async () => {
-  try {
-    const response = await client.delete(`users/users/${userIdToFetch}/remove_staff/`);
-    
-  } catch (error) {
-    console.error('Error removing Program Officer status:', error);
-  }
-};
+  const removeProgramOfficer = async () => {
+    try {
+      await client.delete(`users/users/${userIdToFetch}/remove_staff/`);
+    } catch (error) {
+      console.error('Error removing Program Officer status:', error);
+    }
+  };
 
-    return (
-      <>
-        <div>
+  return (
+    <>
+      {/* Display Name */}
+      <div>
         {isEditing ? (
           <>
             <label htmlFor="first_name">First Name:</label>
@@ -98,45 +86,43 @@ const removeProgramOfficer = async () => {
           </>
         ) : (
           userData ? (
-            <div>
-              Name: {userData.first_name} {userData.last_name}
-            </div>
+            <div>Name: {userData.first_name} {userData.last_name}</div>
           ) : (
             'Loading...'
           )
         )}
       </div>
-      {/* DEPARMENT */}
+
+      {/* Display Department */}
       <div>
         {isEditing ? (
           <>
             <label htmlFor="department">Department: </label>
-            <input
-              type="text"
+            <select
               id="department"
               name="department"
               value={editedData.department}
               onChange={handleInputChange}
-            />
+            >
+              <option value="Empty">Not Yet Added</option>
+              <option value="CS">CS</option>
+              <option value="Nursing">Nursing</option>
+            </select>
           </>
         ) : (
           userData ? (
-            <div>
-              Department: {userData.department}
-            </div>
+            <div>Department: {userData.department}</div>
           ) : (
             'Loading...'
           )
         )}
       </div>
-    
+
+      {/* Display Role */}
       <div>
         {userData ? (
           <div>
-            Role: {userData?.staff?.position || 'Client  '}
-
-            {/* First Check if the Logged user is Director if Yes Then PRoceed to check the selected User from TAble 
-            then If user is not the Director You are able to change the role of the user */}
+            Role: {userData?.staff?.position || 'Client'}
 
             {userDataLogged?.user.staff?.position === 'Director' &&
               userData?.staff?.position !== 'Director' && (
@@ -145,21 +131,20 @@ const removeProgramOfficer = async () => {
                 </label>
               )
             }
-          
+
+            {/* Role Change Modal */}
             <input type="checkbox" id={`my_inner_modal_${userData.user_id}`} className="modal-toggle" />
             <div className="modal" role="dialog">
               <div className="modal-box">
                 <h3 className="text-lg font-bold">Set Role For: {userData.first_name} {userData.last_name}</h3>
 
+                <button className="btn btn-accent" onClick={makeProgramOfficer}>
+                  Set to Program Officer
+                </button>
 
-              <button className="btn btn-accent" onClick={makeProgramOfficer}>
-                Set to Program Officer
-              </button>
-
-              <button className="btn btn-accent" onClick={removeProgramOfficer}>
-                Remove Program Officer
-              </button>
-
+                <button className="btn btn-accent" onClick={removeProgramOfficer}>
+                  Remove Program Officer
+                </button>
               </div>
               <label className="modal-backdrop" htmlFor={`my_inner_modal_${userData.user_id}`}>
                 Close
@@ -170,23 +155,26 @@ const removeProgramOfficer = async () => {
           'Loading...'
         )}
       </div>
-    
-        <div>{userData ? userData.email : 'Loading...'}</div>
-    
-        <div>
-          Contact: {isEditing ? (
-            <input
-              type="text"
-              name="contact"
-              value={editedData.contact}
-              onChange={handleInputChange}
-            />
-          ) : (
-            userData ? userData.contact : 'Loading...'
-          )}
-        </div>
 
-        <div>
+      {/* Display Email */}
+      <div>{userData ? <div>Email: {userData.email}</div> : 'Loading...'}</div>
+
+      {/* Display Contact */}
+      <div>
+        {isEditing ? (
+          <input
+            type="text"
+            name="contact"
+            value={editedData.contact}
+            onChange={handleInputChange}
+          />
+        ) : (
+          userData ? `Contact: ${userData.contact}` : 'Loading...'
+        )}
+      </div>
+
+      {/* Display Edit/Submit/Cancel buttons */}
+      <div>
         {isEditing ? (
           <>
             <button className="btn btn-accent" onClick={handleSubmit}>
@@ -201,16 +189,11 @@ const removeProgramOfficer = async () => {
             <button className="btn btn-accent" onClick={handleEdit}>
               Edit Profile
             </button>
-          )   
+          )
         )}
       </div>
+    </>
+  );
+};
 
-      </>
-    );
-}
-
-export default UserProfile
-
-
-
-
+export default UserProfile;

@@ -7,8 +7,7 @@ import Home from './pages/Home';
 import UsersList from './pages/UserProfiling/UsersListPage';
 import useAuth from './hooks/useAuth';
 import InventoryPage from './pages/InventoryProfiling/InventoryPage';
-import InquiryPage from './pages/Transactions/InquiryPage';
-import TransactionPage from './pages/Transactions/TransactionPage';
+
 function App() {
 
   const { isLoggedIn } = useAuth();
@@ -20,8 +19,6 @@ function App() {
         <Route path="login" element={<LoginPage />} />
 
         <Route path="Inventory" element={<InventoryPage />} />
-        <Route path="Transactions" element={<TransactionPage />} />
-        <Route path="Inquiry" element={<InquiryPage />} />
         paths under here are only acces when logged in
         <Route path="profile" element={<UserProfilePage />} />
         
