@@ -28,3 +28,19 @@ class EditItemCopyStatusViewSet(viewsets.ModelViewSet):
 class InventoryViewSet(viewsets.ModelViewSet):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
+
+    def create(self, request, *args, **kwargs):
+        item_id = request.data.get("item")
+        quantity_to_add_str = request.data.get("quantity", "0")
+
+        try:
+            quantity_to_add = int(quantity_to_add_str)
+        except ValueError:
+            return Response({"error": "Invalid quantity format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        inventory_instance, created = Inventory.objects.get_or_create(item_id=item_id, defaults={"quantity": 0})
+        inventory_instance.quantity += quantity_to_add
+        inventory_instance.save()
+
+        serializer = InventorySerializer(inventory_instance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -7,7 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ItemProfilingSerializer(serializers.ModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    category = CategorySerializer()
 
     class Meta:
         model = ItemProfiling
@@ -19,7 +19,7 @@ class ItemCopySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class InventorySerializer(serializers.ModelSerializer):
-    item = serializers.PrimaryKeyRelatedField(queryset=ItemProfiling.objects.all())
+    item = ItemProfilingSerializer()
     item_copies = ItemCopySerializer(many=True, read_only=True)
 
     class Meta:

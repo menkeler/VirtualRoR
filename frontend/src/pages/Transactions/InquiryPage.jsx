@@ -22,7 +22,7 @@ const InquiryPage = () => {
           },
         });
 
-        const resuser = await client.get('users/userShowAll', {
+        const resuser = await client.get('users/users/', {
           headers: {
             Authorization: `Token ${authToken}`,
           },
@@ -40,7 +40,6 @@ const InquiryPage = () => {
     const handleInquiryAdded = async () => {
       await fetchData();
     };
-
 
 
   return (
@@ -84,16 +83,16 @@ const InquiryPage = () => {
                   
                   {/* Find the user with the matching ID */}
                   <td>
-                    {Array.isArray(usersData.users) ? (
-                        usersData.users.map((userData) => (
+                    {Array.isArray(usersData.results) ? (
+                      usersData.results.map((userData) => (
                         userData.user_id === inquiry.user ?
-                            `${userData.first_name} ${userData.last_name}` :
-                            null
-                        )).join('') || 'Unknown User'
+                          `${userData.first_name} ${userData.last_name}` :
+                          null
+                      )).join('') || 'Unknown User'
                     ) : (
-                        'Invalid User Data'
+                      'Invalid User Data'
                     )}
-                 </td>
+                  </td>
                   <td>{inquiry.date_preferred}</td>
                   <td>{inquiry.status}</td>
                 </tr>

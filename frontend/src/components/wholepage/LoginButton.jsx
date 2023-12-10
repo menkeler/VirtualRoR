@@ -4,15 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
 
-
-
 function LoginButton() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const authToken = Cookies.get('authToken');
-    setIsLoggedIn(!!authToken); 
+    setIsLoggedIn(!!authToken);
   }, []);
 
   const Login = useGoogleLogin({
@@ -26,7 +24,7 @@ function LoginButton() {
 
         if (userInfoResponse.ok) {
           const userInfoData = await userInfoResponse.json();
-          submitLogin(userInfoData);
+          await submitLogin(userInfoData);
         } else {
           console.error('Error processing Google login:', userInfoResponse.status, userInfoResponse.statusText);
         }
@@ -38,23 +36,40 @@ function LoginButton() {
 
   async function submitLogin(userInfoData) {
     const { email } = userInfoData;
+
     try {
       console.log('Checking registration...');
       const res = await client.post('users/users/checkregister/', { email });
-      console.log(userInfoData);
-      loginUser(userInfoData);
+
+      if (res.data.detail === 'User not registered') {
+        console.log('User not registered. Proceeding to registration...');
+        await createAccount(userInfoData);
+      } else {
+        console.log('User already registered. Logging in...');
+        await loginUser(userInfoData);
+      }
     } catch (error) {
-      createAccountAndLogin(userInfoData);
+      console.error('Error checking registration:', error);
     }
   }
 
-  async function createAccountAndLogin(userInfoData) {
+  async function createAccount(userInfoData) {
     const { email, given_name, family_name } = userInfoData;
 
     try {
       console.log('Registering user...');
-      const res = await client.post('users/users/register/', { email, first_name: given_name, last_name: family_name });
-      loginUser(userInfoData);
+      const registerResponse = await client.post('users/users/register/', {
+        email,
+        first_name: given_name,
+        last_name: family_name,
+      });
+
+      if (registerResponse.status === 201) {
+        console.log('Registration successful. Logging in...');
+        await loginUser(userInfoData);
+      } else {
+        console.error('Registration failed:', registerResponse.statusText);
+      }
     } catch (error) {
       console.error('Registration error:', error);
     }
@@ -65,41 +80,51 @@ function LoginButton() {
 
     try {
       console.log('Logging in user...');
-      const response = await client.post('users/users/login/', { email });
-      const authToken = response.data.token;
+      const loginResponse = await client.post('users/users/login/', { email });
 
-      const expirationDate = new Date();
-      expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000);  // 1 hour in milliseconds
+      if (loginResponse.status === 200) {
+        const authToken = loginResponse.data.token;
 
-      // Store the token in a cookie
-      Cookies.set('authToken', authToken, { expires: expirationDate, secure: true, sameSite: 'Strict' });
+        const expirationDate = new Date();
+        expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000); // 1 hour in milliseconds
 
-      setIsLoggedIn(true);
+        // Store the token in a cookie
+        Cookies.set('authToken', authToken, { expires: expirationDate, secure: true, sameSite: 'Strict' });
 
-      // Redirect or navigate to the profile page
-      navigate('/Profile');
-      window.location.reload()
+        setIsLoggedIn(true);
+
+        // Redirect or navigate to the profile page
+        navigate('/Profile');
+        window.location.reload();
+      } else {
+        console.error('Login failed:', loginResponse.statusText);
+      }
     } catch (error) {
       console.error('Login error:', error);
     }
   }
+
   async function submitLogout(e) {
-    console.log("Logging out...");
+    console.log('Logging out...');
     e.preventDefault();
-  
+
     try {
       const authToken = Cookies.get('authToken');
-      await client.post('users/users/logout/', {}, {
-        headers: {
-          Authorization: `Token ${authToken}`,
-        },
-      });
+      await client.post(
+        'users/users/logout/',
+        {},
+        {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        }
+      );
       navigate('/home');
       // Always remove the authentication token cookie
       Cookies.remove('authToken');
       navigate('/home');
-      window.location.reload()
-      console.log("Token Removed");
+      window.location.reload();
+      console.log('Token Removed');
     } catch (error) {
       // Even if there's an error, remove the authentication token cookie
       Cookies.remove('authToken');
@@ -109,7 +134,7 @@ function LoginButton() {
       setIsLoggedIn(false);
     }
   }
-  
+
   return (
     <div>
       {isLoggedIn ? (
@@ -122,7 +147,7 @@ function LoginButton() {
         </div>
       )}
     </div>
-  );  
+  );
 }
 
 export default LoginButton;

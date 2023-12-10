@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Inquiry, Transaction, TransactionItem,ReservedItem
+from .models import Inquiry, Transaction, TransactionItem, ReservedItem
 
 class ReservedItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,17 +7,26 @@ class ReservedItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class InquirySerializer(serializers.ModelSerializer):
-    reserved_items = ReservedItemSerializer(many=True, read_only=True)
+    reserved_items = ReservedItemSerializer(many=True, required=False)
 
     class Meta:
-        model = Inquiry 
+        model = Inquiry
         fields = '__all__'
+
+    def create(self, validated_data):
+        reserved_items_data = validated_data.pop('reserved_items', [])
+        inquiry = Inquiry.objects.create(**validated_data)
+
+        for reserved_item_data in reserved_items_data:
+            ReservedItem.objects.create(inquiry=inquiry, **reserved_item_data)
+
+        return inquiry
 
 class TransactionItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionItem
         fields = '__all__'
-    # i may remove this later on since the choice here is already set in the front end with a button depends   
+
     def validate(self, data):
         inventory_item = data.get('inventory_item')
         item_copy = data.get('item_copy')
@@ -35,4 +44,3 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
-        
