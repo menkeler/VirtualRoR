@@ -4,11 +4,11 @@ import Cookies from 'js-cookie';
 import UserProfile from './UserProfile';
 
 const UsersListTable = () => {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState({ results: [] }); // Initialize with an empty array
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState(''); // Add filter state
-  const itemsPerPage = 1;
+  const [selectedFilter, setSelectedFilter] = useState('');
+  const itemsPerPage = 30;
 
   // FETCH DATA FOR ALL USERS ON BACKEND
   useEffect(() => {
@@ -16,31 +16,35 @@ const UsersListTable = () => {
       try {
         const authToken = Cookies.get('authToken');
         const res = await client.get('users/users/', {
+          params: {
+            page: currentPage,
+            page_size: itemsPerPage,
+          },
           headers: {
             Authorization: `Token ${authToken}`,
           },
         });
 
-        setUserData(res.data.results);
+        setUserData(res.data);
       } catch (error) {
         console.error('Error:', error);
       }
     }
 
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   // Filter and search logic
-  const filteredData = userData?.filter((user) => {
+  const filteredData = userData.results.filter((user) => {
     const nameMatch = `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase());
     const filterMatch = selectedFilter ? user.staff?.position === selectedFilter : true;
     return nameMatch && filterMatch;
   });
 
-  // Calculate the indices of the items to display based on current page and items per page
+  // Calculate the indices of the items to display based on the current page and items per page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -81,7 +85,7 @@ const UsersListTable = () => {
         </thead>
         <tbody>
           {/* Check if currentItems exists before mapping */}
-          {currentItems?.map((user) => (
+          {currentItems.map((user) => (
             <tr key={user.user_id}>
               {/* Add content for each row */}
               <td>{user.user_id}</td>
@@ -96,15 +100,15 @@ const UsersListTable = () => {
                 >
                   Details
                 </button>
-              <dialog id={`my_modal_${user.user_id}`} className="modal">
-                <div className="modal-box">
-                  <h3 className="font-bold text-lg">User Details</h3>
-                  <UserProfile userid={user.user_id} />
-                </div>
-                <form method="dialog" className="modal-backdrop">
-                  <button>close</button>
-                </form>
-              </dialog>
+                <dialog id={`my_modal_${user.user_id}`} className="modal">
+                  <div className="modal-box">
+                    <h3 className="font-bold text-lg">User Details</h3>
+                    <UserProfile userid={user.user_id} />
+                  </div>
+                  <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                  </form>
+                </dialog>
               </td>
             </tr>
           ))}
@@ -117,7 +121,7 @@ const UsersListTable = () => {
           «
         </button>
         {/* Add buttons for each page */}
-        {Array.from({ length: Math.ceil(filteredData?.length / itemsPerPage) }, (_, i) => i + 1).map((page) => (
+        {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }, (_, i) => i + 1).map((page) => (
           <button
             key={page}
             className={`join-item btn ${currentPage === page ? 'active' : ''}`}
@@ -128,8 +132,8 @@ const UsersListTable = () => {
         ))}
         <button
           className="join-item btn"
-          onClick={() => paginate(Math.ceil(filteredData?.length / itemsPerPage))}
-          disabled={currentPage === Math.ceil(filteredData?.length / itemsPerPage)}
+          onClick={() => paginate(Math.ceil(filteredData.length / itemsPerPage))}
+          disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage)}
         >
           »
         </button>

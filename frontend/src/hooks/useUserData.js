@@ -32,7 +32,7 @@ const useUserData = (userid) => {
         },
       });
 
-      console.log(res.data);
+
       setUserData(res.data);
     } catch (error) {
       console.error('Error:', error);

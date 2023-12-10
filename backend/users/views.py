@@ -15,9 +15,9 @@ from .models import User, Staff
 from rest_framework.pagination import PageNumberPagination
 
 class UserPagination(PageNumberPagination):
-    page_size = 30 
+    page_size = 30
     page_size_query_param = 'page_size'
-    max_page_size = 100000
+    max_page_size = 1000
     
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
