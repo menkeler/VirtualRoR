@@ -1,44 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from '../../components/wholepage/Navbar';
-import client from '../../api/client';
-import Cookies from 'js-cookie';
-
+import React,{useState,useEffect} from 'react'
+import client from '../../api/client'
+import Navbar from '../../components/wholepage/Navbar'
 
 const InventoryPage = () => {
-  const [inventoryData, setInventoryData] = useState([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // const fetchData = async () => {
+  //   const authToken = Cookies.get('authToken');
 
-  async function fetchData() {
-    try {
-      const authToken = Cookies.get('authToken');
-      let url = 'inventory/inventories/';
-      const res = await client.get(url, {
-        headers: {
-          Authorization: `Token ${authToken}`,
-        },
-      }); 
-      setInventoryData(res.data); 
+  //   try {
+  //     if (authToken) {
+  //       const res = await client.get('users/in/', {
+  //         headers: {
+  //           Authorization: `Token ${authToken}`,
+  //         },
+  //       });
 
-      console.log("Item Data",res.data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
+  //       setIsLoggedIn(true);
+  //       setUserData(res.data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching user data:', error);
+  //   } finally {
+  //     setIsDataLoaded(true);
+  //   }
+  // };
 
-  return(
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+
+
+
+  return (
     <>
+        <Navbar/>
 
-    <Navbar/>d
+        Invnetorty Page
     </>
-  );
-};
-
-export default InventoryPage;
-                
 
 
 
-                  
+  )
+}
+
+export default InventoryPage

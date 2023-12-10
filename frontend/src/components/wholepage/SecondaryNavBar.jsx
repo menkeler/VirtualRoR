@@ -1,11 +1,9 @@
 import React from 'react';
-import useUserData from '../../hooks/useUserData';
-import UsersList from '../../pages/UserProfiling/UsersListPage';
+import { useAuth } from '../../contexts/AuthContext'; // Import the useAuth hook
 import { Link } from 'react-router-dom';
 
 const SecondaryNavBar = () => {
-  
-  const userData = useUserData();
+  const { isLoggedIn, userData } = useAuth(); // Use the useAuth hook to access authentication context
 
   return (
     <div className="navbar bg-base-100">
@@ -20,9 +18,10 @@ const SecondaryNavBar = () => {
           {/* Only Displays if Director */}
           {userData && userData.user && userData.user.staff && (
             <li>
-              <Link to="/alluserslist" className="justify-between">
+              {/* Content to display if the user is a staff member */}
+              <Link to="/Allusers" className="justify-between">
                   Users
-              </Link>
+              </Link> 
             </li>
           )}
         </ul>
@@ -32,6 +31,7 @@ const SecondaryNavBar = () => {
 };
 
 export default SecondaryNavBar;
+
 
 // only director
 // {userData && userData.user && userData.user.staff && userData.user.staff.position.includes('Director') && (

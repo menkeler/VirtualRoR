@@ -1,5 +1,5 @@
 from django.contrib.auth import login, logout
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -14,17 +14,25 @@ from .serializers import (
 from .models import User, Staff
 from rest_framework.pagination import PageNumberPagination
 
+
 class UserPagination(PageNumberPagination):
     page_size = 30
     page_size_query_param = 'page_size'
     max_page_size = 1000
-    
+
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    #for users/users/1(to get the id of the user)
-    queryset = User.objects.all()  
+    queryset = User.objects.all()
     pagination_class = UserPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name']
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Additional filtering based on your requirements
+        # You can customize this further based on your needs
+        return queryset
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def register(self, request):

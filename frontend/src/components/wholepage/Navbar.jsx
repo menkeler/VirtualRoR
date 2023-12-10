@@ -2,12 +2,10 @@ import React,{useState,useEffect} from 'react';
 import LoginButton from './LoginButton';
 import { Link } from 'react-router-dom';
 import SecondaryNavBar from './SecondaryNavBar';
-import useUserData from '../../hooks/useUserData';
-import useAuth from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/AuthContext';
 const Navbar = () => {
  
-    const { isLoggedIn } = useAuth();
-    const userData = useUserData(null);
+  const { isLoggedIn, userData } = useAuth(); 
     
   return (
     <>
@@ -17,7 +15,7 @@ const Navbar = () => {
 
             <img
               alt="Tailwind CSS Navbar component"
-              src="public/Logo.png"
+              src="/public/Logo.png"
               style={{ maxWidth: '100px', maxHeight: '100%' }} 
             />
           </Link>
@@ -29,15 +27,17 @@ const Navbar = () => {
           <div className="flex-none gap-2">
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
-              <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-              </div>
-              {/* Display FullNAme */}
-              <h1>{userData && userData.user && `${userData.user.first_name} ${userData.user.last_name}`}</h1>
-              {/* Display Postion if user has postion */}
-              {userData && userData.user && userData.user.staff && userData.user.staff.position && (
-                <h1>{userData.user.staff.position}</h1>
-              )}
+                <div className="w-10 rounded-full">
+                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                </div>
+                {/* Display FullNAme */}
+              
+                <h1>{userData && userData.user && `${userData.user.first_name} ${userData.user.last_name}`}</h1>
+
+                {/* Display Postion if user has postion */}
+                {userData && userData.user && userData.user.staff && userData.user.staff.position && (
+                  <h1>{userData.user.staff.position}</h1>
+                )}
 
               </label>
               
@@ -47,12 +47,20 @@ const Navbar = () => {
                   Profile
                 </Link>
                 </li>
+                {userData && userData.user && userData.user.staff && (
+                  <li>
+                    <Link to="/admin/dashboard" className="justify-between">
+                      Admin Dashboard
+                    </Link>
+                  </li>
+                )}
                 <li> 
                     <LoginButton />
                 </li>
               </ul>
             </div>
           </div>
+          
         ) : (
           <div className="flex-2">
             <LoginButton />
