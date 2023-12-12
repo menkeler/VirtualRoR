@@ -3,6 +3,7 @@ import client from '../../api/client';
 import Navbar from '../../components/wholepage/Navbar';
 import Cookies from 'js-cookie';
 import { useAuth } from '../../contexts/AuthContext';
+import CreateItemProfile from '../../components/CustomButtons/Inventory/CreateItemProfile';
 const InventoryPage = () => {
   const [inventoryData, setInventoryData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
@@ -49,7 +50,7 @@ const InventoryPage = () => {
       <Navbar />
       {isDataLoaded ? (
         <div>
-         
+<CreateItemProfile/>
         </div>
       ) : (
         <div>Loading...</div>
