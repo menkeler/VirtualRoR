@@ -14,6 +14,11 @@ const SecondaryNavBar = () => {
                   Inventory
             </Link> 
           </li>
+          <li>
+            <Link to="/Transactions" className="justify-between">
+            Transactions
+            </Link> 
+          </li>
 
           {/* Only Displays if Director */}
           {userData && userData.user && userData.user.staff && (

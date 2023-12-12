@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status,viewsets, filters
 from .models import Category, ItemProfiling, ItemCopy, Inventory
 from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer, InventorySerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -25,9 +27,18 @@ class EditItemCopyStatusViewSet(viewsets.ModelViewSet):
     def get_object(self):
         return get_object_or_404(ItemCopy, inventory__id=self.kwargs['inventory_id'], id=self.kwargs['item_id'])
 
+class InventoryPagination(PageNumberPagination):
+    page_size = 30
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
 class InventoryViewSet(viewsets.ModelViewSet):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
+    pagination_class = InventoryPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['item__category__name']
+
 
     def create(self, request, *args, **kwargs):
         item_id = request.data.get("item")

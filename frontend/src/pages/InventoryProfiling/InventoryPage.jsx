@@ -1,47 +1,61 @@
-import React,{useState,useEffect} from 'react'
-import client from '../../api/client'
-import Navbar from '../../components/wholepage/Navbar'
-
+import React, { useState, useEffect } from 'react';
+import client from '../../api/client';
+import Navbar from '../../components/wholepage/Navbar';
+import Cookies from 'js-cookie';
+import { useAuth } from '../../contexts/AuthContext';
 const InventoryPage = () => {
-
-  // const fetchData = async () => {
-  //   const authToken = Cookies.get('authToken');
-
-  //   try {
-  //     if (authToken) {
-  //       const res = await client.get('users/in/', {
-  //         headers: {
-  //           Authorization: `Token ${authToken}`,
-  //         },
-  //       });
-
-  //       setIsLoggedIn(true);
-  //       setUserData(res.data);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching user data:', error);
-  //   } finally {
-  //     setIsDataLoaded(true);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  const [inventoryData, setInventoryData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const { userData } = useAuth(); 
 
 
+  const fetchData = async () => {
+    const authToken = Cookies.get('authToken');
+    try {
+      if (authToken) {
+        const res = await client.get('inventory/inventories/', {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        });
 
+        const catRes = await client.get('inventory/categories/', {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        });
+
+        setInventoryData(res.data);
+        console.log("inventort",res.data);
+
+        setCategoryData(catRes.data);
+        console.log("catres",catRes.data);
+      }
+    } catch (error) {
+      console.error('Error fetching inventory data:', error);
+      // Handle error as needed, e.g., show an error message to the user
+    } finally {
+      setIsDataLoaded(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [/* Include any dependencies, such as authToken */]);
 
   return (
     <>
-        <Navbar/>
-
-        Invnetorty Page
+      <Navbar />
+      {isDataLoaded ? (
+        <div>
+         
+        </div>
+      ) : (
+        <div>Loading...</div>
+      )}
     </>
+  );
+};
 
-
-
-  )
-}
-
-export default InventoryPage
+export default InventoryPage;

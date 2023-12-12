@@ -97,7 +97,7 @@ function UserProfilePage() {
                 <select
                   name="department"
                   value={formData.department}
-                  onChange={handleChange}
+                  onChange={handleChange} 
                 >
                   <option value="CS">CS</option>
                   <option value="Nursing">Nursing</option>
