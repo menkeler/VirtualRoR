@@ -4,6 +4,8 @@ import Navbar from '../../components/wholepage/Navbar';
 import Cookies from 'js-cookie';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateItemProfile from '../../components/CustomButtons/Inventory/CreateItemProfile';
+import InventoryTable from '../../components/Displaycomponents/InventoryTable';
+
 const InventoryPage = () => {
   const [inventoryData, setInventoryData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
@@ -43,15 +45,19 @@ const InventoryPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, [/* Include any dependencies, such as authToken */]);
+  }, []);
 
   return (
     <>
       <Navbar />
       {isDataLoaded ? (
+        <>
         <div>
-<CreateItemProfile/>
+        <CreateItemProfile/>
+        
         </div>
+        <div><InventoryTable type={1}/></div>
+        </>
       ) : (
         <div>Loading...</div>
       )}

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import client from '../../api/client';
-import Cookies from 'js-cookie';
+  import React, { useState, useEffect } from 'react';
+  import client from '../../api/client';
+  import Cookies from 'js-cookie';
 
 const UsersTable = ({ type, user, onSelectUser }) => {
     const [users, setUsers] = useState([]);
@@ -19,6 +19,7 @@ const UsersTable = ({ type, user, onSelectUser }) => {
             },
           });
   
+          
           const { results, count } = response.data;
   
           setUsers(results);

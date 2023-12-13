@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 const SecondaryNavBar = () => {
   const { isLoggedIn, userData } = useAuth(); // Use the useAuth hook to access authentication context
 
-  return (
-    <div className="navbar bg-base-100">
+  return (  
+    <div className="navbar bg-base-100 ">
       <div className="navbar-end">
         <ul className="menu menu-horizontal px-1">
           <li>

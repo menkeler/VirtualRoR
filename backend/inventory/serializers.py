@@ -6,8 +6,13 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+class ItemProfilingCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemProfiling
+        fields = '__all__'
+
 class ItemProfilingSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         model = ItemProfiling
@@ -18,8 +23,13 @@ class ItemCopySerializer(serializers.ModelSerializer):
         model = ItemCopy
         fields = '__all__'
 
+class InventoryCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Inventory
+        fields = '__all__'
+
 class InventorySerializer(serializers.ModelSerializer):
-    item = ItemProfilingSerializer()
+    item = ItemProfilingSerializer(read_only=True)
     item_copies = ItemCopySerializer(many=True, read_only=True)
 
     class Meta:

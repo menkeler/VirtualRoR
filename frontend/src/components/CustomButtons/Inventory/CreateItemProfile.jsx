@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import client from '../../../api/client';
 import Cookies from 'js-cookie';
 import Select from 'react-select-virtualized';
-
+import CategoryAdd from './Categoryadd';
 const CreateItemProfile = () => {
   // Instead of single form use state i decided to use it like this more readable
   const [categoryData, setCategoryData] = useState([]);
@@ -11,26 +11,28 @@ const CreateItemProfile = () => {
   const [itemName, setItemName] = useState('');
   const [itemDescription, setItemDescription] = useState('');
 
+  const authToken = Cookies.get('authToken');
+
+  const fetchData = async () => {
+    try {
+      const categRes = await client.get('inventory/categories/');
+      setCategoryData(categRes.data);
+      console.log('Categories:', categRes.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const authToken = Cookies.get('authToken');
-        const categRes = await client.get('inventory/categories/');
-        setCategoryData(categRes.data);
-        console.log('Categories:', categRes.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
     fetchData();
-  }, []);
+  }, [selectedCategory]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    try {
-      const authToken = Cookies.get('authToken');
-      const data = {
+   try {
+      
+       const data = {
         name: itemName,
         returnable: selectedOption === 'true',
         description: itemDescription,
@@ -62,7 +64,7 @@ const CreateItemProfile = () => {
         Create Item Profile
       </button>
       <dialog id="ItemProfileModal" className="modal">
-        <div className="modal-box w-11/12 max-w-1xl p-6 overflow-hidden">
+        <div className="modal-box w-11/12 max-w-1xl p-6">
           <h3 className="font-bold text-lg mb-4">Item Profiling</h3>
           <form>
             <div className="mb-4">
@@ -97,16 +99,20 @@ const CreateItemProfile = () => {
                 isSearchable
                 placeholder="Search or select category"
                 className="select"
-                maxMenuHeight={80} // Set the maximum height for the dropdown
+                maxMenuHeight={80} 
               />
             </div>
-            <div className="flex justify-end mt-6">
-              <button className="btn btn-accent mr-4" onClick={handleSubmit}>Add Item</button>
-              <button className="btn btn-accent" type="button" onClick={() => { resetForm(); document.getElementById('ItemProfileModal').close(); }}>Cancel</button>
+            <div className="flex justify-between items-center mt-6">
+                <CategoryAdd/>
+              <div>
+                <button className="btn btn-accent mr-4" onClick={handleSubmit}>Add Item</button>
+                <button className="btn btn-accent" type="button" onClick={() => { resetForm(); document.getElementById('ItemProfileModal').close(); }}>Cancel</button>
+              </div>
             </div>
           </form>
         </div>
       </dialog>
+      
     </>
   );
 };
