@@ -1,3 +1,7 @@
+
+#remove for production
+
+
 import factory
 from django.contrib.auth import get_user_model
 from django.template.defaultfilters import truncatechars
@@ -21,4 +25,4 @@ class UserFactory(factory.django.DjangoModelFactory):
     department = factory.Faker('word')
     bio = factory.Faker('paragraph')
     date_joined = factory.Faker('date_time_this_decade', tzinfo=timezone.utc)
-    is_staff = False  # You can customize this as needed
+    is_staff = False  

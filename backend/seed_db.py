@@ -1,7 +1,7 @@
 import os
 import django
 
-# Adjust 'backend.settings' based on your project structure
+#for test USErs
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 django.setup()
 

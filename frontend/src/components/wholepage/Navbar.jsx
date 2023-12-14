@@ -9,14 +9,13 @@ const Navbar = () => {
     
   return (
     <>
-      <div className="navbar bg-base-100 w-full">
+      <div className="navbar bg-neutral-100 w-full">
         <div className="flex-1">
           <Link to="/home" className="justify-between">
-
             <img
               alt="Tailwind CSS Navbar component"
               src="/public/Logo.png"
-              style={{ maxWidth: '100px', maxHeight: '100%' }} 
+              className="w-100 h-16"
             />
           </Link>
          
@@ -30,16 +29,19 @@ const Navbar = () => {
                 <div className="w-10 rounded-full">
                 <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
                 </div>
-                {/* Display FullNAme */}
-              
-                <h1>{userData && userData.user && `${userData.user.first_name} ${userData.user.last_name}`}</h1>
-
-                {/* Display Postion if user has postion */}
-                {userData && userData.user && userData.user.staff && userData.user.staff.position && (
-                  <h1>{userData.user.staff.position}</h1>
-                )}
-
               </label>
+
+               {/* Display FullNAme */} 
+               <div className="ml-2">
+                <h1 className="text-lg font-semibold text-gray-800">
+                  {userData?.user && `${userData.user.first_name} ${userData.user.last_name}`}
+                </h1>
+                {userData?.user?.staff?.position && (
+                  <p className="text-sm text-gray-500">
+                    {userData.user.staff.position}
+                  </p>
+                )}
+              </div>
               
               <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
                 <li>

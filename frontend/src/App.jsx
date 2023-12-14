@@ -1,10 +1,10 @@
 import './App.css';
 import React from 'react';
+import { useAuth } from './contexts/AuthContext';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './pages/UserProfiling/LoginPage';
 import UserProfilePage from './pages/UserProfiling/UserProfilePage';
 import Home from './pages/Home';
-import { useAuth } from './contexts/AuthContext';
 import AdminDashBoard from './pages/UserProfiling/AdminDashBoard';
 import InventoryPage from './pages/InventoryProfiling/InventoryPage';
 import AllUsersPage from './pages/UserProfiling/AllUsersPage';

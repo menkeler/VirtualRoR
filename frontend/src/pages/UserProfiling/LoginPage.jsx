@@ -7,7 +7,7 @@
             <Navbar />
             <div className="w-100% vcarousel rounded-box">
                 <div className="carousel-item w-full">
-                <img src="public/Loginbackground.jpg"style={{ maxWidth: '100%', height: '100%' }}/>
+                <img src="public/Loginbackground.jpg" className='h-full'/>
                 </div> 
             </div>
         </>

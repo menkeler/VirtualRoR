@@ -23,7 +23,7 @@ class UserPagination(PageNumberPagination):
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('user_id')
     pagination_class = UserPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['first_name', 'last_name']
