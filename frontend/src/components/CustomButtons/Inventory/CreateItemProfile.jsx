@@ -3,6 +3,7 @@ import client from '../../../api/client';
 import Cookies from 'js-cookie';
 import Select from 'react-select-virtualized';
 import CategoryAdd from './Categoryadd';
+
 const CreateItemProfile = () => {
   // Instead of single form use state i decided to use it like this more readable
   const [categoryData, setCategoryData] = useState([]);
@@ -48,6 +49,7 @@ const CreateItemProfile = () => {
       document.getElementById('ItemProfileModal').close();
     } catch (error) {
       console.error('Error adding item:', error);
+      
     }
   };
 
@@ -60,7 +62,7 @@ const CreateItemProfile = () => {
 
   return (
     <>
-      <button className="btn btn-accent" onClick={() => document.getElementById('ItemProfileModal').showModal()}>
+      <button className="btn btn-accent mr-3" onClick={() => document.getElementById('ItemProfileModal').showModal()}>
         Create Item Profile
       </button>
       <dialog id="ItemProfileModal" className="modal">

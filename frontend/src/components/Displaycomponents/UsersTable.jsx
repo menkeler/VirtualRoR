@@ -25,7 +25,7 @@ const UsersTable = ({ type, user, onSelectUser }) => {
           setUsers(results);
           setTotalPages(Math.ceil(count / 30));
   
-          console.log(response.data);
+          // console.log(response.data);
         } catch (error) {
           console.error('Error fetching users:', error);
           setCurrentPage(1);

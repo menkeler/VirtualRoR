@@ -2,20 +2,26 @@ import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
 import UsersTable from '../Displaycomponents/UsersTable';
+import CreateItemProfile from '../CustomButtons/Inventory/CreateItemProfile';
 import InventoryProfilingTable from '../Displaycomponents/InventoryProfilingTable';
+
 const TransactionDonation = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [items , setItems] = useState([]);
   const [itemCopies , setItemCopies] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [selectedCondition, setSelectedCondition] = useState('Good');
+  const [Remarks, setRemarks] = useState('');
+  const [transactionItems , setTransactionItems] = useState([]);
  
   useEffect(() => {
-    // console.log("Current Items", items);
-    // console.log("selec Item",selectedItemId);
-    console.log(" Itemcopies",itemCopies);
-  }, [items,selectedItemId,itemCopies]);
-
+    console.log("finalTransactions", transactionItems);
+  }, [items, selectedItemId, itemCopies, transactionItems]);
+  
+  //REmarks
+  const handleRemarksChange = (e) => {
+    setRemarks(e.target.value);
+};
   //GENERATEUNIQUE ID FOR DELETIOPN
   function generateUniqueId() {
     return `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
@@ -36,6 +42,7 @@ const TransactionDonation = () => {
         id: generateUniqueId(), // Using generateUniqueId to create a unique ID for handling delation of single item
         item: selectedItemId.id, 
         condition: selectedCondition,
+        is_borrowed: false
       };
   
       // Add the new copy to the itemCopies array
@@ -51,7 +58,7 @@ const TransactionDonation = () => {
   // remove sinlge item in copies array 
   const handleRemoveCopy = (itemId, copyId) => {
 
-    console.log('Removing copy:', itemId, copyId);
+    // console.log('Removing copy:', itemId, copyId);
 
     const updatedCopies = itemCopies.filter((copy) => !(copy.item === itemId && copy.id === copyId));
 
@@ -61,17 +68,17 @@ const TransactionDonation = () => {
 
   //handle selected items that are in const = [items,setItems]
   const handleSelectItems = (selectedItem) => {
-    console.log(`Selected item in TransactionDonation:`, selectedItem);
+    // console.log(`Selected item in TransactionDonation:`, selectedItem);
   
     const { id, name, returnable } = selectedItem;
   
     const isItemAlreadyAdded = items.some((item) => item.id === id);
   
     if (!isItemAlreadyAdded) {
-      const selectedItemsData = { id, name, returnable ,quantity: returnable ? 0 : 1, };
+      const selectedItemsData = {id, name, returnable ,quantity: returnable ? 0 : 1, };
   
       setItems((prevItems) => [...prevItems, selectedItemsData]);
-      console.log("Current Items", items);
+      // console.log("Current Items", items);
     }
   
     document.getElementById('ChooseItems').close();
@@ -113,6 +120,138 @@ const TransactionDonation = () => {
     document.getElementById('ChooseUser').close();
   };
 
+ const authToken = Cookies.get('authToken');
+  const handleDonationSubmit = async (e) => {
+    e.preventDefault();
+   
+      
+    if (selectedUser && items.length > 0) {
+
+        //Variables
+        const createTransaction = {
+          "transaction_type": "Donation",  
+          "remarks":Remarks,  
+          "is_active": false,
+          "participant": selectedUser.user_id  
+        };
+
+        const itemsData = items.map(item => ({
+          item: item.id,
+          quantity: item.quantity
+        }));
+
+        const copies = itemCopies.map(item => ({
+          inventory: item.item,
+          is_borrowed:false,
+          condition: item.condition
+        }));
+        
+    
+        //Process
+        try {
+
+          //Step 1: Add In Inventory
+          const responseInventory = await client.post('inventory/inventories/', itemsData, {
+            headers: {
+              Authorization: `Token ${authToken}`,
+              'Content-Type': 'application/json',
+            }
+          });
+
+          if (responseInventory.status === 201) {
+            const transactionDetails = responseInventory.data.map(item => ({
+              inventory: item.id,
+              quantity: item.quantity
+            }));
+            
+            // Filter out items with returnable set to true
+            const filteredTransactionDetails = transactionDetails.filter(item => !item.returnable);
+            
+            // add the items id in transaction Items
+            setTransactionItems(filteredTransactionDetails);
+          }
+
+          //Step 2: Add Item Copies If there are item copies available
+          if (itemCopies.length > 0) {
+            try {
+              const responseItemCopy = await client.post('inventory/item-copies/', copies, {
+                headers: {
+                  Authorization: `Token ${authToken}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+              // Add the transaction item copies to the SetTransactions 
+              if (responseItemCopy.status === 201) {
+                const newItemCopies = responseItemCopy.data.item_copies.map(itemCopy => ({
+                  item: itemCopy.id,
+                }));
+            
+                setTransactionItems(prevItems => [...prevItems, ...newItemCopies]);
+              }
+            } catch (error) {
+              console.error('Error:', error);
+            }
+          }
+
+          //Step 3: Create The Transaction
+          const responseTransaction = await client.post('transactions/transactions/', createTransaction, {
+            headers: {
+              Authorization: `Token ${authToken}`,
+              'Content-Type': 'application/json',
+            }
+          });
+          
+          if (responseTransaction.status === 201) {
+            const transactionId = responseTransaction.data.id;
+            console.log("transactionId before update", transactionId);
+          
+            // Update transactionItems with transactionId
+            const updatedItems = transactionItems.map(item => ({
+              ...item,
+              transaction: transactionId,
+            }));
+            console.log("updatedItems", updatedItems);
+          
+            // Set the updatedTransactionItems in state
+            setTransactionItems(prevItems => [...prevItems, ...updatedItems]);
+          
+            console.log("transactionId after update", transactionId);
+            console.log("finalTransactions", transactionItems);
+          }
+          
+          // Step 4: Add The Transactionitems to the Transaction items Backend
+          // const responseTransactionItems = await client.post('transactions/transaction_items/', transactionItems, {
+          //   headers: {
+          //     Authorization: `Token ${authToken}`,
+          //     'Content-Type': 'application/json',
+          //   }
+          // });
+
+         
+        //   // console.log('responseInventory:', responseInventory);
+        //   // console.log('responseItemCopy:', responseItemCopy);
+        //   // console.log('responseTransaction:', responseTransaction);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+    }    
+    console.log('itemCopies:', itemCopies);
+   
+   
+    
+  
+};
+
+
+// Response.data.id;
+  
+//           // Step 2: Associate Items with the Transaction
+//           const associateItemsResponse =  associateItemsWithTransaction({
+//             transactionId,
+//             items,
+//           });
+  
+  
   return (
     <>
       <div>TransactionDonation</div>
@@ -162,8 +301,8 @@ const TransactionDonation = () => {
 
 
             <h1 className="mb-4">
+              <CreateItemProfile />
             <button className="btn" onClick={() => document.getElementById('ChooseItems').showModal()}>Choose Items</button>
-
             <div className="overflow-x-auto w-full max-h-screen">
             <table className="table w-full">
               {/* head */}
@@ -177,7 +316,7 @@ const TransactionDonation = () => {
               <tbody>
                 {items.map((item, index) => (
                   <React.Fragment key={index}>
-                    <tr>
+                    <tr className="hover">
                       <td>{item.name}</td>
                       {item.returnable ? (
                         <td>N/A</td>
@@ -210,7 +349,7 @@ const TransactionDonation = () => {
                     </tr>
                      {/* Display nested table only if the item is returnable and has matching itemCopies */}
                      {item.returnable && itemCopies.some((copy) => copy.item === item.id) && (
-                      <tr>
+                      <tr className='bg-base-200'>
                         <td colSpan="3">
                           <table className="w-full border-collapse">
                             <thead>
@@ -224,7 +363,7 @@ const TransactionDonation = () => {
                               {itemCopies
                                 .filter((copy) => copy.item === item.id)
                                 .map((filteredCopy, copyIndex) => (
-                                  <tr key={copyIndex}>
+                                  <tr key={copyIndex} className="hover">
                                     <td className="py-2 px-4 border">Copy: {copyIndex + 1}</td>
                                     <td className="py-2 px-4 border">{filteredCopy.condition}</td>
                                     <td className="py-2 px-4 border">
@@ -248,6 +387,31 @@ const TransactionDonation = () => {
             </table>
             </div>
           </h1>
+          <div>
+            <h3 className="font-bold text-lg">Remarks</h3>
+            <textarea
+                className="resize-none border rounded-md p-2 mt-2 w-full"
+                placeholder="Enter your remarks here..."
+                value={Remarks}
+                onChange={handleRemarksChange}
+            />
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             {/* Item profile Content */}
             <dialog id="ChooseItems" className="modal">
@@ -302,6 +466,7 @@ const TransactionDonation = () => {
                       <button
                         onClick={() => document.getElementById('AddCopy').close()}
                         className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+                        type='button'
                       >
                         Close
                       </button>
@@ -314,6 +479,7 @@ const TransactionDonation = () => {
            {/* Transaction MOdel CLOse */}
           <div className="modal-action">
             <form method="dialog">
+              <button className="btn btn-accent mr-2" type='button' onClick={handleDonationSubmit}>Submit</button>
               <button className="btn">Close</button>
             </form>
           </div>

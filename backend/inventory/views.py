@@ -19,7 +19,6 @@ class ItemProfilingPagination(PageNumberPagination):
     
 class ItemProfilingViewSet(viewsets.ModelViewSet):
     queryset = ItemProfiling.objects.all()
-    serializer_class = ItemProfilingSerializer
     pagination_class = ItemProfilingPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
@@ -35,6 +34,40 @@ class ItemCopyViewSet(viewsets.ModelViewSet):
     queryset = ItemCopy.objects.all()
     serializer_class = ItemCopySerializer
 
+    
+    def create(self, request, *args, **kwargs):
+        print("Received data:", request.data)
+        data_array = request.data if isinstance(request.data, list) else [request.data]
+        response_data = []
+
+        for data_item in data_array:
+            profile_item_id = data_item.get('inventory')
+
+            try:
+                inventory = Inventory.objects.get(item=profile_item_id)
+            except Inventory.DoesNotExist:
+                return Response({"error": "Inventory not found for the given item ID"}, status=status.HTTP_404_NOT_FOUND)
+
+            if not inventory.item.returnable:
+                return Response({"error": "Item is non-returnable and cannot have copies"}, status=status.HTTP_400_BAD_REQUEST)
+
+            data_item['inventory'] = inventory.id
+            response_data.append(data_item)
+
+        # Save each item copy to the database
+        saved_copies = []
+        for data_item in response_data:
+            copy_serializer = ItemCopySerializer(data=data_item)
+            if copy_serializer.is_valid():
+                copy_instance = copy_serializer.save()
+                saved_copies.append(copy_serializer.data)
+                print(f"Saved ItemCopy with ID {copy_instance.id}")
+
+        # Return a JSON response with the created item copies
+        print("Saved Item Copies:", saved_copies)
+        return Response({"item_copies": saved_copies}, status=status.HTTP_201_CREATED)
+
+
 class EditItemCopyStatusViewSet(viewsets.ModelViewSet):
     queryset = ItemCopy.objects.all()
     serializer_class = ItemCopySerializer
@@ -49,13 +82,12 @@ class InventoryPagination(PageNumberPagination):
 
 class InventoryViewSet(viewsets.ModelViewSet):
     queryset = Inventory.objects.all()
-    serializer_class = InventorySerializer
     pagination_class = InventoryPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['item__name']
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('id')
         search_query = self.request.query_params.get('search', None)
         category_filter = self.request.query_params.get('search_category', None)
 
@@ -78,15 +110,22 @@ class InventoryViewSet(viewsets.ModelViewSet):
         return InventorySerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        data_array = request.data
 
-        item_id = request.data.get("item")
-        quantity_to_add = serializer.validated_data.get("quantity", 0)
+        response_data = []
 
-        inventory_instance, created = Inventory.objects.get_or_create(item_id=item_id, defaults={"quantity": 0})
-        inventory_instance.quantity += quantity_to_add
-        inventory_instance.save()
+        for data_item in data_array:
+            serializer = self.get_serializer(data=data_item)
+            serializer.is_valid(raise_exception=True)
 
-        response_serializer = InventorySerializer(inventory_instance)
-        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+            item_id = data_item.get("item", None)  # Change here to get item_id from data_item
+            quantity_to_add = serializer.validated_data.get("quantity", 0)
+
+            inventory_instance, created = Inventory.objects.get_or_create(item_id=item_id, defaults={"quantity": 0})
+            inventory_instance.quantity += quantity_to_add
+            inventory_instance.save()
+
+            response_serializer = InventorySerializer(inventory_instance)
+            response_data.append(response_serializer.data)
+
+        return Response(response_data, status=status.HTTP_201_CREATED)

@@ -3,7 +3,6 @@ import client from '../../api/client';
 import Navbar from '../../components/wholepage/Navbar';
 import Cookies from 'js-cookie';
 import { useAuth } from '../../contexts/AuthContext';
-import CreateItemProfile from '../../components/CustomButtons/Inventory/CreateItemProfile';
 import InventoryTable from '../../components/Displaycomponents/InventoryTable';
 
 const InventoryPage = () => {
@@ -52,10 +51,6 @@ const InventoryPage = () => {
       <Navbar />
       {isDataLoaded ? (
         <>
-        <div>
-        <CreateItemProfile/>
-        
-        </div>
         <div><InventoryTable type={1}/></div>
         </>
       ) : (

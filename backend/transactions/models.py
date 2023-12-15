@@ -36,14 +36,16 @@ class Transaction(models.Model):
     
     date_created = models.DateTimeField(auto_now_add=True)
     transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
-    remarks = models.TextField()
+    remarks = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     participant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
 
 class TransactionItem(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction_items')
-    inventory_item = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=True, blank=True, related_name='transaction_items_inventory')
-    item_copy = models.ForeignKey(ItemCopy, on_delete=models.CASCADE, null=True, blank=True, related_name='transaction_items_itemcopy')
+    #for Inventory Items that are consumable
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=True, blank=True, related_name='transaction_items_inventory')
+    #for Item Copies Items that are returnable
+    item = models.ForeignKey(ItemCopy, on_delete=models.CASCADE, null=True, blank=True, related_name='transaction_items_itemcopy')
     quantity = models.PositiveIntegerField()
     return_date = models.DateField(null=True, blank=True)
         

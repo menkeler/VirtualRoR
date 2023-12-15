@@ -24,7 +24,7 @@ const InventoryProfilingTable = ({onSelectItem}) => {
           setItems(results);
           setTotalPages(Math.ceil(count / 20));
   
-          console.log(response.data);
+          // console.log(response.data);
         } catch (error) {
           console.error('Error fetching users:', error);
           setCurrentPage(1);
@@ -59,10 +59,10 @@ const InventoryProfilingTable = ({onSelectItem}) => {
 
     {/* List of names */}
         <div className="mt-4 grid gap-6 grid-cols-5">
-        {items.map((item) => (
-            <div key={item.id} className="p-6 bg-white rounded-lg shadow-md overflow-hidden">
-            <h2 className="text-lg font-semibold whitespace-nowrap mb-2">
-                {item.name}
+            {items.map((item) => (
+                <div key={item.id} className="p-6 bg-white rounded-lg shadow-md overflow-hidden">
+                <h2 className="text-lg font-semibold overflow-wrap break-word whitespace-normal mb-2">
+              {item.name}
             </h2>
 
             <figure>

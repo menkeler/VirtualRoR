@@ -23,6 +23,7 @@ class ItemCopySerializer(serializers.ModelSerializer):
         model = ItemCopy
         fields = '__all__'
 
+
 class InventoryCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory

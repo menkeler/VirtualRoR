@@ -126,6 +126,7 @@ const InventoryTable = ({type}) => {
                   )}
                 </h2>
                 <p className="text-gray-600 mb-4">Description: {item.item.description}</p>
+                <p className="text-gray-600 mb-4">Quantity: {item.quantity}</p>
                 <div className="flex justify-between items-center">
                   {item.item.category && (
                     <div className="badge bg-gray-200 text-gray-800">{item.item.category.name}</div>

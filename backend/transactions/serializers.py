@@ -26,10 +26,21 @@ class TransactionItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionItem
         fields = '__all__'
+        
+class CreateTransactionItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionItem
+        fields = '__all__'
 
 class TransactionSerializer(serializers.ModelSerializer):
-    participant = UserSerializer()  # Assuming you have a UserSerializer
+    participant = UserSerializer()  
     transaction_items = TransactionItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Transaction
+        fields = '__all__'
+        
+class CreateTransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
