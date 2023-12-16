@@ -23,8 +23,8 @@ class Inquiry(models.Model):
 
 class ReservedItem(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, related_name='reserved_items')
-    inventory_item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='reserved_items')
-    item_copy = models.ForeignKey(ItemCopy, on_delete=models.CASCADE, null=True, blank=True, related_name='reserved_items_itemcopy')
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=True, blank=True, related_name='reserved_items')
+    item = models.ForeignKey(ItemCopy, on_delete=models.CASCADE, null=True, blank=True, related_name='reserved_items_itemcopy')
     quantity = models.PositiveIntegerField()
 
 
