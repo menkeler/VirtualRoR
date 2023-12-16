@@ -7,17 +7,50 @@ import InventoryProfilingTable from '../Displaycomponents/InventoryProfilingTabl
 
 const TransactionDonation = () => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const [items , setItems] = useState([]);
+  const [items, setItems] = useState([]);
   const [itemCopies , setItemCopies] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [selectedCondition, setSelectedCondition] = useState('Good');
   const [Remarks, setRemarks] = useState('');
   const [transactionItems , setTransactionItems] = useState([]);
- 
+
+  const resetState = () => {
+    setSelectedUser(null);
+    setItems([]);
+    setItemCopies([]);
+    setSelectedItemId(null);
+    setSelectedCondition('Good');
+    setRemarks('');
+    setTransactionItems([]);
+  };
+
   useEffect(() => {
-    console.log("finalTransactions", transactionItems);
-  }, [items, selectedItemId, itemCopies, transactionItems]);
+
+    const addTransactionItems = async () => {
+
+      try {
+        // Step 4: Add The Transactionitems to the Transaction items Backend
+        const responseTransactionItems = await client.post('transactions/transaction_items/', transactionItems, {
+          headers: {
+            Authorization: `Token ${authToken}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        // Reset state after successful transaction item addition
+        resetState();
+
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
   
+    // Call the function when transactionItems state is updated Since it will only happen once at the end of the process
+    if (transactionItems.length > 0) {
+      addTransactionItems();
+    }
+
+  }, [transactionItems]); 
+
   //REmarks
   const handleRemarksChange = (e) => {
     setRemarks(e.target.value);
@@ -121,9 +154,9 @@ const TransactionDonation = () => {
   };
 
  const authToken = Cookies.get('authToken');
+ 
   const handleDonationSubmit = async (e) => {
     e.preventDefault();
-   
       
     if (selectedUser && items.length > 0) {
 
@@ -137,8 +170,11 @@ const TransactionDonation = () => {
 
         const itemsData = items.map(item => ({
           item: item.id,
-          quantity: item.quantity
+          quantity: item.quantity,
+          returnable: item.returnable,
         }));
+
+        console.log("ITEMSDATA",itemsData);
 
         const copies = itemCopies.map(item => ({
           inventory: item.item,
@@ -146,11 +182,35 @@ const TransactionDonation = () => {
           condition: item.condition
         }));
         
-    
+        let transactionId = ""
+
+        const returnableItemsWithNoCopies = items.filter(item => item.returnable && itemCopies.every(copy => copy.item !== item.id));
+
+        if (returnableItemsWithNoCopies.length > 0) {
+            // Log a warning or handle the case where returnable items have no copies
+            alert('Some returnable items have no copies. Not submitting.');
+            return;
+        }
+
+
         //Process
         try {
+        //PROBLEM IS WHEN I PUT A EMPTY RETURNABLE ITEM AN DI CREATE TRANSACTION IT CREATS
+          //Step 1: Create Transacion
+          const responseTransaction = await client.post('transactions/transactions/', createTransaction, {
+            headers: {
+              Authorization: `Token ${authToken}`,
+              'Content-Type': 'application/json',
+            }
+          });
 
-          //Step 1: Add In Inventory
+          //Get the Transaction Id from the one you created
+          if (responseTransaction.status === 201) {
+            //update the transaction id
+            transactionId = responseTransaction.data.id;
+          }
+
+          //Step 2: Add Items in Inventory
           const responseInventory = await client.post('inventory/inventories/', itemsData, {
             headers: {
               Authorization: `Token ${authToken}`,
@@ -158,12 +218,17 @@ const TransactionDonation = () => {
             }
           });
 
+          //get the respose items 
           if (responseInventory.status === 201) {
-            const transactionDetails = responseInventory.data.map(item => ({
+
+            // Filter out items with returnable set to false since handling item copies is different
+            const transactionDetails = responseInventory.data.filter(item => !item.item.returnable).map(item => ({
               inventory: item.id,
-              quantity: item.quantity
+              quantity: itemsData.find(dataItem => dataItem.item === item.item.id)?.quantity || 0,
+              transaction:transactionId
             }));
             
+            console.log("REsponve inveotr ydat",responseInventory.data)
             // Filter out items with returnable set to true
             const filteredTransactionDetails = transactionDetails.filter(item => !item.returnable);
             
@@ -171,7 +236,7 @@ const TransactionDonation = () => {
             setTransactionItems(filteredTransactionDetails);
           }
 
-          //Step 2: Add Item Copies If there are item copies available
+          //Step 3: Add Item Copies If there are item copies available
           if (itemCopies.length > 0) {
             try {
               const responseItemCopy = await client.post('inventory/item-copies/', copies, {
@@ -184,6 +249,8 @@ const TransactionDonation = () => {
               if (responseItemCopy.status === 201) {
                 const newItemCopies = responseItemCopy.data.item_copies.map(itemCopy => ({
                   item: itemCopy.id,
+                  transaction:transactionId,
+                  quantity: 1
                 }));
             
                 setTransactionItems(prevItems => [...prevItems, ...newItemCopies]);
@@ -193,64 +260,15 @@ const TransactionDonation = () => {
             }
           }
 
-          //Step 3: Create The Transaction
-          const responseTransaction = await client.post('transactions/transactions/', createTransaction, {
-            headers: {
-              Authorization: `Token ${authToken}`,
-              'Content-Type': 'application/json',
-            }
-          });
-          
-          if (responseTransaction.status === 201) {
-            const transactionId = responseTransaction.data.id;
-            console.log("transactionId before update", transactionId);
-          
-            // Update transactionItems with transactionId
-            const updatedItems = transactionItems.map(item => ({
-              ...item,
-              transaction: transactionId,
-            }));
-            console.log("updatedItems", updatedItems);
-          
-            // Set the updatedTransactionItems in state
-            setTransactionItems(prevItems => [...prevItems, ...updatedItems]);
-          
-            console.log("transactionId after update", transactionId);
-            console.log("finalTransactions", transactionItems);
-          }
-          
-          // Step 4: Add The Transactionitems to the Transaction items Backend
-          // const responseTransactionItems = await client.post('transactions/transaction_items/', transactionItems, {
-          //   headers: {
-          //     Authorization: `Token ${authToken}`,
-          //     'Content-Type': 'application/json',
-          //   }
-          // });
-
-         
-        //   // console.log('responseInventory:', responseInventory);
-        //   // console.log('responseItemCopy:', responseItemCopy);
-        //   // console.log('responseTransaction:', responseTransaction);
+          //Step 4 is at the use effect
+     
         } catch (error) {
           console.error('Error:', error);
         }
     }    
-    console.log('itemCopies:', itemCopies);
-   
-   
-    
   
 };
 
-
-// Response.data.id;
-  
-//           // Step 2: Associate Items with the Transaction
-//           const associateItemsResponse =  associateItemsWithTransaction({
-//             transactionId,
-//             items,
-//           });
-  
   
   return (
     <>

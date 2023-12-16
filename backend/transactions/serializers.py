@@ -20,8 +20,8 @@ class ReservedItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TransactionItemSerializer(serializers.ModelSerializer):
-    inventory_item = InventorySerializer()
-    item_copy = ItemCopySerializer()
+    inventory = InventorySerializer()
+    item= ItemCopySerializer()
 
     class Meta:
         model = TransactionItem

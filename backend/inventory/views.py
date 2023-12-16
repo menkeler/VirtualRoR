@@ -110,22 +110,19 @@ class InventoryViewSet(viewsets.ModelViewSet):
         return InventorySerializer
 
     def create(self, request, *args, **kwargs):
-        data_array = request.data
-
         response_data = []
 
-        for data_item in data_array:
+        for data_item in request.data:
             serializer = self.get_serializer(data=data_item)
             serializer.is_valid(raise_exception=True)
 
-            item_id = data_item.get("item", None)  # Change here to get item_id from data_item
+            item_id = data_item.get("item")
             quantity_to_add = serializer.validated_data.get("quantity", 0)
 
             inventory_instance, created = Inventory.objects.get_or_create(item_id=item_id, defaults={"quantity": 0})
             inventory_instance.quantity += quantity_to_add
             inventory_instance.save()
 
-            response_serializer = InventorySerializer(inventory_instance)
-            response_data.append(response_serializer.data)
+            response_data.append(InventorySerializer(inventory_instance).data)
 
         return Response(response_data, status=status.HTTP_201_CREATED)
