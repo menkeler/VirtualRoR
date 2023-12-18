@@ -4,7 +4,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import client from '../../api/client';
 
 function UserProfilePage() {
-  const { isLoggedIn, userData, fetchData } = useAuth();
+  
+  const {isLoggedIn, userData, fetchData } = useAuth();
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     first_name: userData.user.first_name,
@@ -124,13 +125,10 @@ function UserProfilePage() {
             )}
           </h2>
 
-          {/* Display Client if the Role is Empty for the User */}
-          {userData.user.staff && userData.user.staff.position !== null && (
-            <h2 className="card-title">Role: {userData.user.staff.position}</h2>
-          )}
-          {(!userData.user.staff || userData.user.staff.position === null) && (
-            <h2 className="card-title">Role: Client</h2>
-          )}
+          {/* Display Role */}
+          <h2 className="card-title">
+            Role: {userData.user.staff?.position || 'Client'}
+          </h2>
 
           <div className="card-actions justify-end">
             {editing ? (

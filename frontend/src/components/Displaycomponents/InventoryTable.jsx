@@ -42,7 +42,7 @@ const InventoryTable = ({type}) => {
         setTotalPages(Math.ceil(count / 30));
 
         // console.log(response.data);
-        console.log(selectedCategory);
+        // console.log(selectedCategory);
       } catch (error) {
         console.error('Error fetching items:', error);
         setCurrentPage(1);
@@ -122,16 +122,16 @@ const InventoryTable = ({type}) => {
                   {item.item.returnable ? (
                     <span className="badge bg-blue-500 text-white ml-2">Borrowable</span>
                   ) : (
-                    <span className="badge bg-gray-500 text-white ml-2">Consumable</span>
+                    <span className="badge bg-accent text-white ml-2">Consumable</span>
                   )}
                 </h2>
                 <p className="text-gray-600 mb-4">Description: {item.item.description}</p>
                 <p className="text-gray-600 mb-4">Quantity: {item.quantity}</p>
                 <div className="flex justify-between items-center">
                   {item.item.category && (
-                    <div className="badge bg-gray-200 text-gray-800">{item.item.category.name}</div>
+                    <div className="badge bg-info text-gray-800">{item.item.category.name}</div>
                   )}
-                  {item.item.returnable && (<button>ViewCopies</button>)}
+                  {item.item.returnable && (<button className="btn btn-outline btn-info">ViewCopies</button>)}
                   
                 </div>
               </div>

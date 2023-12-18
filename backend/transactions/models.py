@@ -20,6 +20,9 @@ class Inquiry(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     date_preferred = models.DateField()
     date_created = models.DateTimeField(auto_now_add=True)
+    
+class InquiryReply(models.Model):
+    message = models.TextField()
 
 class ReservedItem(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, related_name='reserved_items')

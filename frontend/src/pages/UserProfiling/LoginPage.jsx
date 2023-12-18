@@ -1,5 +1,6 @@
     import React from 'react';
     import Navbar from '../../components/wholepage/Navbar';
+    
     function LoginPage() {
     
     return (

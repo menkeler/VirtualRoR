@@ -8,4 +8,6 @@ router.register('transactions', views.TransactionViewSet, basename='transaction'
 router.register('inquiries_item', views.ReservedItemViewSet, basename='single_transaction')
 router.register('transaction_items', views.TransactionItemViewSet, basename='transaction_item')
 
-urlpatterns = router.urls
+urlpatterns = router.urls + [
+    path('confirm_reservation/<int:inquiry_id>/', views.confirm_reservation, name='confirm_reservation'),
+]

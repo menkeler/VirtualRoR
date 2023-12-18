@@ -55,31 +55,52 @@ const UsersTable = ({ type, user, onSelectUser }) => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search users..."
+              className="p-2 mb-4 border rounded-md"
             />
     
             {/* Table */}
             <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-300">
+              <table className="table min-w-full bg-white border border-gray-300">
                 {/* Head */}
-                <thead className="bg-green-200">
+                <thead className="bg-green-500 text-white">
                   <tr>
-                    <th className="py-2 px-4 border-b">User ID</th>
-                    <th className="py-2 px-4 border-b">Name</th>
-                    <th className="py-2 px-4 border-b">Email</th>
-                    <th className="py-2 px-4 border-b">Department</th>
-                    <th className="py-2 px-4 border-b">Role</th>
+                    <th className="py-3 px-4 border-b">User ID</th>
+                    <th className="py-3 px-4 border-b">Name</th>
+                    <th className="py-3 px-4 border-b">Email</th>
+                    <th className="py-3 px-4 border-b">Department</th>
+                    <th className="py-3 px-4 border-b">Role</th>
+                    <th className="py-3 px-4 border-b"></th>
                   </tr>
                 </thead>
-                {/* Body */}
+               {/* Body */}
                 <tbody>
                   {users.map((user) => (
                     <React.Fragment key={user.user_id}>
                       <tr className="hover:bg-green-50">
-                        <td className="py-2 px-4 border-b">{user.user_id}</td>
-                        <td className="py-2 px-4 border-b">{user.first_name} {user.last_name}</td>
+                        <td>{user.user_id}</td>
+                        <td className="py-2 px-4 border-b">
+                          <div className="flex items-center gap-3">
+                            <div className="avatar">
+                              <div className="mask mask-squircle w-12 h-12">
+                                {/* UPDATE IMAGES NEXT IME */}
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg" alt="Avatar" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="font-bold">{user.first_name} {user.last_name}</div>
+                            </div>
+                          </div>
+                        </td>
                         <td className="py-2 px-4 border-b">{user.email}</td>
                         <td className="py-2 px-4 border-b">{user.department}</td>
-                        <td className="py-2 px-4 border-b">{user.staff && user.staff.position !== null ? user.staff.position : 'Client'}</td>
+                        <td className="py-2 px-4 border-b">
+                          <span className="badge badge-primary badge-lg">{user.staff && user.staff.position !== null ? user.staff.position : 'Client'}</span>
+                        </td>
+                        <th className="py-2 px-4 border-b">
+
+                          {/* ADD PROFILE CHECKER NEXTTIME */}
+                          <button className="btn btn-ghost btn-xs">details</button>
+                        </th>
                       </tr>
                     </React.Fragment>
                   ))}
@@ -88,7 +109,7 @@ const UsersTable = ({ type, user, onSelectUser }) => {
             </div>
     
             {/* Pagination controls */}
-            <div className="join">
+            <div className="join mt-4">
               <button className="join-item btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
                 «
               </button>

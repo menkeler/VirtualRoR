@@ -6,7 +6,7 @@ function Home() {
 return (
     <>
         <Navbar />
-        <div className="hero min-h-screen bg-base-200">
+        <div className="hero min-h-screen bg-gray-200">
         
         </div>
         <Footer />

@@ -415,22 +415,6 @@ const TransactionDonation = () => {
             />
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             {/* Item profile Content */}
             <dialog id="ChooseItems" className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
