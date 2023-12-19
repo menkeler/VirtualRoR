@@ -42,13 +42,19 @@ class ItemCopy(models.Model):
         return f"{self.inventory.item.name} - Condition: {self.condition}, Borrowed: {self.is_borrowed}"
 
 
+        
 @receiver(post_save, sender=ItemCopy)
-def update_inventory_quantity_on_save(sender, instance, **kwargs):
+def update_inventory_quantity_on_save(sender, instance, created, **kwargs):
     """
     Signal handler to update Inventory quantity when a new ItemCopy is saved.
     """
-    if instance.inventory.item.returnable and not instance.is_borrowed:
-        instance.inventory.quantity += 1
+    if instance.inventory.item.returnable:
+        if created or (not instance.is_borrowed):
+            # Increment quantity if it's a new ItemCopy or is_borrowed changed to False
+            instance.inventory.quantity += 1
+        elif instance.is_borrowed:
+            # Decrement quantity if is_borrowed is True
+            instance.inventory.quantity -= 1
         instance.inventory.save()
         
 @receiver(post_delete, sender=ItemCopy)
@@ -56,6 +62,6 @@ def update_inventory_quantity_on_delete(sender, instance, **kwargs):
     """
     Signal handler to update Inventory quantity when an ItemCopy is deleted.
     """
-    if instance.inventory.item.returnable and not instance.is_borrowed:
+    if instance.inventory.item.returnable and not instance.is_borrowed: 
         instance.inventory.quantity -= 1
         instance.inventory.save()

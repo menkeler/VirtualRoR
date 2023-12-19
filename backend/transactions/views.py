@@ -75,21 +75,73 @@ def confirm_reservation(request, inquiry_id):
         # Process each reserved item
         for reserved_item in inquiry.reserved_items.all():
             # Check if the item is an ItemCopy
-            if hasattr(reserved_item, 'item'):
+            if hasattr(reserved_item, 'item') and reserved_item.item:
                 # Update is_borrowed status to True
                 reserved_item.item.is_borrowed = True
                 reserved_item.item.save()
-
-            else:
+            elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
+                # Check if the item is related to an inventory item and it exists
+                
                 # Calculate the available quantity to reserve
                 available_quantity = min(reserved_item.inventory.quantity, reserved_item.quantity)
 
                 # Update the inventory quantity
                 reserved_item.inventory.quantity -= available_quantity
-                reserved_item.inventory.save()
+                reserved_item.inventory.save()  
 
         # Serialize the updated inquiry
         serializer = InquirySerializer(inquiry)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     return Response({'detail': 'Reservation cannot be confirmed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def process_transaction(request, inquiry_id):
+    # Retrieve the inquiry
+    inquiry = get_object_or_404(Inquiry, pk=inquiry_id)
+
+    # Check if the inquiry is of type 'Reservation' and has a status of 'Accepted'
+    if inquiry.inquiry_type == 'Reservation' and inquiry.status == 'Accepted':
+        # Extract additional data from the request body
+        remarks = request.data.get('remarks', '')
+
+        # Create a Transaction with the participant as the inquirer
+        transaction = Transaction.objects.create(
+            inquiry=inquiry,
+            participant=inquiry.inquirer,
+            transaction_type='Release',
+            remarks=remarks
+        )
+
+        # Process each reserved item in the transaction
+        for reserved_item in inquiry.reserved_items.all():
+            # Create a transaction item based on the reserved item type
+            if hasattr(reserved_item, 'item'):
+                # For ItemCopy
+                transaction_item = TransactionItem.objects.create(
+                    transaction=transaction,
+                    item=reserved_item.item,
+                    quantity=1,
+                    status="Active" 
+                )
+            else:
+                # For regular Inventory item
+                transaction_item = TransactionItem.objects.create(
+                    transaction=transaction,
+                    inventory=reserved_item.inventory,
+                    quantity=reserved_item.quantity,
+                    status="Consumable" 
+                )
+
+        # Update the inquiry status to 'Processed'
+        inquiry.status = 'Processed'
+        inquiry.save()
+
+        # Clear reserved items
+        inquiry.reserved_items.all().delete()
+
+
+        # Return a response indicating a successful transaction
+        return Response({'detail': 'Transaction processed successfully.'}, status=status.HTTP_200_OK)
+
+    return Response({'detail': 'Transaction cannot be processed.'}, status=status.HTTP_400_BAD_REQUEST)

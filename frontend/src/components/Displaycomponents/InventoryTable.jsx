@@ -37,7 +37,7 @@ const InventoryTable = ({type}) => {
         });
 
         const { results, count } = response.data;
-
+        console.log(results)
         setInventory(results);
         setTotalPages(Math.ceil(count / 30));
 
@@ -131,8 +131,53 @@ const InventoryTable = ({type}) => {
                   {item.item.category && (
                     <div className="badge bg-info text-gray-800">{item.item.category.name}</div>
                   )}
-                  {item.item.returnable && (<button className="btn btn-outline btn-info">ViewCopies</button>)}
+                  {item.item.returnable && (<button className="btn btn-outline btn-info" onClick={() => document.getElementById(`Copiesof${item.id}`).showModal()}>View Copies</button>)}
                   
+                  <dialog id={`Copiesof${item.id}`} className="modal">item
+                    <div className="modal-box">
+                      <h3 className="font-bold text-lg">Item Copies</h3>
+                      <p className="py-4">Available Copies</p>
+
+                        {/* Display the item.item_copies in a list */}
+                        <div className="overflow-x-auto">
+                        <table className="min-w-full bg-white border border-gray-300">
+                          {/* head */}
+                          <thead className="bg-gray-200">
+                            <tr>
+                              <th className="py-2 px-4 border-b">ID</th>
+                              <th className="py-2 px-4 border-b">Condition</th>
+                              <th className="py-2 px-4 border-b">Status</th>
+                              <th className="py-2 px-4 border-b"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {/* rows */}
+                            {item.item_copies.map((copy, index) => (
+                              <tr key={index} className={(index % 2 === 0) ? 'bg-gray-100' : ''}>
+                                <td className="py-2 px-4 border-b">{copy.id}</td>
+                                <td className="py-2 px-4 border-b">{copy.condition}</td>
+                                <td className="py-2 px-4 border-b">
+                                  {copy.is_borrowed ? (
+                                    <span className="bg-red-500 text-white py-1 px-2 rounded-full">Borrowed</span>
+                                  ) : (
+                                    <span className="bg-green-500 text-white py-1 px-2 rounded-full">Available</span>
+                                  )}
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  <button className="btn btn-accent">Borrow</button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        </div>
+                      <div className="modal-action">
+                        <form method="dialog">
+                          <button className="btn" onClick={() => document.getElementById(`Copiesof${item.id}`).close()}>Close</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
                 </div>
               </div>
             </div>

@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,viewsets, filters
 from .models import Category, ItemProfiling, ItemCopy, Inventory
-from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer, InventorySerializer,InventoryCreateSerializer,ItemProfilingCreateSerializer
+from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer,ItemCopyCreateSerializer, InventorySerializer,InventoryCreateSerializer,ItemProfilingCreateSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -32,9 +32,12 @@ class ItemProfilingViewSet(viewsets.ModelViewSet):
 
 class ItemCopyViewSet(viewsets.ModelViewSet):
     queryset = ItemCopy.objects.all()
-    serializer_class = ItemCopySerializer
-
     
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return ItemCopyCreateSerializer
+        return ItemCopySerializer
+
     def create(self, request, *args, **kwargs):
         print("Received data:", request.data)
         data_array = request.data if isinstance(request.data, list) else [request.data]
@@ -57,7 +60,7 @@ class ItemCopyViewSet(viewsets.ModelViewSet):
         # Save each item copy to the database
         saved_copies = []
         for data_item in response_data:
-            copy_serializer = ItemCopySerializer(data=data_item)
+            copy_serializer = self.get_serializer(data=data_item)
             if copy_serializer.is_valid():
                 copy_instance = copy_serializer.save()
                 saved_copies.append(copy_serializer.data)

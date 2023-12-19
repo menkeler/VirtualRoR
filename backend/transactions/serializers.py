@@ -35,7 +35,7 @@ class InquiryCreateSerializer(serializers.ModelSerializer):
 class TransactionItemSerializer(serializers.ModelSerializer):
     inventory = InventorySerializer()
     item= ItemCopySerializer()
-
+    
     class Meta:
         model = TransactionItem
         fields = '__all__'

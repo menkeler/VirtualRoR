@@ -170,6 +170,9 @@ const TransactionDonation = () => {
 
         const itemsData = items.map(item => ({
           item: item.id,
+          itemDetails: {
+            ...item.item,
+          },
           quantity: item.quantity,
           returnable: item.returnable,
         }));
@@ -178,8 +181,8 @@ const TransactionDonation = () => {
 
         const copies = itemCopies.map(item => ({
           inventory: item.item,
-          is_borrowed:false,
-          condition: item.condition
+          is_borrowed: false,
+          condition: item.condition,
         }));
         
         let transactionId = ""
@@ -224,8 +227,11 @@ const TransactionDonation = () => {
             // Filter out items with returnable set to false since handling item copies is different
             const transactionDetails = responseInventory.data.filter(item => !item.item.returnable).map(item => ({
               inventory: item.id,
+              itemDetails: {
+                ...item.item,
+              },
               quantity: itemsData.find(dataItem => dataItem.item === item.item.id)?.quantity || 0,
-              transaction:transactionId
+              transaction: transactionId
             }));
             
             console.log("REsponve inveotr ydat",responseInventory.data)
@@ -233,7 +239,7 @@ const TransactionDonation = () => {
             const filteredTransactionDetails = transactionDetails.filter(item => !item.returnable);
             
             // add the items id in transaction Items
-            setTransactionItems(filteredTransactionDetails);
+            setTransactionItems(filteredTransactionDetails);  
           }
 
           //Step 3: Add Item Copies If there are item copies available
@@ -248,10 +254,10 @@ const TransactionDonation = () => {
               // Add the transaction item copies to the SetTransactions 
               if (responseItemCopy.status === 201) {
                 const newItemCopies = responseItemCopy.data.item_copies.map(itemCopy => ({
-                  item: itemCopy.id,
-                  transaction:transactionId,
-                  quantity: 1
-                }));
+                  item: itemCopy.id,  
+                  transaction: transactionId,
+                  quantity: 1,
+                }))
             
                 setTransactionItems(prevItems => [...prevItems, ...newItemCopies]);
               }

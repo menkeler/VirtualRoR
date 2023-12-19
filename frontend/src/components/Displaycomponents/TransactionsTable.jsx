@@ -88,7 +88,84 @@ const TransactionsTable = () => {
                 {transaction.is_active ? 'Active' : 'Completed'}
               </td>
               <td className="py-2 px-2 border-b">
-                <button className="btn btn-outline btn-info mx-auto block">Details</button>
+                <button className="btn btn-outline btn-info" onClick={() => document.getElementById(`Detail${transaction.id}`).showModal()}>Details</button>
+
+                {/* MODAL */}
+                  <dialog id={`Detail${transaction.id}`} className="modal">
+                    <div className="modal-box">
+                      
+                      
+                      <div className="flex w-full">
+                        <div className="flex-grow card rounded-box place-items-center">
+                          {/* Transaction Details */}
+                          <h3 className="font-bold text-lg mb-4">Transaction Details</h3>
+                          <div className="mb-2">{transaction.id}</div>
+                          <div className="mb-2">{new Date(transaction.date_created).toLocaleDateString()}</div>
+                          <div className="mb-2">{transaction.transaction_type}</div>
+                          <div className="mb-2">
+                          {transaction.is_active ? (
+                            <span className="bg-green-500 text-white px-2 py-1 rounded-full">Active</span>
+                          ) : (
+                            <span className="bg-yellow-500 text-white px-2 py-1 rounded-full">Completed</span>
+                          )}
+                        </div>
+                        </div>
+                        <div className="flex items-center mx-4 text-gray-500"></div>
+                        <div className="flex-grow card rounded-box place-items-center">
+                          {/* User Details */}
+                          <h3 className="font-bold text-lg mb-4">Client Details</h3>
+                          <div className="mb-2">{transaction.participant.first_name} {transaction.participant.last_name}</div>
+                          <div className="mb-2">{transaction.participant.department}</div>
+                          <div className="mb-2">
+                            {transaction.participant.staff ? transaction.participant.staff.position : 'Client'}
+                          </div>
+                          <div className="mb-2">{transaction.participant.email}</div>
+                          <div className="mb-2">{transaction.participant.contact}</div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                      <h3 className="font-bold text-lg mb-4">Transaction Items</h3>
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full bg-white border border-gray-300">
+                            {/* Head */}
+                            <thead className="bg-gray-200">
+                              <tr>
+                                <th className="py-2 px-4 border-b">Name</th>
+                                <th className="py-2 px-4 border-b">Type</th>
+                                <th className="py-2 px-4 border-b">Quantity/Condition</th>
+                              </tr>
+                            </thead>
+                            {/* Body */}
+                            <tbody>
+                              {/* Rows */}
+                              {transaction.transaction_items.map((item, index) => (
+                                <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
+                                  <td className="py-2 px-4 border-b">
+                                    {item.inventory && item.inventory.item ? item.inventory.item.name : item.item.inventory.itemprofiling.item_name}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {item.item
+                                      ? 'Borrowable'
+                                      : 'Consumable'}
+                                  </td>
+                                  <td className="py-2 px-4 border-b">
+                                    {item.item ? item.item.condition : item.quantity}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div className="modal-action">
+                        <form method="dialog">
+                          <button className="btn" onClick={() => document.getElementById(`Detail${transaction.id}`).close()}>Close</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
+
               </td>     
             </tr>
           ))}

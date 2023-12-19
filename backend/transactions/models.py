@@ -13,6 +13,7 @@ class Inquiry(models.Model):
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected'),
         ('Cancelled', 'Cancelled'),
+        ('Processed', 'Processed'),
     ]
     inquirer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='inquiries')
     message = models.TextField()
@@ -42,8 +43,14 @@ class Transaction(models.Model):
     remarks = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     participant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
+    inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, null=True, blank=True)
 
 class TransactionItem(models.Model):
+    TRANSACTION_ITEM_STATUS = [
+        ('Active', 'Active'),
+        ('Returned', 'Returned'),
+        ('Consumable', 'Consumable'),
+    ]
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction_items')
     #for Inventory Items that are consumable
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=True, blank=True, related_name='transaction_items_inventory')
@@ -51,4 +58,4 @@ class TransactionItem(models.Model):
     item = models.ForeignKey(ItemCopy, on_delete=models.CASCADE, null=True, blank=True, related_name='transaction_items_itemcopy')
     quantity = models.PositiveIntegerField()
     return_date = models.DateField(null=True, blank=True)
-        
+    status = models.CharField(max_length=10, choices=TRANSACTION_ITEM_STATUS, null=True, blank=True)
