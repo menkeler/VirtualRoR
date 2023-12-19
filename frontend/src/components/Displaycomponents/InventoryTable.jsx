@@ -11,7 +11,7 @@ const InventoryTable = ({type}) => {
   const [categoryData, setCategoryData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFetching, setIsFetching] = useState(false);
-
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -23,6 +23,33 @@ const InventoryTable = ({type}) => {
       }
     };
 
+    const addToCart = (itemId) => {
+      // Get the existing cart items from session storage
+      const existingCartItems = JSON.parse(sessionStorage.getItem('cartItems')) || [];
+  
+      // Check if the item is already in the cart
+      const itemInCart = existingCartItems.find((item) => item.id === itemId);
+  
+      if (!itemInCart) {
+        // If the item is not in the cart, add it
+        const newItem = {
+          id: itemId,
+          // Add other item details if needed
+        };
+  
+        existingCartItems.push(newItem);
+  
+        // Save the updated cart items to session storage
+        sessionStorage.setItem('cartItems', JSON.stringify(existingCartItems));
+  
+        // Provide feedback to the user if needed
+        console.log(`Item ${itemId} added to the cart`);
+      } else {
+        // Provide feedback if the item is already in the cart
+        console.log(`Item ${itemId} is already in the cart`);
+      }
+    };
+    
     const fetchItems = async (page,category) => {
       try {
         setIsFetching(true);
@@ -127,10 +154,12 @@ const InventoryTable = ({type}) => {
                 </h2>
                 <p className="text-gray-600 mb-4">Description: {item.item.description}</p>
                 <p className="text-gray-600 mb-4">Quantity: {item.quantity}</p>
+               
                 <div className="flex justify-between items-center">
                   {item.item.category && (
                     <div className="badge bg-info text-gray-800">{item.item.category.name}</div>
                   )}
+                  <button className="btn  btn-accent" >Add to Cart</button>
                   {item.item.returnable && (<button className="btn btn-outline btn-info" onClick={() => document.getElementById(`Copiesof${item.id}`).showModal()}>View Copies</button>)}
                   
                   <dialog id={`Copiesof${item.id}`} className="modal">item

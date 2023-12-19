@@ -87,47 +87,47 @@ const TransactionsTable = () => {
               <td className={`py-2 px-4 border-b text-center ${!transaction.is_active ? 'bg-green-200' : ''}`}>
                 {transaction.is_active ? 'Active' : 'Completed'}
               </td>
-              <td className="py-2 px-2 border-b">
+              <td className="py-2 px-2 border-b text-center ">
                 <button className="btn btn-outline btn-info" onClick={() => document.getElementById(`Detail${transaction.id}`).showModal()}>Details</button>
 
                 {/* MODAL */}
                   <dialog id={`Detail${transaction.id}`} className="modal">
                     <div className="modal-box">
                       
-                      
-                      <div className="flex w-full">
-                        <div className="flex-grow card rounded-box place-items-center">
-                          {/* Transaction Details */}
+                    <div className="flex w-full">
+                        {/* Transaction Details */}
+                        <div className="flex-grow card rounded-box place-items-center p-6">
                           <h3 className="font-bold text-lg mb-4">Transaction Details</h3>
-                          <div className="mb-2">{transaction.id}</div>
-                          <div className="mb-2">{new Date(transaction.date_created).toLocaleDateString()}</div>
-                          <div className="mb-2">{transaction.transaction_type}</div>
+                          <div className="mb-2">ID: {transaction.id}</div>
+                          <div className="mb-2">Date: {new Date(transaction.date_created).toLocaleDateString()}</div>
+                          <div className="mb-2">Type: {transaction.transaction_type}</div>
                           <div className="mb-2">
-                          {transaction.is_active ? (
-                            <span className="bg-green-500 text-white px-2 py-1 rounded-full">Active</span>
-                          ) : (
-                            <span className="bg-yellow-500 text-white px-2 py-1 rounded-full">Completed</span>
-                          )}
-                        </div>
-                        </div>
-                        <div className="flex items-center mx-4 text-gray-500"></div>
-                        <div className="flex-grow card rounded-box place-items-center">
-                          {/* User Details */}
-                          <h3 className="font-bold text-lg mb-4">Client Details</h3>
-                          <div className="mb-2">{transaction.participant.first_name} {transaction.participant.last_name}</div>
-                          <div className="mb-2">{transaction.participant.department}</div>
-                          <div className="mb-2">
-                            {transaction.participant.staff ? transaction.participant.staff.position : 'Client'}
+                            {transaction.is_active ? (
+                              <span className="bg-green-500 text-white px-2 py-1 rounded-full">Active</span>
+                            ) : (
+                              <span className="bg-yellow-500 text-white px-2 py-1 rounded-full">Completed</span>
+                            )}
                           </div>
-                          <div className="mb-2">{transaction.participant.email}</div>
-                          <div className="mb-2">{transaction.participant.contact}</div>
+                        </div>
+
+                        <div className="flex items-center mx-4 text-gray-500"></div>
+
+                        {/* User Details */}
+                        <div className="flex-grow card rounded-box place-items-center p-6">
+                          <h3 className="font-bold text-lg mb-4">Client Details</h3>
+                          <div className="mb-2">Name: {transaction.participant.first_name} {transaction.participant.last_name}</div>
+                          <div className="mb-2">Department: {transaction.participant.department}</div>
+                          <div className="mb-2">
+                            Position: {transaction.participant.staff ? transaction.participant.staff.position : 'Client'}
+                          </div>
+                          <div className="mb-2">Email: {transaction.participant.email}</div>
+                          <div className="mb-2">Contact: {transaction.participant.contact}</div>
                         </div>
                       </div>
-
                       <div className="flex flex-col w-full">
                       <h3 className="font-bold text-lg mb-4">Transaction Items</h3>
                         <div className="overflow-x-auto">
-                          <table className="min-w-full bg-white border border-gray-300">
+                          <table className="min-w-full mb-5 bg-white border border-gray-300">
                             {/* Head */}
                             <thead className="bg-gray-200">
                               <tr>
@@ -157,6 +157,12 @@ const TransactionsTable = () => {
                             </tbody>
                           </table>
                         </div>
+                      </div>
+                      <div className="flex flex-col w-full">
+                      <div className="border rounded p-4 bg-gray-100">
+                        <h3 className="font-bold text-lg mb-4">Remarks</h3>
+                        <p className="text-gray-800">{transaction.remarks ? transaction.remarks:"No Remarks"}</p>
+                      </div>
                       </div>
                       <div className="modal-action">
                         <form method="dialog">
