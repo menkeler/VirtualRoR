@@ -142,9 +142,14 @@ function LoginButton() {
           <button onClick={submitLogout}>Logout</button>
         </>
       ) : (
-        <div className="btn btn-accent">
-          <button onClick={Login}>Login with Google</button>
-        </div>
+        <div className="flex items-center justify-center">
+        <button
+          onClick={Login}
+          className="bg-accent hover:bg-primary text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+        >
+          Login with Google
+        </button>
+      </div>
       )}
     </div>
   );

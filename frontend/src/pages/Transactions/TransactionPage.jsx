@@ -8,7 +8,7 @@ import InquiryDonation from '../../components/Forms/InquiryDonation';
 
 import InquiryTable from '../../components/Displaycomponents/InquiryTable';
 import TransactionsTable from '../../components/Displaycomponents/TransactionsTable';
-import InquiryResevation from '../../components/Forms/InquiryResevation';
+
 const TransactionPage = () => {
 
    
@@ -18,7 +18,6 @@ const TransactionPage = () => {
 
       <InquiryDonation/>
       <TransactionDonation/>
-      <InquiryResevation/>
 
 
 
