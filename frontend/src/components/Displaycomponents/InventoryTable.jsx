@@ -14,20 +14,31 @@ const InventoryTable = ({type}) => {
   const [categoryData, setCategoryData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFetching, setIsFetching] = useState(false);
-  const { dispatch } = useCart();
+  const { state, dispatch } = useCart();
 
 
 
-  const addToCart = (itemId, itemName) => {
-    const payload = {
-      id: itemId,
-      name: itemName,
-      quantity: 1,
-    };
-
-    dispatch({ type: 'ADD_TO_CART', payload });
-  };
+  const addToCart = (inventoryId, itemName, itemId, maxquantity) => {
+    // Check if the item with the same id already exists in the cart
+    const itemExists = state.cartItems.some(item => item.inventory !== null && item.inventory === inventoryId);
+    const copyExists = state.cartItems.some(item => item.item !== null && item.item === itemId);
   
+    if (!itemExists && !copyExists) {
+      const payload = {
+        inventory: inventoryId,
+        item: itemId,
+        name: itemName,
+        quantity: 1,
+        maxquantity:maxquantity,
+        // nextime add image here
+      };
+  
+      dispatch({ type: 'ADD_TO_CART', payload });
+    } else {
+      console.log(`Item with id ${itemId} is already in the cart`);
+    }
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -148,8 +159,15 @@ const InventoryTable = ({type}) => {
                   {item.item.category && (
                     <div className="badge bg-info text-gray-800">{item.item.category.name}</div>
                   )}
-                  <button onClick={() => addToCart(item.id, item.item.name)}>Add to Cart</button>
-                  {item.item.returnable && (<button className="btn btn-outline btn-info" onClick={() => document.getElementById(`Copiesof${item.id}`).showModal()}>View Copies</button>)}
+                  {!item.item.returnable && item.quantity > 0 &&(<button className="btn btn-outline btn-primary" onClick={() => addToCart(item.id, item.item.name,null,item.quantity)}>Add to Cart</button>)}
+                  { item.quantity <= 0 && (
+                    <div className="py-4">
+                      <span className="inline-block bg-red-500 text-white px-3 py-1 rounded-full uppercase text-xs font-semibold">
+                        Out of stock
+                      </span>
+                    </div>
+                  )}
+                  {item.item.returnable && item.quantity > 0&&(<button className="btn btn-outline btn-info" onClick={() => document.getElementById(`Copiesof${item.id}`).showModal()}>View Copies</button>)}
                   
                   <dialog id={`Copiesof${item.id}`} className="modal">item
                     <div className="modal-box">
@@ -182,7 +200,7 @@ const InventoryTable = ({type}) => {
                                   )}
                                 </td>
                                 <td className="py-2 px-4 border-b">
-                                  <button className="btn btn-accent">Borrow</button>
+                                  <button className="btn btn-outline btn-primary" onClick={() => addToCart(null, item.item.name + ' ID: ' + copy.id,copy.id,1)}>Add to Cart</button>
                                 </td>
                               </tr>
                             ))}

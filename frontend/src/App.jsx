@@ -9,6 +9,7 @@ import AdminDashBoard from './pages/UserProfiling/AdminDashBoard';
 import InventoryPage from './pages/InventoryProfiling/InventoryPage';
 import AllUsersPage from './pages/UserProfiling/AllUsersPage';
 import TransactionPage from './pages/Transactions/TransactionPage';
+import CartPage from './pages/Transactions/CartPage';
 function App() {
   const { isLoggedIn } = useAuth();
 
@@ -24,6 +25,7 @@ function App() {
           <>
             <Route path="home" element={<Home />} />
             <Route path="inventory" element={<InventoryPage />} />
+            <Route path="Cart" element={<CartPage />} />
             <Route path = "/admin/dashboard" element = {<AdminDashBoard />} />
             <Route path="profile" element={<UserProfilePage />} />
             <Route path="Allusers" element={<AllUsersPage />} />

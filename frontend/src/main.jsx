@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
       <CartProvider>
         <App />
-      </CartProvider>,
+      </CartProvider>
       </AuthProvider>
     </GoogleOAuthProvider>
   </React.StrictMode>,

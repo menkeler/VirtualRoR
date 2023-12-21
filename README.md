@@ -47,4 +47,5 @@ npm install react-select react-window
 npm i react-select-virtualized
 npm install react@latest react-virtualized@latest
 npm i patch-package 
+npm install crypto-js
 ```
