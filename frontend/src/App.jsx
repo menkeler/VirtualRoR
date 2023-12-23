@@ -10,6 +10,7 @@ import InventoryPage from './pages/InventoryProfiling/InventoryPage';
 import AllUsersPage from './pages/UserProfiling/AllUsersPage';
 import TransactionPage from './pages/Transactions/TransactionPage';
 import CartPage from './pages/Transactions/CartPage';
+import InquiryPage from './pages/Transactions/InquiryPage';
 function App() {
   const { isLoggedIn } = useAuth();
 
@@ -23,13 +24,14 @@ function App() {
         {isLoggedIn ? (
           // Paths under here are only accessible when logged in
           <>
-            <Route path="home" element={<Home />} />
-            <Route path="inventory" element={<InventoryPage />} />
+            <Route path="Home" element={<Home />} />
+            <Route path="Inventory" element={<InventoryPage />} />
             <Route path="Cart" element={<CartPage />} />
             <Route path = "/admin/dashboard" element = {<AdminDashBoard />} />
-            <Route path="profile" element={<UserProfilePage />} />
-            <Route path="Allusers" element={<AllUsersPage />} />
+            <Route path="Profile" element={<UserProfilePage />} />
+            <Route path="AllUsers" element={<AllUsersPage />} />
             <Route path="Transactions" element={<TransactionPage />} />
+            <Route path="Inquiry" element={<InquiryPage />} />
           </>
         ) : (
           // Redirect to login if not logged in

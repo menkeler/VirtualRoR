@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import Navbar from '../../components/wholepage/Navbar';
+import Cookies from 'js-cookie';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -12,8 +13,7 @@ const CartPage = () => {
   const [message, setMessage] = useState('');
   const [datePreferred, setDatePreferred] = useState('');
   const {userData} = useAuth();
-  const [items, setItems] = useState([]);
-  const [inquiryItems , setInquiryItems] = useState([]);
+
 
   
 //Cart Functions----------------------------------------------------------------
@@ -52,15 +52,70 @@ const CartPage = () => {
 
 
 
-const handleSubmit = (e) => {
+const handleSubmit = async (e)  => {
   e.preventDefault();
-
+  const authToken = Cookies.get('authToken');
     if (message && datePreferred) {
         // Log the data to the console
-        console.log('Message:', message);
-        console.log('Date Preferred:', datePreferred);
-        console.log('Cart Items:', cartState.cartItems);
-        console.log('Cart User:', userData.user.user_id);
+        const requestData = {
+          message: message,
+          inquiry_type: 'Reservation',
+          status: 'Pending',
+          date_preferred: datePreferred,
+          inquirer: userData.user.user_id,
+        };
+        
+       
+        let responseINquiryID = ""
+
+        try {
+          
+            //Step 1: Create INquirty
+            const responseInquiry = await client.post('transactions/inquiries/', requestData, {
+              headers: {
+                Authorization: `Token ${authToken}`,
+                'Content-Type': 'application/json',
+              }
+            });
+  
+            //Get the INquiry Id from the one you created
+            if (responseInquiry.status === 201) {
+              //update the INquiry id
+              responseINquiryID = responseInquiry.data.id;
+            }
+            //Create Cart Data 
+            const cartData = cartState.cartItems.map((item) => ({
+              quantity: item.quantity,
+              inquiry: responseINquiryID,
+              inventory: item.inventory !== null ? item.inventory : null,
+              item: item.item !== null ? item.item : null,
+            }));
+
+            // console.log("Cart Data",cartData)
+
+            const responseinquiryItems = await client.post('transactions/inquiries_item/', cartData, {
+              headers: {
+                Authorization: `Token ${authToken}`,
+                'Content-Type': 'application/json',
+              }
+            });
+
+            // if (responseinquiryItems.status === 201) {
+            //   // Successful response
+            //   console.log('Request was successful:', responseinquiryItems.data);
+            // } else {
+            //   // Unsuccessful response
+            //   console.error('Request failed with status:', responseinquiryItems.status);
+            // }
+
+
+            
+          } catch (error) {
+            console.error('Error:', error);
+          }
+
+        // console.log('API Request Data:', requestData);
+        // console.log('Cart Data:', cartData);
         // Clear the cart
         dispatch({ type: 'REMOVE_ALL_ITEMS' });
 
@@ -88,7 +143,6 @@ const handleSubmit = (e) => {
         }, 2000);
     }
 };
-
 
 
   return (

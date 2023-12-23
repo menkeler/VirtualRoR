@@ -16,12 +16,10 @@ const TransactionPage = () => {
     <>
       <Navbar />
 
-      <InquiryDonation/>
-      <TransactionDonation/>
+      {/* <InquiryDonation/>
+      <TransactionDonation/> */}
 
-
-
-      <InquiryTable/>
+      {/* <InquiryTable/> */}
       <TransactionsTable/>
     </>
   );

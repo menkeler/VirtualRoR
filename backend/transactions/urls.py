@@ -9,6 +9,6 @@ router.register('inquiries_item', views.ReservedItemViewSet, basename='single_tr
 router.register('transaction_items', views.TransactionItemViewSet, basename='transaction_item')
 
 urlpatterns = router.urls + [
-    path('confirm_reservation/<int:inquiry_id>/', views.confirm_reservation, name='confirm_reservation'),
+    path('confirm_reservation/<int:inquiry_id>/<str:purpose>/', views.confirm_reservation, name='confirm_reservation'),
     path('process_transaction/<int:inquiry_id>/', views.process_transaction, name='process_transaction'),
 ]

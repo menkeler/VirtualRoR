@@ -31,7 +31,7 @@ const Navbar = () => {
           </div>
 
         {isLoggedIn && (
-            <div className={`flex-1 px-64 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-${userData?.user?.staff ? 4 : 3} gap-4 justify-center`}>
+            <div className={`flex-1 px-64 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-${userData?.user?.staff ? 5 : 4} gap-4 justify-center`}>
               <NavLink to="/Home">
                 Home
               </NavLink>
@@ -40,6 +40,9 @@ const Navbar = () => {
               </NavLink>
               <NavLink to="/Transactions" >
                 Transactions
+              </NavLink>
+              <NavLink to="/Inquiry" >
+                Inquiry
               </NavLink>
               {userData?.user?.staff && (
                 <NavLink to="/Allusers">
