@@ -90,7 +90,7 @@ class InventoryViewSet(viewsets.ModelViewSet):
     search_fields = ['item__name']
 
     def get_queryset(self):
-        queryset = super().get_queryset().order_by('id')
+        queryset = super().get_queryset().order_by('-quantity')
         search_query = self.request.query_params.get('search', None)
         category_filter = self.request.query_params.get('search_category', None)
 

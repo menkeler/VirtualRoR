@@ -32,6 +32,11 @@ function App() {
             <Route path="AllUsers" element={<AllUsersPage />} />
             <Route path="Transactions" element={<TransactionPage />} />
             <Route path="Inquiry" element={<InquiryPage />} />
+
+            {/* Catch-all route for unknown paths */}
+            //
+            <Route path="*" element={<Navigate to="/Home" />} />
+
           </>
         ) : (
           // Redirect to login if not logged in

@@ -66,7 +66,7 @@ function UserProfilePage() {
     <>
       <Navbar />
       <h1 className="text-3xl font-bold text-center text-green-600 my-6">User Profile</h1>
-      <div className="card card-side bg-base-100 shadow-xl">
+      <div className="card card-side bg-base-100 shadow-xl mx-28">
         {/* Display user profile */}
         <figure><img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" alt="Movie"/></figure>
         <div className="card-body">
@@ -155,6 +155,38 @@ function UserProfilePage() {
       </div>
       {/* end of card */}
 
+      <h1 className="text-3xl font-bold text-center text-green-600 my-6">My Transactions</h1>
+      <div className="card card-side bg-base-100 shadow-xl mt-5 mx-28">
+        {/* Display user profile */}
+
+        <div className="card-body">
+          {/* Display input fields or h2 based on editing state */}
+          <h2 className="card-title">
+      
+          </h2>
+
+          <div className="card-actions justify-end">
+      
+          </div>
+        </div>
+      </div>   
+      {/* end of card */}
+      <h1 className="text-3xl font-bold text-center text-green-600 my-6">My Inquiries</h1>
+      <div className="card card-side bg-base-100 shadow-xl mt-5 mx-28">
+        {/* Display user profile */}
+
+        <div className="card-body">
+          {/* Display input fields or h2 based on editing state */}
+          <h2 className="card-title">
+      
+          </h2>
+
+          <div className="card-actions justify-end">
+      
+          </div>
+        </div>
+      </div>   
+      {/* end of card */}
 
     </>
   );

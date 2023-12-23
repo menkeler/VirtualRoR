@@ -1,41 +1,48 @@
 import React, { useState } from 'react';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
-import {useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
+
 const InquiryDonation = () => {
   const [message, setMessage] = useState('');
   const [datePreferred, setDatePreferred] = useState('');
-  const {userData} = useAuth();
+  const [inputError, setInputError] = useState(false);
+  const { userData } = useAuth();
+
+
   const authToken = Cookies.get('authToken');
 
   const handleDonationSubmit = async (e) => {
-        e.preventDefault();
-        if(message && datePreferred) {
-            try {
-                console.log(userData.user.user_id);
-                const response = await client.post('transactions/inquiries/', {
-                    message: message,
-                    inquiry_type: 'Donation',
-                    status: 'Pending',  
-                    date_preferred: datePreferred,  
-                    inquirer: userData.user.user_id,
-                });
-                setMessage('');
-                setDatePreferred('');
-                document.getElementById('InquiryDonation').close();
-                console.log('Submission successful:', response.data);
-            } catch (error) {
-                console.error('Error submitting donation:', error)
-            }
-        };
+    e.preventDefault();
+    if (message && datePreferred) {
+      try {
+        console.log(userData.user.user_id);
+        const response = await client.post('transactions/inquiries/', {
+          message: message,
+          inquiry_type: 'Donation',
+          status: 'Pending',
+          date_preferred: datePreferred,
+          inquirer: userData.user.user_id,
+        });
+        setMessage('');
+        setDatePreferred('');
+        setInputError(false);
+        document.getElementById('InquiryDonation').close();
+        console.log('Submission successful:', response.data);
+      } catch (error) {
+        console.error('Error submitting donation:', error);
+      }
+    } else {
+      setInputError(true);
     }
+  };
 
   return (
     <>
-      <div>InquiryDonation</div>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
-      <button className="btn" onClick={() => document.getElementById('InquiryDonation').showModal()}>
-        Open modal
+      <button className="btn btn-secondary btn-cube p-2" onClick={() => document.getElementById('InquiryDonation').showModal()}>
+        Inquiry Donation
+        
       </button>
 
       <dialog id="InquiryDonation" className="modal">
@@ -43,7 +50,7 @@ const InquiryDonation = () => {
           <h3 className="font-bold text-2xl mb-4">Inquiry Donation</h3>
           <p className="text-gray-600 mb-4">Fill in the form</p>
           <form>
-            <div className="mb-4">
+            <div className={`mb-4 ${inputError && !message ? 'border-red-500' : ''}`}>
               <label htmlFor="message" className="text-lg font-bold mb-2">
                 Message
               </label>
@@ -54,12 +61,12 @@ const InquiryDonation = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 required
-                className="border rounded-md p-2 w-full bg-white"
+                className={`border rounded-md p-2 w-full bg-white ${inputError && !message ? 'border-red-500' : ''}`}
                 rows="4"
               ></textarea>
             </div>
 
-            <div className="mb-4">
+            <div className={`mb-4 ${inputError && !datePreferred ? 'border-red-500' : ''}`}>
               <label htmlFor="datePreferred" className="text-lg font-bold mb-2">
                 Date Preferred
               </label>
@@ -70,7 +77,7 @@ const InquiryDonation = () => {
                 value={datePreferred}
                 onChange={(e) => setDatePreferred(e.target.value)}
                 required
-                className="border rounded-md p-2 w-full"
+                className={`border rounded-md p-2 w-full ${inputError && !datePreferred ? 'border-red-500' : ''}`}
               />
             </div>
 
@@ -94,4 +101,3 @@ const InquiryDonation = () => {
 };
 
 export default InquiryDonation;
-

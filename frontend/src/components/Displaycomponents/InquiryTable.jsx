@@ -64,7 +64,7 @@ const InquiryTable = () => {
     <>
   
 
-      <div role="tablist" className="tabs tabs-bordered">
+      <div role="tablist" className="tabs tabs-bordered mt-5">
         <input
         type="radio"
         name="my_tabs_1"
