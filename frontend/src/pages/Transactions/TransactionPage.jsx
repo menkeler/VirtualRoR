@@ -8,7 +8,7 @@ import InquiryDonation from '../../components/Forms/InquiryDonation';
 
 import InquiryTable from '../../components/Displaycomponents/InquiryTable';
 import TransactionsTable from '../../components/Displaycomponents/TransactionsTable';
-
+import TransactionRelease from '../../components/Forms/TransactionRelease';
 const TransactionPage = () => {
 
    
@@ -17,8 +17,9 @@ const TransactionPage = () => {
       <Navbar />
 
       {/* <InquiryDonation/>
-      <TransactionDonation/> */}
-
+       */}
+<TransactionDonation/>
+<TransactionRelease/>
       {/* <InquiryTable/> */}
       <TransactionsTable/>
     </>

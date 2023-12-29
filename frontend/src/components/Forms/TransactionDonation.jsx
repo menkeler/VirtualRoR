@@ -63,7 +63,7 @@ const TransactionDonation = () => {
   // set currently selected item for the add copy
   const handleAddCopy = (itemId) => {
     setSelectedItemId(itemId);
-    document.getElementById('AddCopy').showModal();
+    // document.getElementById('AddCopy').showModal();
   };
 
   const handleAddCopySubmit = (e) => {
@@ -83,12 +83,12 @@ const TransactionDonation = () => {
   
       // Reset selected condition
       setSelectedCondition('Good');
-  
-      document.getElementById('AddCopy').close();
+      
     }
+    document.getElementById('AddCopy').close();
   };
   
-  // remove sinlge item in copies array 
+  // remove sinlge item in copies array so only items that have copies can be shown
   const handleRemoveCopy = (itemId, copyId) => {
 
     // console.log('Removing copy:', itemId, copyId);

@@ -37,6 +37,11 @@ class ItemCopy(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item_copies')
     condition = models.CharField(max_length=50, choices=CONDITION_CHOICES, default='Good')
     is_borrowed = models.BooleanField(default=False)
+    previous_status = models.CharField(max_length=50, choices=CONDITION_CHOICES, default='Good')
+    
+    def save(self, *args, **kwargs):
+        self.previous_status = self.condition
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.inventory.item.name} - Condition: {self.condition}, Borrowed: {self.is_borrowed}"
@@ -47,15 +52,17 @@ class ItemCopy(models.Model):
 def update_inventory_quantity_on_save(sender, instance, created, **kwargs):
     """
     Signal handler to update Inventory quantity when a new ItemCopy is saved.
+    When using put requests, it also updates when updating the condition and the is_borrowed status of the item
     """
     if instance.inventory.item.returnable:
-        if created or (not instance.is_borrowed):
-            # Increment quantity if it's a new ItemCopy or is_borrowed changed to False
+        if created or (not instance.is_borrowed and instance.previous_status != instance.condition):
+            # Increment quantity if it's a new ItemCopy or is_borrowed changed to False and condition changed
             instance.inventory.quantity += 1
-        elif instance.is_borrowed:
-            # Decrement quantity if is_borrowed is True
+        elif instance.is_borrowed and instance.previous_status != instance.condition:
+            # Decrement quantity if is_borrowed is True and condition changed
             instance.inventory.quantity -= 1
         instance.inventory.save()
+
         
 @receiver(post_delete, sender=ItemCopy)
 def update_inventory_quantity_on_delete(sender, instance, **kwargs):

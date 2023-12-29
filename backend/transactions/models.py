@@ -49,6 +49,7 @@ class TransactionItem(models.Model):
     TRANSACTION_ITEM_STATUS = [
         ('Active', 'Active'),
         ('Returned', 'Returned'),
+        ('Lost', 'Lost'),
         ('Consumable', 'Consumable'),
     ]
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction_items')

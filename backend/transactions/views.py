@@ -27,10 +27,11 @@ class InquiryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # Get the 'ordering', 'status', 'type', and 'purpose' query parameters from the request
+        # Get the 'ordering', 'status', 'type', 'purpose', and 'search' query parameters from the request
         ordering = self.request.query_params.get('ordering', 'status')
         status = self.request.query_params.get('status', None)
         type_param = self.request.query_params.get('type', None)
+        search_param = self.request.query_params.get('search', None)
 
         # Validate the ordering parameter to prevent injection attacks
         if ordering not in self.ordering_fields:
@@ -46,9 +47,13 @@ class InquiryViewSet(viewsets.ModelViewSet):
         # Filter by type if provided
         if type_param:
             queryset = queryset.filter(inquiry_type=type_param)
-            
+
+        # Filter by inquirer name if provided
+        if search_param:
+            queryset = queryset.filter(Q(inquirer__first_name__icontains=search_param) | Q(inquirer__last_name__icontains=search_param))
 
         return queryset
+
     
     
 class TransactionPagination(PageNumberPagination):
@@ -122,9 +127,14 @@ def confirm_reservation(request, inquiry_id, purpose):
             for reserved_item in inquiry.reserved_items.all():
                 # Check if the item is an ItemCopy
                 if hasattr(reserved_item, 'item') and reserved_item.item:
-                    # Update is_borrowed status to True
-                    reserved_item.item.is_borrowed = True
-                    reserved_item.item.save()
+                    # Check if item is already borrowed
+                    if reserved_item.item.is_borrowed:
+                        # Handle the case where the item is already borrowed (show error or take appropriate action)
+                        print("Error: Item is already borrowed.")
+                    else:
+                        # Update is_borrowed status to True
+                        reserved_item.item.is_borrowed = True
+                        reserved_item.item.save()
                 elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
                     # Check if the item is related to an inventory item and it exists
                     
@@ -169,12 +179,13 @@ def confirm_reservation(request, inquiry_id, purpose):
 def process_transaction(request, inquiry_id):
     # Retrieve the inquiry
     inquiry = get_object_or_404(Inquiry, pk=inquiry_id)
-
+    
     # Check if the inquiry is of type 'Reservation' and has a status of 'Accepted'
     if inquiry.inquiry_type == 'Reservation' and inquiry.status == 'Accepted':
         # Extract additional data from the request body
         remarks = request.data.get('remarks', '')
-
+        
+        is_active = False
         # Create a Transaction with the participant as the inquirer
         transaction = Transaction.objects.create(
             inquiry=inquiry,
@@ -182,11 +193,10 @@ def process_transaction(request, inquiry_id):
             transaction_type='Release',
             remarks=remarks
         )
-
+        
         # Process each reserved item in the transaction
         for reserved_item in inquiry.reserved_items.all():
-            # Create a transaction item based on the reserved item type
-            if hasattr(reserved_item, 'item'):
+            if reserved_item.item is not None:
                 # For ItemCopy
                 transaction_item = TransactionItem.objects.create(
                     transaction=transaction,
@@ -194,21 +204,22 @@ def process_transaction(request, inquiry_id):
                     quantity=1,
                     status="Active" 
                 )
-            else:
-                # For regular Inventory item
+                is_active = True
+            elif reserved_item.inventory is not None:
                 transaction_item = TransactionItem.objects.create(
                     transaction=transaction,
                     inventory=reserved_item.inventory,
                     quantity=reserved_item.quantity,
                     status="Consumable" 
                 )
+                
 
         # Update the inquiry status to 'Processed'
         inquiry.status = 'Processed'
         inquiry.save()
-
-        # Clear reserved items
-        inquiry.reserved_items.all().delete()
+        
+        transaction.is_active = is_active
+        transaction.save()
 
 
         # Return a response indicating a successful transaction

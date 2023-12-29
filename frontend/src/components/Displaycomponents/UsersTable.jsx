@@ -134,7 +134,7 @@ const UsersTable = ({ type, user, onSelectUser }) => {
             />
 
            {/* List of names */}
-          <div className="mt-4 grid gap-4 grid-cols-6">
+          <div className="mt-4 grid gap-4 grid-cols-3">
             {users.map((user) => (
               <div key={user.user_id} className="p-5 bg-white rounded-lg shadow-md">
                 <h2 className="text-base font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">

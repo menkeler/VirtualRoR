@@ -200,8 +200,9 @@ const InventoryTable = ({type}) => {
                                   )}
                                 </td>
                                 <td className="py-2 px-4 border-b">
-                                  <button className="btn btn-outline btn-primary" onClick={() => addToCart(null, item.item.name + ' ID: ' + copy.id,copy.id,1)}>Add to Cart</button>
-                                </td>
+                                {!copy.is_borrowed && (<button className="btn btn-outline btn-primary" onClick={() => addToCart(null, item.item.name + ' ID: ' + copy.id,copy.id,1)}>Add to Cart</button>
+                               )}
+                               </td>
                               </tr>
                             ))}
                           </tbody>

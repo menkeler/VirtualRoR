@@ -16,17 +16,17 @@ function Home() {
         <div className="flex bg-gray-200">
         {/* Left SIde */}
         <div className=" flex-grow p-4">
-            <div role="tablist" className="tabs tabs-lifted tabs-lg ml-96">
+            <div role="tablist" className="tabs tabs-boxed tabs-lg ml-96 mx-auto bg-base-100 py-4 rounded">
               <input
                 type="radio"
                 name="my_tabs_1"
                 role="tab"
-                className="tab"
+                className="tab ml-72"
                 aria-label="Posts"
                 checked={activeTab === 'Posts'}
                 onChange={() => handleTabChange('Posts')}
               />
-              <div role="tabpanel" className="tab-content p-10">
+              <div role="tabpanel" className="tab-content p-3">
               
       
                 

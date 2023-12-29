@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
+import { useAuth } from '../../contexts/AuthContext';
 
 const InquiryTable = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -8,6 +9,9 @@ const InquiryTable = () => {
   const [typeQuery, setTypeQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
   const [weekValue, setWeekValue] = useState('');
+  const {userData} = useAuth();
+
+
   useEffect(() => {
     fetchInquiries(currentPage, statusQuery,typeQuery);
   }, [currentPage,statusQuery,typeQuery]); // Empty dependency array to run the effect only once when the component mounts
@@ -64,7 +68,7 @@ const InquiryTable = () => {
     <>
   
 
-      <div role="tablist" className="tabs tabs-bordered mt-5">
+      <div role="tablist" className="tabs tabs-bordered mt-5 mx-16 bg-gray-200">
         <input
         type="radio"
         name="my_tabs_1"
@@ -103,7 +107,15 @@ const InquiryTable = () => {
         checked={statusQuery === 'Accepted'}
         onChange={(e) => handleStatusQuery(e, 'Accepted')}
       />
-      
+       <input
+        type="radio"
+        name="my_tabs_1"
+        role="tab"
+        className="tab"
+        aria-label="Processed"
+        checked={statusQuery === 'Processed'}
+        onChange={(e) => handleStatusQuery(e, 'Processed')}
+      />
     
       <select
         id="inquiryType"
@@ -133,7 +145,7 @@ const InquiryTable = () => {
     */}
 
     
-      <div className="mt-5 overflow-x-auto">
+      <div className=" overflow-x-auto mx-16">
       <table className="table min-w-full bg-white border border-gray-300">
         {/* Head */}
         <thead className="bg-green-500 text-white">
@@ -145,15 +157,15 @@ const InquiryTable = () => {
             <th className="py-3 px-4 border-b">Type</th>
             <th className="py-3 px-4 border-b">Preferred Date</th>
             <th className="py-3 px-4 border-b text-center">Status</th>
-            <th className="py-3 px-4 border-b">Actions</th>
             
             {/* Add more columns as needed */}
           </tr>
         </thead>
         {/* Body */}
         <tbody>
-          {inquiries.map((inquiry) => (
-            <tr key={inquiry.id} className="hover:bg-green-50">
+          {inquiries.map((inquiry) => ( 
+          <React.Fragment key={inquiry.id}>
+            <tr className="hover:bg-green-50" onClick={() => document.getElementById(`Detail${inquiry.id}`).showModal()}>
               <td className="py-2 px-4 border-b ">{inquiry.id}</td>
               <td className="py-2 px-4 border-b">{new Date(inquiry.date_created).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'medium' })}</td>
 
@@ -182,12 +194,18 @@ const InquiryTable = () => {
                               ''}`}>
                 {inquiry.status}
               </td>
-              <td className="py-2 px-2 border-b text-center ">
-              <button className="btn btn-outline btn-info" onClick={() => document.getElementById(`Detail${inquiry.id}`).showModal()}>Details</button>
+            </tr>          
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
 
-              {/* MODAL */}
-                <dialog id={`Detail${inquiry.id}`} className="modal">
-                  <div className="modal-box">
+      {/* MOdal outside the table to avoid DOM NESTING */}
+      {inquiries.map((inquiry) => (
+        <dialog key={`Detail${inquiry.id}`} id={`Detail${inquiry.id}`} className="modal">
+           {/* MODAL */}
+
+                  <div className="modal-box w-11/12 max-w-5xl">
                     
                   <div className="flex w-full">
                       {/* Transaction Details */}
@@ -212,6 +230,7 @@ const InquiryTable = () => {
                         </div>
                       </div>
 
+                      {/* DVIDIER */}
                       <div className="flex items-center mx-4 text-gray-500"></div>
 
                       {/* User Details */}
@@ -273,14 +292,10 @@ const InquiryTable = () => {
                         <button className="btn bg-red-500 text-white" onClick={() => document.getElementById(`Detail${inquiry.id}`).close()}>Close</button>
                       </form>
                     </div>
-                  </div>
-                </dialog>
-              </td>
-              {/* Add more cells as needed */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  </div>       
+        </dialog>
+      ))}
+      
     </div>
 
     <div className="join mt-4">
