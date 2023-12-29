@@ -55,6 +55,14 @@ class TransactionItem(models.Model):
         ('Lost', 'Lost'),
         ('Consumable', 'Consumable'),
     ]
+    CONDITION_CHOICES = [
+        ('Acceptable', 'Acceptable'),
+        ('Good', 'Good'),
+        ('Like new', 'Like new'),
+        ('Damaged', 'Damaged'),
+        ('Lost', 'Lost'),
+    ]
+    
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transaction_items')
     #for Inventory Items that are consumable
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=True, blank=True, related_name='transaction_items_inventory')
@@ -63,6 +71,9 @@ class TransactionItem(models.Model):
     quantity = models.PositiveIntegerField()
     return_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=TRANSACTION_ITEM_STATUS, null=True, blank=True)
+    # QUestion why is there a condition here? since if i change the condition of the item copy directly it will affect the condtion of the item dispaly 
+    # example in an old transaction it first displayed as Good then sudden all display new and old transactions as lost KK
+    condition = models.CharField(max_length=50, choices=CONDITION_CHOICES, null=True, blank=True)
     
     def is_transaction_completed(self):
         return self.transaction.transaction_items.filter(status='Active').count() == 0
@@ -72,7 +83,7 @@ def update_transaction_status(sender, instance, created, **kwargs):
     """
     Signal handler to update Transaction status when a new TransactionItem is saved.
     """
-    if not created and instance.status == 'Returned':
+    if not created and (instance.status == 'Returned' or instance.status == 'Lost'):
         transaction = instance.transaction
         if transaction.is_active and transaction.transaction_items.filter(status='Active').count() == 0:
             # All items are returned, update the Transaction status to 'Completed'

@@ -220,6 +220,7 @@ const TransactionDonation = () => {
               'Content-Type': 'application/json',
             }
           });
+          console.log(responseInventory.data);
 
           //get the respose items 
           if (responseInventory.status === 201) {
@@ -231,13 +232,16 @@ const TransactionDonation = () => {
                 ...item.item,
               },
               quantity: itemsData.find(dataItem => dataItem.item === item.item.id)?.quantity || 0,
-              transaction: transactionId
+              transaction: transactionId,
+ 
             }));
-            
-            console.log("REsponve inveotr ydat",responseInventory.data)
+
+            // console.log("REsponve inveotr ydat",responseInventory.data)
+           
             // Filter out items with returnable set to true
             const filteredTransactionDetails = transactionDetails.filter(item => !item.returnable);
-            
+            // console.log("Items Transaction Filtered",filteredTransactionDetails)
+
             // add the items id in transaction Items
             setTransactionItems(filteredTransactionDetails);  
           }
@@ -257,6 +261,7 @@ const TransactionDonation = () => {
                   item: itemCopy.id,  
                   transaction: transactionId,
                   quantity: 1,
+                  condition: itemCopy.condition,
                 }))
             
                 setTransactionItems(prevItems => [...prevItems, ...newItemCopies]);
@@ -274,7 +279,10 @@ const TransactionDonation = () => {
     }    
   
 };
-
+//THIS IS FOR DEBUG PURPOSE 
+// useEffect(() => {
+//   console.log("Items Transaction Filtered", transactionItems);
+// }, [transactionItems]);
   
   return (
     <>

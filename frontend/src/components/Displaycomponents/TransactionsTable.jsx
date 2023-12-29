@@ -54,7 +54,8 @@ const TransactionsTable = () => {
         if (selectStatus === "Returned") {
           const payload = {
             "status": "Returned",
-            "return_date": new Date().toISOString().split('T')[0]
+            "return_date": new Date().toISOString().split('T')[0],
+            "condition": selectedCondition
           };
   
           const Copypayload = {
@@ -76,7 +77,8 @@ const TransactionsTable = () => {
           //if Item is Lost
           const payload = {
             "status": "Lost",
-            "return_date": new Date().toISOString().split('T')[0]
+            "return_date": new Date().toISOString().split('T')[0],
+            "condition": "Lost"
           };
   
           const Copypayload = {
@@ -242,8 +244,8 @@ const TransactionsTable = () => {
                                         ? 'Borrowable'
                                         : 'Consumable'}
                                     </td>
-                                    <td className={`py-2 px-4 border-b ${item.item && item.item.condition === 'Lost' ? 'bg-red-500' : ''}`}>
-                                      {item.item ? item.item.condition : item.quantity}
+                                    <td className={`py-2 px-4 border-b ${item.item && item.condition === 'Lost' ? 'bg-red-500' : ''}`}>
+                                      {item.item ? item.condition : item.quantity}
                                     </td>
                                     <td className="py-2 px-4 border-b">
                                           {/* Modal for item udpates */}
