@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'users',
     'inventory',
     'transactions',
+    'posts',
 ]
 
 MIDDLEWARE = [
