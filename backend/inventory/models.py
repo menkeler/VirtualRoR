@@ -37,11 +37,21 @@ class ItemCopy(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item_copies')
     condition = models.CharField(max_length=50, choices=CONDITION_CHOICES, default='Good')
     is_borrowed = models.BooleanField(default=False)
-    previous_status = models.CharField(max_length=50, choices=CONDITION_CHOICES, default='Good')
+    previous_is_borrowed = models.BooleanField(default=False)  # Change to BooleanField
     
     def save(self, *args, **kwargs):
-        self.previous_status = self.condition
+        print(f"Before save - Current is_borrowed: {self.is_borrowed}, Previous is_borrowed: {self.previous_is_borrowed}")
+
+        # Save the current value of is_borrowed before it gets updated by the super().save()
+        current_is_borrowed = self.is_borrowed
+
         super().save(*args, **kwargs)
+
+        # Update previous_is_borrowed after the save operation
+        if current_is_borrowed != self.previous_is_borrowed:
+            self.previous_is_borrowed = current_is_borrowed
+
+        print(f"After save - Current is_borrowed: {self.is_borrowed}, Previous is_borrowed: {self.previous_is_borrowed}")
 
     def __str__(self):
         return f"{self.inventory.item.name} - Condition: {self.condition}, Borrowed: {self.is_borrowed}"
@@ -55,10 +65,10 @@ def update_inventory_quantity_on_save(sender, instance, created, **kwargs):
     When using put requests, it also updates when updating the condition and the is_borrowed status of the item
     """
     if instance.inventory.item.returnable:
-        if created or (not instance.is_borrowed and instance.previous_status != instance.condition):
+        if created or (not instance.is_borrowed and instance.is_borrowed != instance.previous_is_borrowed):
             # Increment quantity if it's a new ItemCopy or is_borrowed changed to False and condition changed
             instance.inventory.quantity += 1
-        elif instance.is_borrowed and instance.previous_status != instance.condition:
+        elif instance.is_borrowed and instance.is_borrowed != instance.previous_is_borrowed:
             # Decrement quantity if is_borrowed is True and condition changed
             instance.inventory.quantity -= 1
         instance.inventory.save()

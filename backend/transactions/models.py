@@ -1,6 +1,9 @@
 from django.db import models
 from users.models import User
 from inventory.models import Inventory ,ItemCopy
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 # Inquiry Side
 class Inquiry(models.Model):
@@ -60,3 +63,18 @@ class TransactionItem(models.Model):
     quantity = models.PositiveIntegerField()
     return_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=TRANSACTION_ITEM_STATUS, null=True, blank=True)
+    
+    def is_transaction_completed(self):
+        return self.transaction.transaction_items.filter(status='Active').count() == 0
+
+@receiver(post_save, sender=TransactionItem)
+def update_transaction_status(sender, instance, created, **kwargs):
+    """
+    Signal handler to update Transaction status when a new TransactionItem is saved.
+    """
+    if not created and instance.status == 'Returned':
+        transaction = instance.transaction
+        if transaction.is_active and transaction.transaction_items.filter(status='Active').count() == 0:
+            # All items are returned, update the Transaction status to 'Completed'
+            transaction.is_active = False
+            transaction.save()

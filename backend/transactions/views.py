@@ -132,9 +132,10 @@ def confirm_reservation(request, inquiry_id, purpose):
                         # Handle the case where the item is already borrowed (show error or take appropriate action)
                         print("Error: Item is already borrowed.")
                     else:
-                        # Update is_borrowed status to True
+                        reserved_item.item.previous_is_borrowed = reserved_item.item.is_borrowed  # Update previous_is_borrowed
                         reserved_item.item.is_borrowed = True
                         reserved_item.item.save()
+
                 elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
                     # Check if the item is related to an inventory item and it exists
                     

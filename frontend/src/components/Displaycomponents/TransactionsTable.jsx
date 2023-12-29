@@ -59,15 +59,43 @@ const TransactionsTable = () => {
   
           const Copypayload = {
             "condition": selectedCondition,
-            "is_borrowed": false
+            "is_borrowed": false,
+            "previous_is_borrowed": true
           };
         
           const response = await client.patch(`transactions/transaction_items/${itemId.id}/`, payload);
           console.log('Transaction Item Updated:', response);
   
-          const responseCopy = await client.put(`/inventory/item-copies/${itemId.item.id}/`, Copypayload);
+          const responseCopy = await client.patch(`/inventory/item-copies/${itemId.item.id}/`, Copypayload);
           console.log('Item Copy Updated:', responseCopy);
+
+          const updatedItemCopy = await client.get(`/inventory/item-copies/${itemId.item.id}/`);
+          console.log('Updated Item Copy:', updatedItemCopy);
         }
+        else{
+          //if Item is Lost
+          const payload = {
+            "status": "Lost",
+            "return_date": new Date().toISOString().split('T')[0]
+          };
+  
+          const Copypayload = {
+            "condition": "Lost",
+            "is_borrowed": true,
+            "previous_is_borrowed": true
+          };
+        
+          const response = await client.patch(`transactions/transaction_items/${itemId.id}/`, payload);
+          console.log('Transaction Item Updated:', response);
+  
+          const responseCopy = await client.patch(`/inventory/item-copies/${itemId.item.id}/`, Copypayload);
+          console.log('Item Copy Updated:', responseCopy);
+
+          const updatedItemCopy = await client.get(`/inventory/item-copies/${itemId.item.id}/`);
+          console.log('Updated Item Copy:', updatedItemCopy);
+
+        }
+
       } catch (error) {
         console.error('Error Accept:', error);
         console.error('Response Data:', error.response.data);
@@ -214,7 +242,7 @@ const TransactionsTable = () => {
                                         ? 'Borrowable'
                                         : 'Consumable'}
                                     </td>
-                                    <td className="py-2 px-4 border-b">
+                                    <td className={`py-2 px-4 border-b ${item.item && item.item.condition === 'Lost' ? 'bg-red-500' : ''}`}>
                                       {item.item ? item.item.condition : item.quantity}
                                     </td>
                                     <td className="py-2 px-4 border-b">

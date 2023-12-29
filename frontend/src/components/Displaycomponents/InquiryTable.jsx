@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 const InquiryTable = () => {
   const [inquiries, setInquiries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [statusQuery, setStatusQuery] = useState('');
+  const [statusQuery, setStatusQuery] = useState('Pending');
   const [typeQuery, setTypeQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
   const [weekValue, setWeekValue] = useState('');
