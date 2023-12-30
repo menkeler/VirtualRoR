@@ -6,7 +6,6 @@ const AllUsersPage = () => {
 
   return (
     <>
-      <Navbar />
       <UsersTable type = {1}/>
     </>
   );

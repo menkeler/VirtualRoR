@@ -20,7 +20,7 @@ function UserProfilePage() {
   const handleEditClick = () => {
     setEditing(true);
   };
-
+console.log(userData)
   const handleSaveClick = async () => {
     try {
       // Make a PUT request to update user data

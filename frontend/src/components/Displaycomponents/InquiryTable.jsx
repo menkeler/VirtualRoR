@@ -2,23 +2,27 @@ import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import { useAuth } from '../../contexts/AuthContext';
 
-const InquiryTable = () => {
+const InquiryTable = ({User}) => {
   const [inquiries, setInquiries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [statusQuery, setStatusQuery] = useState('Pending');
+  const [statusQuery, setStatusQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [typeQuery, setTypeQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
   const [weekValue, setWeekValue] = useState('');
   const {userData} = useAuth();
 
+  const UserId = User ? User : '';
+
 
   useEffect(() => {
     fetchInquiries(currentPage, statusQuery,typeQuery);
-  }, [currentPage,statusQuery,typeQuery]); // Empty dependency array to run the effect only once when the component mounts
+  }, [currentPage,statusQuery,typeQuery,searchQuery]); // Empty dependency array to run the effect only once when the component mounts
 
   const fetchInquiries = async (page,status,type) => {
     try {
-      const response = await client.get(`transactions/inquiries/?page=${page}&ordering=status&status=${encodeURIComponent(status)}&type=${encodeURIComponent(type)}`);
+      const encodedSearchQuery = encodeURIComponent(searchQuery);
+      const response = await client.get(`transactions/inquiries/?page=${page}&ordering=status&status=${encodeURIComponent(status)}&type=${encodeURIComponent(type)}&search=${encodedSearchQuery}&user=${UserId}`);
       console.log(response.data);
       const { results, count } = response.data;
       setInquiries(results);
@@ -68,7 +72,7 @@ const InquiryTable = () => {
     <>
   
 
-      <div role="tablist" className="tabs tabs-bordered mt-5 mx-16 bg-gray-200">
+      <div role="tablist" className="tabs tabs-bordered mt-5 mb-1 bg-gray-200">
         <input
         type="radio"
         name="my_tabs_1"
@@ -86,6 +90,15 @@ const InquiryTable = () => {
         aria-label="Pending"
         checked={statusQuery === 'Pending'}
         onChange={(e) => handleStatusQuery(e, 'Pending')}
+      />
+       <input
+        type="radio"
+        name="my_tabs_1"
+        role="tab"
+        className="tab"
+        aria-label="Cancelled"
+        checked={statusQuery === 'Cancelled'}
+        onChange={(e) => handleStatusQuery(e, 'Cancelled')}
       />
       <input
         type="radio"
@@ -120,7 +133,7 @@ const InquiryTable = () => {
       <select
         id="inquiryType"
         role="tab"
-        className="tab"
+        className="tab ml-4"
         aria-label="Select"
         value={typeQuery}
         onChange={handleTypeQuery}
@@ -129,6 +142,18 @@ const InquiryTable = () => {
         <option value="Donation">Donation</option>
         <option value="Reservation">Reservation</option>
       </select>
+      {!User && (
+      <input
+              type="text"
+              name="my_tabs_1"
+              role="tab"
+              value={searchQuery}
+              aria-label="Search"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search users..."
+              className="tab text-left ml-4"
+        />
+      )}
     </div>
     
   {/* WEEK SELECTOR */}
@@ -145,7 +170,7 @@ const InquiryTable = () => {
     */}
 
     
-      <div className=" overflow-x-auto mx-16">
+      <div className=" overflow-x-auto">
       <table className="table min-w-full bg-white border border-gray-300">
         {/* Head */}
         <thead className="bg-green-500 text-white">
@@ -245,6 +270,7 @@ const InquiryTable = () => {
                         <div className="mb-2">Contact: {inquiry.inquirer.contact}</div>
                       </div>
                     </div>
+                    {inquiry.inquiry_type === "Reservation" && (
                     <div className="flex flex-col w-full">
                     <h3 className="font-bold text-lg mb-4">Inquiry Items</h3>
                       <div className="overflow-x-auto">
@@ -279,18 +305,47 @@ const InquiryTable = () => {
                         </table>
                       </div>
                     </div>
+                )}
                     <div className="flex flex-col w-full">
-                    <div className="border rounded p-4 bg-gray-100">
-                      <h3 className="font-bold text-lg mb-4">Message</h3>
-                      <p className="text-gray-800">{inquiry.message ? inquiry.message:"No Remarks"}</p>
-                    </div>
+                      <div className="border rounded p-4 bg-gray-100">
+                        <h3 className="font-bold text-lg mb-4">Message</h3>
+                        <p className="text-gray-800">{inquiry.message ? inquiry.message:"No Remarks"}</p>
+                      </div>
                     </div>
                     <div className="modal-action">
                       <form method="dialog">
-                        {inquiry.status === 'Pending' &&(<button className="btn btn-accent mr-2 text-white" type='button' onClick={(e) => handleAccept(e, inquiry.id,"Accept")}>Accept</button>)}
-                        {inquiry.status === 'Pending' &&(<button className="btn btn-error mr-2 text-white" type='button' onClick={(e) => handleAccept(e, inquiry.id,"Rejected")}>Reject</button>)}
-                        <button className="btn bg-red-500 text-white" onClick={() => document.getElementById(`Detail${inquiry.id}`).close()}>Close</button>
-                      </form>
+                          {!User ? (
+                            inquiry.status === 'Pending' && (
+                              <>
+                                <button
+                                  className="btn btn-accent mr-2 text-white"
+                                  type="button"
+                                  onClick={(e) => handleAccept(e, inquiry.id, "Accept")}
+                                >
+                                  Accept
+                                </button>
+                                <button
+                                  className="btn btn-error mr-2 text-white"
+                                  type="button"
+                                  onClick={(e) => handleAccept(e, inquiry.id, "Rejected")}
+                                >
+                                  Reject
+                                </button>
+                              </>
+                            )
+                          ) : (
+                            inquiry.status === 'Pending' && (
+                              <button
+                                className="btn btn-error mr-2 text-white"
+                                type="button"
+                                onClick={(e) => handleAccept(e, inquiry.id, "Cancelled")}
+                              >
+                                Cancel
+                              </button>
+                            )
+                          )}
+                          <button className="btn bg-red-500 text-white" onClick={() => document.getElementById(`Detail${inquiry.id}`).close()}>Close</button>
+                        </form>
                     </div>
                   </div>       
         </dialog>

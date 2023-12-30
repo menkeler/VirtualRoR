@@ -9,21 +9,22 @@ import InquiryDonation from '../../components/Forms/InquiryDonation';
 import InquiryTable from '../../components/Displaycomponents/InquiryTable';
 import TransactionsTable from '../../components/Displaycomponents/TransactionsTable';
 import TransactionRelease from '../../components/Forms/TransactionRelease';
-const TransactionPage = () => {
+const DashboardTransactionPage = () => {
 
    
   return (
     <>
-      <Navbar />
 
-      {/* <InquiryDonation/>
-       */}
-<TransactionDonation/>
-<TransactionRelease/>
-      {/* <InquiryTable/> */}
-      <TransactionsTable/>
+      <TransactionRelease />
+      <TransactionDonation />
+      <TransactionsTable />
+  
+      
+       
     </>
   );
 };
 
-export default TransactionPage;
+export default DashboardTransactionPage;
+{/* 
+<TransactionRelease/> */}

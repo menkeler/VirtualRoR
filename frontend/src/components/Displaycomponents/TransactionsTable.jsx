@@ -3,18 +3,30 @@ import client from '../../api/client';
 import Cookies from 'js-cookie';
 import Select from 'react-select';
 
-const TransactionsTable = () => {
+const TransactionsTable = ({User}) => {
   const [transactions, setTransactions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [typeQuery, setTypeQuery] = useState('');
+  const [statusQuery, setStatusQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
   const [selectedCondition, setSelectedCondition] = useState('');
   const [selectStatus, setSelectStatus] = useState('');
-  
-  
-  const fetchTransactions = async (page) => {
+
+  const UserId = User ? User : '';
+
+  useEffect(() => {
+    fetchTransactions(currentPage,statusQuery,typeQuery);
+    console.log('Selected',selectedCondition )
+  }, [currentPage,selectedCondition,statusQuery,typeQuery,searchQuery]); 
+
+
+  const fetchTransactions = async (page,status,type) => {
+    //encodeURIComponent Purpose is INput: hellow word! Output: hello%20world%21
     try {
-      const response = await client.get(`transactions/transactions/?page=${page}`);
+      const encodedSearchQuery = encodeURIComponent(searchQuery);
+      const response = await client.get(`transactions/transactions/?page=${page}&is_active=${encodeURIComponent(status)}&type=${encodeURIComponent(type)}&search=${encodedSearchQuery}&user=${UserId}`);
+     
       // console.log(response.data)
       const { results, count } = response.data;
       setTransactions(results);
@@ -107,16 +119,17 @@ const TransactionsTable = () => {
     }
   };
   
+ 
 
+  const handleStatusQuery = function (e, status) {
+    e.preventDefault();
+    setStatusQuery(status);
+  };
 
-
-  useEffect(() => {
-    fetchTransactions(currentPage);
-    console.log('Selected',selectedCondition )
-  }, [currentPage,selectedCondition]); 
-
-
-
+  const handleTypeQuery = function (e) {
+    e.preventDefault();
+    setTypeQuery(e.target.value);
+  };
 
   
   const handlePageChange = (newPage) => {
@@ -127,9 +140,64 @@ const TransactionsTable = () => {
   
   return (
     <>
-  
+    <div role="tablist" className="tabs tabs-bordered mt-5 mb-1 bg-gray-200">
+        <input
+          type="radio"
+          name="my_tabs_1"
+          role="tab"
+          className="tab"
+          aria-label="All"
+          checked={statusQuery === ''}
+          onChange={(e) => handleStatusQuery(e, '')}
+        />
+          <input
+          type="radio"
+          name="my_tabs_1"
+          role="tab"
+          className="tab"
+          aria-label="Active"
+          checked={statusQuery === 'true'}
+          onChange={(e) => handleStatusQuery(e, 'true')}
+        />
+        <input
+          type="radio"
+          name="my_tabs_1"
+          role="tab"
+          className="tab"
+          aria-label="Completed"
+          checked={statusQuery === 'false'}
+          onChange={(e) => handleStatusQuery(e, 'false')}
+        />
+            <select
+          id="transactionType"
+          name="my_tabs_1"
+          role="tab"
+          className="tab ml-4"
+          aria-label="Select"
+          value={typeQuery}
+          onChange={handleTypeQuery}
+        >
+          <option value="">All</option>
+          <option value="Donation">Donation</option>
+          <option value="Release">Release</option>
+        </select>
+       {/* Search bar */}
+
+       {!User && (
+          <input
+            type="text"
+            name="my_tabs_1"
+            role="tab"
+            value={searchQuery}
+            aria-label="Search"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search users..."
+            className="tab text-left ml-4"
+          />
+      )}
+    </div>
 {/* ---------------Table--------------- */}
-      <div className="overflow-x-auto mx-16 mt-3">
+      <div className="overflow-x-auto mt-3">
       <table className="table min-w-full bg-white border border-gray-300">
         {/* Head */}
         <thead className="bg-green-500 text-white">

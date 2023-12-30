@@ -34,6 +34,11 @@ class UserViewSet(viewsets.ModelViewSet):
         # You can customize this further based on your needs
         return queryset
 
+    @action(detail=False, methods=['get'])
+    def total_users_count(self, request):
+        total_users_count = self.get_queryset().count()
+        return Response({'total_users_count': total_users_count}, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def register(self, request):
         serializer = UserRegisterSerializer(data=request.data)

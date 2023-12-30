@@ -7,7 +7,7 @@ const UsersTable = ({ type, user, onSelectUser }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [totalPages, setTotalPages] = useState(1);
-  
+    
     useEffect(() => {
       const fetchUsers = async (page) => {
         try {
@@ -104,11 +104,11 @@ const UsersTable = ({ type, user, onSelectUser }) => {
 
               {/* MOdal */}
               {users.map((user) => (
-              <dialog key={`Detail${user.user_id}`} id={`Detail${user.user_id}`} className="modal">
+            <dialog key={`Detail${user.user_id}`} id={`Detail${user.user_id}`} className="modal">
              <div className="modal-box w-11/12 max-w-2xl p-6 bg-white shadow-md rounded-md">
               <div>
                 <h3 className="font-bold text-xl mb-4">{`${user.first_name} ${user.last_name}`}</h3>
-                <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="" className='mx-auto w-40 h-40  rounded-3xl mb-4' />
+                <img  src={`https://randomuser.me/api/portraits/men/${user.user_id}.jpg`} alt="" className='mx-auto w-40 h-40  rounded-3xl mb-4' />
                 <p className="text-gray-600 mb-2">
                   <span className="font-bold">Department:</span> {user.department}
                 </p>
@@ -123,20 +123,17 @@ const UsersTable = ({ type, user, onSelectUser }) => {
                 </p>
               </div>
               <div className="grid grid-cols-3 gap-4 mt-8">
-                <button className="btn btn-info text-white p-2 rounded">View Transactions</button>
-                <button className="btn btn-info text-white p-2 rounded">View Inquiries</button>
-                <button className="btn btn-info text-white p-2 rounded">View Posts</button>
-              </div>
-
-              <div className="modal-action mt-6">
-                <form method="dialog">
-                  <button className="btn" onClick={() => document.getElementById(`Detail${user.user_id}`).close()}>
-                    Close
-                  </button>
-                </form>
+                <button className="btn btn-info text-white p-2 rounded-full">View Transactions</button>
+                <button className="btn btn-info text-white p-2 rounded-full">View Inquiries</button>
+                <button className="btn btn-info text-white p-2 rounded-full">View Posts</button>
               </div>
             </div>
-              </dialog>
+              <form method="dialog" className="modal-backdrop">
+                    <button  >
+                      Close
+                    </button>
+              </form>
+            </dialog>
           ))}
         </div>
     

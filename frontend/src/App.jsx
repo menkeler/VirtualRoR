@@ -7,10 +7,8 @@ import UserProfilePage from './pages/UserProfiling/UserProfilePage';
 import Home from './pages/Home';
 import AdminDashBoard from './pages/UserProfiling/AdminDashBoard';
 import InventoryPage from './pages/InventoryProfiling/InventoryPage';
-import AllUsersPage from './pages/UserProfiling/AllUsersPage';
-import TransactionPage from './pages/Transactions/TransactionPage';
 import CartPage from './pages/Transactions/CartPage';
-import InquiryPage from './pages/Transactions/InquiryPage';
+import MyActivitiesPage from './pages/Transactions/MyActivitiesPage';
 function App() {
   const { isLoggedIn } = useAuth();
 
@@ -19,19 +17,17 @@ function App() {
       <Routes>
         
         <Route path="login" element={<LoginPage />} />
-        
-        
+      
         {isLoggedIn ? (
+          // In The future first direct navigation to profile page and unable to chagne unless Department and contact is filledin
           // Paths under here are only accessible when logged in
           <>
             <Route path="Home" element={<Home />} />
             <Route path="Inventory" element={<InventoryPage />} />
             <Route path="Cart" element={<CartPage />} />
-            <Route path = "/admin/dashboard" element = {<AdminDashBoard />} />
+            <Route path ="admin/dashboard" element = {<AdminDashBoard />} />
             <Route path="Profile" element={<UserProfilePage />} />
-            <Route path="AllUsers" element={<AllUsersPage />} />
-            <Route path="Transactions" element={<TransactionPage />} />
-            <Route path="Inquiry" element={<InquiryPage />} />
+            <Route path="MyActivities" element={<MyActivitiesPage />} />
 
             {/* Catch-all route for unknown paths */}
             //

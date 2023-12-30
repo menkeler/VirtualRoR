@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from django.utils import timezone
-
+from rest_framework.decorators import action
 class InquiryPagination(PageNumberPagination):
     page_size = 50
     page_size_query_param = 'page_size'
@@ -27,18 +27,19 @@ class InquiryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # Get the 'ordering', 'status', 'type', 'purpose', and 'search' query parameters from the request
+        # Get the query parameters from the request
         ordering = self.request.query_params.get('ordering', 'status')
         status = self.request.query_params.get('status', None)
         type_param = self.request.query_params.get('type', None)
         search_param = self.request.query_params.get('search', None)
+        user_param = self.request.query_params.get('user', None)
 
         # Validate the ordering parameter to prevent injection attacks
         if ordering not in self.ordering_fields:
             ordering = 'status'
 
         # Apply ordering to the queryset
-        queryset = queryset.order_by(f'{ordering}')
+        queryset = queryset.order_by(ordering)
 
         # Filter by status if provided
         if status:
@@ -47,7 +48,11 @@ class InquiryViewSet(viewsets.ModelViewSet):
         # Filter by type if provided
         if type_param:
             queryset = queryset.filter(inquiry_type=type_param)
-
+       
+        # Filter by inquirer if provided
+        if user_param:
+            queryset = queryset.filter(inquirer=user_param)
+  
         # Filter by inquirer name if provided
         if search_param:
             queryset = queryset.filter(Q(inquirer__first_name__icontains=search_param) | Q(inquirer__last_name__icontains=search_param))
@@ -60,14 +65,60 @@ class TransactionPagination(PageNumberPagination):
     page_size = 50
     page_size_query_param = 'page_size'
     max_page_size = 1000
+    
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     pagination_class = TransactionPagination
+    ordering_fields = ['is_active', 'purpose']
 
     def get_serializer_class(self):
         if self.action == 'create':
             return CreateTransactionSerializer
         return TransactionSerializer
+   
+    @action(detail=False, methods=['GET'])
+    def total_transactions(self, request):
+        total_transactions = self.get_queryset().count()
+        return Response({'total_transactions': total_transactions}, status=status.HTTP_200_OK)
+   
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Get the 'ordering', 'type', and 'search' query parameters from the request
+        ordering = self.request.query_params.get('ordering', 'is_active')
+        type_param = self.request.query_params.get('type', None)
+        search_param = self.request.query_params.get('search', None)
+        is_active_param = self.request.query_params.get('is_active', None)
+        user_param = self.request.query_params.get('user', None)
+        # Validate the ordering parameter to prevent injection attacks
+        if ordering not in self.ordering_fields:
+            ordering = 'is_active'
+
+        # Apply ordering to the queryset
+        queryset = queryset.order_by(f'{ordering}')
+
+        # Filter by type if provided
+        if type_param:
+          queryset = queryset.filter(transaction_type__icontains=type_param)
+
+
+        # Filter by is_active if provided
+        if is_active_param is not None:
+            # Convert the string 'true' or 'false' to a boolean value
+            is_active_value = is_active_param.lower() == 'true'
+            queryset = queryset.filter(is_active=is_active_value)
+
+        # Filter by inquirer if provided
+        if user_param:
+            queryset = queryset.filter(participant=user_param)
+
+        # Filter by inquirer name if provided
+        if search_param:
+            queryset = queryset.filter(
+                Q(participant__first_name__icontains=search_param) | Q(participant__last_name__icontains=search_param)
+            )
+
+        return queryset
 
 class ReservedItemViewSet(viewsets.ModelViewSet):
     queryset = ReservedItem.objects.all()

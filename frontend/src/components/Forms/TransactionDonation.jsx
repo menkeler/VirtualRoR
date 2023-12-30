@@ -286,7 +286,6 @@ const TransactionDonation = () => {
   
   return (
     <>
-      <div>TransactionDonation</div>
 
       <button className="btn" onClick={() => document.getElementById('TransactionDonation').showModal()}>Donation</button>
       <dialog id="TransactionDonation" className="modal">
