@@ -59,7 +59,7 @@ const UsersTable = ({ type, user, onSelectUser }) => {
             />
     
             {/* Table */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto mx-16">
               <table className="table min-w-full bg-white border border-gray-300">
                 {/* Head */}
                 <thead className="bg-green-500 text-white">
@@ -69,14 +69,13 @@ const UsersTable = ({ type, user, onSelectUser }) => {
                     <th className="py-3 px-4 border-b">Email</th>
                     <th className="py-3 px-4 border-b">Department</th>
                     <th className="py-3 px-4 border-b">Role</th>
-                    <th className="py-3 px-4 border-b"></th>
                   </tr>
                 </thead>
                {/* Body */}
                 <tbody>
                   {users.map((user) => (
                     <React.Fragment key={user.user_id}>
-                      <tr className="hover:bg-green-50">
+                      <tr className="hover:bg-green-50" onClick={() => document.getElementById(`Detail${user.user_id}`).showModal()}>
                         <td>{user.user_id}</td>
                         <td className="py-2 px-4 border-b">
                           <div className="flex items-center gap-3">
@@ -96,17 +95,50 @@ const UsersTable = ({ type, user, onSelectUser }) => {
                         <td className="py-2 px-4 border-b">
                           <span className="badge badge-primary badge-lg">{user.staff && user.staff.position !== null ? user.staff.position : 'Client'}</span>
                         </td>
-                        <th className="py-2 px-4 border-b">
-
-                          {/* ADD PROFILE CHECKER NEXTTIME */}
-                          <button className="btn btn-ghost btn-xs">details</button>
-                        </th>
+              
                       </tr>
                     </React.Fragment>
                   ))}
                 </tbody>
               </table>
+
+              {/* MOdal */}
+              {users.map((user) => (
+              <dialog key={`Detail${user.user_id}`} id={`Detail${user.user_id}`} className="modal">
+             <div className="modal-box w-11/12 max-w-2xl p-6 bg-white shadow-md rounded-md">
+              <div>
+                <h3 className="font-bold text-xl mb-4">{`${user.first_name} ${user.last_name}`}</h3>
+                <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="" className='mx-auto w-40 h-40  rounded-3xl mb-4' />
+                <p className="text-gray-600 mb-2">
+                  <span className="font-bold">Department:</span> {user.department}
+                </p>
+                <p className="text-gray-600 mb-2">
+                  <span className="font-bold">Role:</span> {user.staff && user.staff.position !== null ? user.staff.position : 'Client'}
+                </p>
+                <p className="text-gray-600 mb-2">
+                  <span className="font-bold">Email:</span> {user.email}
+                </p>
+                <p className="text-gray-600 mb-2">
+                  <span className="font-bold">Contact:</span> {user.contact}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 gap-4 mt-8">
+                <button className="btn btn-info text-white p-2 rounded">View Transactions</button>
+                <button className="btn btn-info text-white p-2 rounded">View Inquiries</button>
+                <button className="btn btn-info text-white p-2 rounded">View Posts</button>
+              </div>
+
+              <div className="modal-action mt-6">
+                <form method="dialog">
+                  <button className="btn" onClick={() => document.getElementById(`Detail${user.user_id}`).close()}>
+                    Close
+                  </button>
+                </form>
+              </div>
             </div>
+              </dialog>
+          ))}
+        </div>
     
             {/* Pagination controls */}
             <div className="join mt-4">

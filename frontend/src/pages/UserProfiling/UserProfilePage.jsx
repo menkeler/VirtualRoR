@@ -68,7 +68,7 @@ function UserProfilePage() {
       <h1 className="text-3xl font-bold text-center text-green-600 my-6">User Profile</h1>
       <div className="card card-side bg-base-100 shadow-xl mx-28">
         {/* Display user profile */}
-        <figure><img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" alt="Movie"/></figure>
+        <figure><img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" alt="Movie" className=' h-52 w-52 rounded-full'/></figure>
         <div className="card-body">
           {/* Display input fields or h2 based on editing state */}
           <h2 className="card-title">
