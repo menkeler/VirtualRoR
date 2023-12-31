@@ -9,7 +9,9 @@ import InquiryDonation from '../../components/Forms/InquiryDonation';
 import InquiryTable from '../../components/Displaycomponents/InquiryTable';
 import TransactionsTable from '../../components/Displaycomponents/TransactionsTable';
 import TransactionRelease from '../../components/Forms/TransactionRelease';
-const DashboardTransactionPage = () => {
+
+
+const DashboardTransactionPage = ({User}) => {
 
    
   return (
@@ -17,10 +19,9 @@ const DashboardTransactionPage = () => {
 
       <TransactionRelease />
       <TransactionDonation />
-      <TransactionsTable />
+      <TransactionsTable User={User} />
   
-      
-       
+    
     </>
   );
 };

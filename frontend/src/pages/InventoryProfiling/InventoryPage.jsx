@@ -4,7 +4,7 @@ import Navbar from '../../components/wholepage/Navbar';
 import Cookies from 'js-cookie';
 import { useAuth } from '../../contexts/AuthContext';
 import InventoryTable from '../../components/Displaycomponents/InventoryTable';
-
+import Footer from '../../components/wholepage/Footer';
 const InventoryPage = () => {
 
   const { userData } = useAuth(); 
@@ -17,7 +17,7 @@ const InventoryPage = () => {
 
         <div><InventoryTable type={1}/></div>
       </div>
-      
+      <Footer/>
     </>
   );
 };

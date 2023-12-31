@@ -3,7 +3,7 @@ import Navbar from '../../components/wholepage/Navbar';
 import TransactionsTable from '../../components/Displaycomponents/TransactionsTable';
 import InquiryTable from '../../components/Displaycomponents/InquiryTable';
 import { useAuth } from '../../contexts/AuthContext';
-
+import Footer from '../../components/wholepage/Footer';
 const MyActivitiesPage = () => {
   const { userData } = useAuth();
   
@@ -40,8 +40,8 @@ const MyActivitiesPage = () => {
           </details>
         </div>
 
-
       </div>
+      <Footer/>
     </>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../../components/wholepage/Navbar';
 import { useAuth } from '../../contexts/AuthContext';
 import client from '../../api/client';
-
+import Footer from '../../components/wholepage/Footer';
 function UserProfilePage() {
   
   const {isLoggedIn, userData, fetchData } = useAuth();
@@ -187,7 +187,7 @@ console.log(userData)
         </div>
       </div>   
       {/* end of card */}
-
+      <Footer/>
     </>
   );
 }

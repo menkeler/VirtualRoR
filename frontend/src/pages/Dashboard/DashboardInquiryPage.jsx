@@ -1,11 +1,16 @@
 import React from 'react'
 import Navbar from '../../components/wholepage/Navbar';
 import InquiryTable from '../../components/Displaycomponents/InquiryTable';
-const DashboardInquiryPage = () => {
+
+const DashboardInquiryPage = ({User,Admin}) => {
   return (
-    <>
-    <InquiryTable/>
-    </>
+  <>
+    {!Admin ? (
+      <InquiryTable User={User} />
+    ) : (
+      <InquiryTable User={User} Admin={Admin} />
+    )}
+  </>
     
   )
 }

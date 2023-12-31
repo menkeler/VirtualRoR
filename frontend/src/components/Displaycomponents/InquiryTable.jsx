@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import { useAuth } from '../../contexts/AuthContext';
 
-const InquiryTable = ({User}) => {
+const InquiryTable = ({User,Admin}) => {
   const [inquiries, setInquiries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [statusQuery, setStatusQuery] = useState('');
@@ -314,7 +314,7 @@ const InquiryTable = ({User}) => {
                     </div>
                     <div className="modal-action">
                       <form method="dialog">
-                          {!User ? (
+                          {Admin ? (
                             inquiry.status === 'Pending' && (
                               <>
                                 <button

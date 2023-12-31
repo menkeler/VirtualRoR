@@ -2,12 +2,13 @@
   import client from '../../api/client';
   import Cookies from 'js-cookie';
 
-const UsersTable = ({ type, user, onSelectUser }) => {
+const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [totalPages, setTotalPages] = useState(1);
-    
+
+
     useEffect(() => {
       const fetchUsers = async (page) => {
         try {
@@ -43,8 +44,12 @@ const UsersTable = ({ type, user, onSelectUser }) => {
     const handleSelectUser = (userId) => {
         // Pass the selected user to the parent component
         onSelectUser(userId);
-      };
+    };
 
+    const handleSelectType = (type) => {
+      // Pass the selected user to the parent component
+      onSelectType(type);
+  };
 
     if (type === 1) {
         return (
@@ -123,9 +128,24 @@ const UsersTable = ({ type, user, onSelectUser }) => {
                 </p>
               </div>
               <div className="grid grid-cols-3 gap-4 mt-8">
-                <button className="btn btn-info text-white p-2 rounded-full">View Transactions</button>
-                <button className="btn btn-info text-white p-2 rounded-full">View Inquiries</button>
-                <button className="btn btn-info text-white p-2 rounded-full">View Posts</button>
+                <button className="btn btn-info text-white p-2 rounded-full"    onClick={() => {
+                    handleSelectUser(user);
+                    onSelectType("transactions");
+                  }}>
+                    View Transactions
+                </button>
+                <button className="btn btn-info text-white p-2 rounded-full"    onClick={() => {
+                    handleSelectUser(user);
+                    onSelectType("inquiries");
+                  }}>
+                    View Inquiries
+                </button>
+                <button className="btn btn-info text-white p-2 rounded-full"    onClick={() => {
+                    handleSelectUser(user);
+                    onSelectType("posts");
+                  }}>
+                    View Posts
+                </button>
               </div>
             </div>
               <form method="dialog" className="modal-backdrop">

@@ -1,18 +1,32 @@
 // AdminDashboard.js
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import Navbar from '../../components/wholepage/Navbar';
 import DashboardTransactionPage from '../Dashboard/DashboardTransactionPage';
 import DashboardInquiryPage from '../Dashboard/DashboardInquiryPage';
 import AllUsersPage from '../UserProfiling/AllUsersPage';
 import AdminDashBoardStats from '../Dashboard/AdminDashBoardStats';
-
+import Footer from '../../components/wholepage/Footer';
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState('dashboard');
+  const [selectedUser, setSelectedUser] = useState(null);
+ 
 
   // Function to handle navigation item clicks
   const handlePageChange = (page) => {
     setSelectedPage(page);
+    setSelectedUser(null)
+  };
+
+
+  const handleUserSelection = (selectedUserId) => {
+    console.log('Selected user in parent component:', selectedUserId);
+    setSelectedUser(selectedUserId)
+  };
+
+  const handleTypeSelection = (selectedType) => {
+    console.log('Selected type in parent component:', selectedType);
+    setSelectedPage(selectedType)
   };
 
   return (
@@ -94,7 +108,7 @@ const AdminDashboard = () => {
           <header className="bg-white shadow">
             <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
               <h1 className="text-3xl font-bold leading-tight text-gray-900">
-                Admin Dashboard - {selectedPage.charAt(0).toUpperCase() + selectedPage.slice(1)}
+              Admin Dashboard - {selectedPage.charAt(0).toUpperCase() + selectedPage.slice(1)} {selectedUser && selectedUser.first_name && selectedUser.last_name && `- ${selectedUser.first_name} ${selectedUser.last_name}`}
               </h1>
             </div>
           </header>
@@ -112,20 +126,21 @@ const AdminDashboard = () => {
               {/* Users */}
               {selectedPage === 'users' && (
                 <section className="mb-8">
-                  <AllUsersPage/>
+                  <AllUsersPage User={handleUserSelection} Type={handleTypeSelection} />
                 </section>
+               
               )}
+              
                {/* Inquiries */}
                {selectedPage === 'inquiries' && (
                 <section className="mb-8">
-
-                  <DashboardInquiryPage/>
+                  <DashboardInquiryPage User={selectedUser ? selectedUser.user_id : null} Admin={true}/>
                 </section>
               )}
                {/* Transaction */}
                {selectedPage === 'transactions' && (
                 <section className="mb-8">
-                  <DashboardTransactionPage/>  
+                  <DashboardTransactionPage User={selectedUser ? selectedUser.user_id : null} />
                 </section>
               )}
                {/* Posts */}
@@ -141,6 +156,8 @@ const AdminDashboard = () => {
           </main>
         </div>
       </div>
+
+      <Footer/>
     </>
   );
 };

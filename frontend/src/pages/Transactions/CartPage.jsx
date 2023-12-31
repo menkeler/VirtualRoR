@@ -5,7 +5,7 @@ import Navbar from '../../components/wholepage/Navbar';
 import Cookies from 'js-cookie';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
-
+import Footer from '../../components/wholepage/Footer';
 const CartPage = () => {
   const { state: cartState, dispatch } = useCart();
 
@@ -260,6 +260,7 @@ const handleSubmit = async (e)  => {
         
         </div>
       </div>
+      <Footer/>
     </>
   );
 };
