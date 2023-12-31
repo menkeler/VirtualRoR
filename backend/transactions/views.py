@@ -103,7 +103,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
 
         # Filter by is_active if provided
-        if is_active_param is not None:
+        if is_active_param is not None and is_active_param != '':
             # Convert the string 'true' or 'false' to a boolean value
             is_active_value = is_active_param.lower() == 'true'
             queryset = queryset.filter(is_active=is_active_value)
@@ -166,66 +166,42 @@ class TransactionItemViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def confirm_reservation(request, inquiry_id, purpose):
     inquiry = get_object_or_404(Inquiry, pk=inquiry_id)
-
-    # Check if the inquiry is of type 'Reservation' and has a status of 'Pending'
+    # IF Inquiry change status
     if purpose == 'Accept':
-        if inquiry.inquiry_type == 'Reservation' and inquiry.status == 'Pending':
-            # Update the inquiry status to 'Accepted'
+        if inquiry.status == 'Pending':
             inquiry.status = 'Accepted'
-            inquiry.save()
-
-            # Process each reserved item
-            for reserved_item in inquiry.reserved_items.all():
-                # Check if the item is an ItemCopy
-                if hasattr(reserved_item, 'item') and reserved_item.item:
-                    # Check if item is already borrowed
-                    if reserved_item.item.is_borrowed:
-                        # Handle the case where the item is already borrowed (show error or take appropriate action)
-                        print("Error: Item is already borrowed.")
-                    else:
-                        reserved_item.item.previous_is_borrowed = reserved_item.item.is_borrowed  # Update previous_is_borrowed
-                        reserved_item.item.is_borrowed = True
-                        reserved_item.item.save()
-
-                elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
-                    # Check if the item is related to an inventory item and it exists
-                    
-                    # Calculate the available quantity to reserve
-                    available_quantity = min(reserved_item.inventory.quantity, reserved_item.quantity)
-
-                    # Update the inventory quantity
-                    reserved_item.inventory.quantity -= available_quantity
-                    reserved_item.inventory.save()  
-
-            # Serialize the updated inquiry
-            serializer = InquirySerializer(inquiry)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        elif inquiry.inquiry_type == 'Donation' and inquiry.status == 'Pending':
-            inquiry.status = 'Accepted'
-            inquiry.save()
-            
-            # Serialize the updated inquiry
-            serializer = InquirySerializer(inquiry)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            if inquiry.inquiry_type == 'Donation':
+                inquiry.save()
+            else:
+                process_reserved_items(inquiry)
+                inquiry.save()
+            return Response(InquirySerializer(inquiry).data, status=status.HTTP_200_OK)
         
     elif purpose == 'Rejected':
-        # Extra commands in  the future
         inquiry.status = 'Rejected'
         inquiry.save()
-         # Serialize the updated inquiry
-        serializer = InquirySerializer(inquiry)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
     elif purpose == 'Cancelled':
-        
         inquiry.status = 'Cancelled'
         inquiry.save()
-         # Serialize the updated inquiry
-        serializer = InquirySerializer(inquiry)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        
+
     return Response({'detail': 'Reservation cannot be confirmed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#if Resereved item is borrowable which is item is the same as itemCopy status for borrwed
+def process_reserved_items(inquiry):
+    for reserved_item in inquiry.reserved_items.all():
+        if hasattr(reserved_item, 'item') and reserved_item.item:
+            if reserved_item.item.is_borrowed:
+                print("Error: Item is already borrowed.")
+            else:
+                reserved_item.item.previous_is_borrowed = reserved_item.item.is_borrowed
+                reserved_item.item.is_borrowed = True
+                reserved_item.item.save()
+
+        elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
+            available_quantity = min(reserved_item.inventory.quantity, reserved_item.quantity)
+            reserved_item.inventory.quantity -= available_quantity
+            reserved_item.inventory.save()
 
 @api_view(['POST'])
 def process_transaction(request, inquiry_id):
