@@ -98,7 +98,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                         <td className="py-2 px-4 border-b">{user.email}</td>
                         <td className="py-2 px-4 border-b">{user.department}</td>
                         <td className="py-2 px-4 border-b">
-                          <span className="badge badge-primary badge-lg">{user.staff && user.staff.position !== null ? user.staff.position : 'Client'}</span>
+                          <span className="badge badge-info badge-lg">{user.staff && user.staff.position !== null ? user.staff.position : 'Client'}</span>
                         </td>
               
                       </tr>

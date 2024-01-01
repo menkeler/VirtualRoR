@@ -58,7 +58,7 @@ const InventoryProfilingTable = ({onSelectItem}) => {
       />
 
     {/* List of names */}
-        <div className="mt-4 grid gap-6 grid-cols-5">
+        <div className="mt-4 grid gap-6 grid-cols-3">
             {items.map((item) => (
                 <div key={item.id} className="p-6 bg-white rounded-lg shadow-md overflow-hidden">
                 <h2 className="text-lg font-semibold overflow-wrap break-word whitespace-normal mb-2">
@@ -68,7 +68,7 @@ const InventoryProfilingTable = ({onSelectItem}) => {
             <figure>
                 <img
                   src='https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg'
-                  className="w-full h-16 object-cover rounded-md mb-4"
+                  className="w-full h-32 object-cover rounded-md mb-4"
                 />
             </figure>
 

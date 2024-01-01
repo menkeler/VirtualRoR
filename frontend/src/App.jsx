@@ -9,6 +9,7 @@ import AdminDashBoard from './pages/UserProfiling/AdminDashBoard';
 import InventoryPage from './pages/InventoryProfiling/InventoryPage';
 import CartPage from './pages/Transactions/CartPage';
 import MyActivitiesPage from './pages/Transactions/MyActivitiesPage';
+import NewRegularPostPage from './pages/Posts/NewRegularPostPage';
 function App() {
   const { isLoggedIn } = useAuth();
 
@@ -28,9 +29,9 @@ function App() {
             <Route path ="admin/dashboard" element = {<AdminDashBoard />} />
             <Route path="Profile" element={<UserProfilePage />} />
             <Route path="MyActivities" element={<MyActivitiesPage />} />
-
+            <Route path="NewPost" element={<NewRegularPostPage />} />
             {/* Catch-all route for unknown paths */}
-            //
+            
             <Route path="*" element={<Navigate to="/Home" />} />
 
           </>

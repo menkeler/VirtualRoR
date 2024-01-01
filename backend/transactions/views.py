@@ -1,14 +1,18 @@
-from .models import Inquiry,Transaction, TransactionItem,ReservedItem
-from .serializers import InquirySerializer,InquiryCreateSerializer,TransactionSerializer, TransactionItemSerializer,ReservedItemSerializer,ReservedItemCreateSerializer,CreateTransactionItemSerializer,CreateTransactionSerializer
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
+from django.db.models import Count, Q,Sum
 from django.utils import timezone
-from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, status
+from rest_framework.decorators import action, api_view
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from .models import Inquiry, Transaction, TransactionItem, ReservedItem
+from .serializers import (
+    InquirySerializer, InquiryCreateSerializer,
+    TransactionSerializer, TransactionItemSerializer,
+    ReservedItemSerializer, ReservedItemCreateSerializer,
+    CreateTransactionItemSerializer, CreateTransactionSerializer
+)
+
 class InquiryPagination(PageNumberPagination):
     page_size = 50
     page_size_query_param = 'page_size'
@@ -80,7 +84,47 @@ class TransactionViewSet(viewsets.ModelViewSet):
     def total_transactions(self, request):
         total_transactions = self.get_queryset().count()
         return Response({'total_transactions': total_transactions}, status=status.HTTP_200_OK)
-   
+    
+    @action(detail=False, methods=['GET'])
+    def total_donations_this_month(self, request):
+        # Get the current month and year
+        current_month = timezone.now().month
+        current_year = timezone.now().year
+
+        # Filter transactions for the current month, with transaction_type='Donation'
+        donations_this_month = TransactionItem.objects.filter(
+            transaction__date_created__month=current_month,
+            transaction__date_created__year=current_year,
+            transaction__transaction_type='Donation'
+        )
+
+        # Aggregate the total quantity of all donated items per user
+        user_donation_data_list = donations_this_month.values(
+            'transaction__participant',
+            'transaction__participant__first_name',
+            'transaction__participant__last_name',
+            'transaction__participant__email',
+            'transaction__participant__avatar',
+        ).annotate(
+            total_quantity_donated=Sum('quantity')
+        ).order_by('-total_quantity_donated')[:10]  # Order by total quantity donated and select top 10
+
+        # Include user details (assuming participant is a ForeignKey to User model)
+        user_donation_data = [
+            {
+                'id': entry['transaction__participant'],
+                'first_name': entry['transaction__participant__first_name'],
+                'last_name': entry['transaction__participant__last_name'],
+                'email': entry['transaction__participant__email'],
+                'avatar': entry['transaction__participant__avatar'],
+                'total_quantity_donated': entry['total_quantity_donated']
+            }
+            for entry in user_donation_data_list
+        ]
+
+        return Response({'user_donation_data': user_donation_data}, status=status.HTTP_200_OK)
+
+    
     def get_queryset(self):
         queryset = super().get_queryset()
 

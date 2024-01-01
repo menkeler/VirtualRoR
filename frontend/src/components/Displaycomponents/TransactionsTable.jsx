@@ -286,6 +286,8 @@ const TransactionsTable = ({User}) => {
                             <div className="mb-2">Contact: {transaction.participant.contact}</div>
                           </div>
                         </div>
+                        <div className="border-t border-gray-200 my-8"></div>
+    
                         <div className="flex flex-col w-full">
                         <h3 className="font-bold text-lg mb-4">Transaction Items</h3>
                           <div className="overflow-x-auto">

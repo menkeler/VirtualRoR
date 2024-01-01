@@ -51,7 +51,8 @@ const AdminDashboard = () => {
                   selectedPage === 'dashboard' ? 'bg-gray-700' : ''
                 }`}
               >
-                Dashboard
+                <i className="fa-solid fa-chart-line"></i>
+                <span className="text-xl"> Stats</span>
               </button>
             </li>
             {/* Users */}
@@ -62,7 +63,20 @@ const AdminDashboard = () => {
                   selectedPage === 'users' ? 'bg-gray-700' : ''
                 }`}
               >
-                Users
+                <i className="fa-solid fa-users"></i>
+                <span className="text-xl"> Users</span>
+         
+              </button>
+            </li>
+            <li className="mb-2 flex justify-center">
+              <button
+                onClick={() => handlePageChange('inventory')}
+                className={`text-gray-300  hover:bg-gray-700 px-4 py-2 w-full block ${
+                  selectedPage === 'inventory' ? 'bg-gray-700' : ''
+                }`}
+              >
+                <i className="fa-solid fa-warehouse"></i>
+                <span className="text-xl"> Inventory</span>
               </button>
             </li>
              {/* INquiries */}
@@ -73,7 +87,9 @@ const AdminDashboard = () => {
                   selectedPage === 'inquiries' ? 'bg-gray-700' : ''
                 }`}
               >
-                Inquiries
+                <i className="fa-solid fa-scroll"></i>
+                <span className="text-xl"> Inquiries</span>
+                
               </button>
             </li>
             {/* Transactions */}
@@ -84,7 +100,9 @@ const AdminDashboard = () => {
                   selectedPage === 'transactions' ? 'bg-gray-700' : ''
                 }`}
               >
-                Transactions
+                <i className="fa-solid fa-arrow-right-arrow-left"></i>
+                <span className="text-xl"> Transactions</span>
+                
               </button>
             </li>
              {/* Posts */}
@@ -95,7 +113,8 @@ const AdminDashboard = () => {
                   selectedPage === 'posts' ? 'bg-gray-700' : ''
                 }`}
               >
-                Posts
+                <i className="fa-solid fa-newspaper"></i>
+                <span className="text-xl"> Posts</span>
               </button>
             </li>
             {/* Add more navigation items as needed */}
@@ -129,6 +148,12 @@ const AdminDashboard = () => {
                   <AllUsersPage User={handleUserSelection} Type={handleTypeSelection} />
                 </section>
                
+              )}
+              {/* Inquiries */}
+              {selectedPage === 'inventory' && (
+                <section className="mb-8">
+                  Inventory for now
+                </section>
               )}
               
                {/* Inquiries */}

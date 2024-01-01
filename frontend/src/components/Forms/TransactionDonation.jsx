@@ -291,7 +291,8 @@ const TransactionDonation = () => {
       <dialog id="TransactionDonation" className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <h3 className="font-bold text-lg">Transaction Donation</h3>
-          <p className="py-4">Fill in the form</p>
+          <div className="border-t border-gray-200 my-8"></div>
+          <p className="py-4">Please Complete the Form</p>
           <div className="flex flex-col items-center">
             <h3 className="font-bold text-lg">Donor</h3>
             <h1 className="mb-4">

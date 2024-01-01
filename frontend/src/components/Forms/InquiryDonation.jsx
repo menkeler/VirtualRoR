@@ -40,15 +40,16 @@ const InquiryDonation = () => {
   return (
     <>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
-      <button className="btn btn-secondary btn-cube p-2" onClick={() => document.getElementById('InquiryDonation').showModal()}>
-        Inquiry Donation
-        
+      <button className="btn btn-cube p-2" onClick={() => document.getElementById('InquiryDonation').showModal()}>
+      <i className="fa-solid fa-hand-holding-hand"></i>
+        Donate
       </button>
 
       <dialog id="InquiryDonation" className="modal">
         <div className="modal-box p-6 bg-white rounded-md shadow-md">
           <h3 className="font-bold text-2xl mb-4">Inquiry Donation</h3>
-          <p className="text-gray-600 mb-4">Fill in the form</p>
+          <div className="border-t border-gray-200 my-4"></div>
+          <p className="text-gray-600 mb-4">Please Complete the Form</p>
           <form>
             <div className={`mb-4 ${inputError && !message ? 'border-red-500' : ''}`}>
               <label htmlFor="message" className="text-lg font-bold mb-2">

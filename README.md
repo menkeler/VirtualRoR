@@ -48,4 +48,9 @@ npm i react-select-virtualized
 npm install react@latest react-virtualized@latest
 npm i patch-package 
 npm install crypto-js
+npm install babel-plugin-macros
+npm i @fortawesome/fontawesome-free
+npm install --save @fortawesome/fontawesome-free
+npm install --save @fortawesome/free-solid-svg-icons
+
 ```
