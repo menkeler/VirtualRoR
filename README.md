@@ -54,3 +54,51 @@ npm install --save @fortawesome/fontawesome-free
 npm install --save @fortawesome/free-solid-svg-icons
 
 ```
+
+
+
+
+* How to Install on Another Device
+Clone the Repository:
+
+```
+git clone <repository-url>
+cd <project-directory>
+```
+* Backend Setup:
+
+*Activate virtual environment:
+```
+env\scripts\activate
+```
+* Install Python dependencies:
+```
+pip install -r requirements.txt
+```
+
+* Frontend Setup:
+
+*Install Node.js dependencies:
+```
+npm install
+```
+* Run Django Backend:
+
+* Navigate to the Django project directory:
+```
+cd backend
+```
+* Run the Django development server:
+```
+python manage.py runserver
+```
+* Run React Frontend:
+
+* Navigate to the React project directory:
+```
+cd frontend
+```
+*Start the React development server:
+```
+npm start
+```
