@@ -11,18 +11,19 @@ Check the settings in backend folder
 you can change the db used there
 
 
-I will add the requirements text int the future
-for now that is the list of modules i used in backend front end
 
 ## Installations
-on file root first do
-python -m venv env
+* On Root Folder Create a new Virtual Environment
 
-then use that everytime you run
+python -m venv env
 
 ```
 env\scripts\activate
+
+pip install -r requirements.txt
+
 ```
+## What Libraries i Used
 * backend
 ```
 pip install django 
@@ -31,6 +32,7 @@ pip install pylance
 pip install Pillow
 pip install psycopg2
 pip install factory-boy
+pip install -U Celery
 ```
 
 * frontend
