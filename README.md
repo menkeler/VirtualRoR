@@ -1,17 +1,87 @@
-# React/DjangoRF Authentication App
-Just create a bracnh 
+# Virtual Room of Requirements - React/DjangoRF Authentication App
 
-Virtaul Room of Requirements
+Welcome to the Virtual Room of Requirements, an authentication app built using React for the frontend and DjangoRF for the backend. The primary goal is to gradually improve code readability through patching. Please follow the instructions below to set up the project and run it on your local machine.
 
-will gradually improve code readability through patching
+## Branch
 
-you need to install postgresql to test
+Create a branch named `Virtual_Room_of_Requirements` for this project.
 
-Check the settings in backend folder
-you can change the db used there
+## Requirements
 
+- [Python](https://www.python.org/)
+- [Node.js](https://nodejs.org/)
+- [PostgreSQL](https://www.postgresql.org/)
 
-I will add the requirements text int the future
+## Installation
+
+### Backend
+
+1. Create a virtual environment:
+
+    ```bash
+    python -m venv env
+    ```
+
+2. Activate the virtual environment:
+
+    ```bash
+    env\scripts\activate
+    ```
+
+3. Install backend dependencies:
+
+    ```bash
+    pip install django djangorestframework django-cors-headers pylance Pillow psycopg2 factory-boy
+    ```
+
+### Frontend
+
+1. Install frontend dependencies:
+
+    ```bash
+    npm install -D tailwindcss postcss autoprefixer
+    npx tailwindcss init -p
+    npm i -D daisyui@latest
+    npm install axios react-router-dom @react-oauth/google js-cookie jwt-decode react-select react-window react-select-virtualized react@latest react-virtualized@latest patch-package crypto-js babel-plugin-macros @fortawesome/fontawesome-free
+    ```
+
+## Database Configuration (Backend)
+
+Customize the database settings in the `backend/settings.py` file. Make sure to install PostgreSQL and set it up according to your preferences.
+
+## Usage
+
+### Run Backend
+
+1. Navigate to the backend directory:
+
+    ```bash
+    cd backend
+    ```
+
+2. Run the Django development server:
+
+    ```bash
+    python manage.py runserver
+    ```
+
+### Run Frontend
+
+1. Navigate to the frontend directory:
+
+    ```bash
+    cd frontend
+    ```
+
+2. Start the React development server:
+
+    ```bash
+    npm start
+    ```
+
+## Future Updates
+
+A `requirements.txt` file will be added in the future for easier dependency management. Feel free to contribute and gradually improve code readability through patching.
 for now that is the list of modules i used in backend front end
 
 ## Installations
@@ -55,50 +125,4 @@ npm install --save @fortawesome/free-solid-svg-icons
 
 ```
 
-
-
-
-* How to Install on Another Device
-Clone the Repository:
-
-```
-git clone <repository-url>
-cd <project-directory>
-```
-* Backend Setup:
-
-*Activate virtual environment:
-```
-env\scripts\activate
-```
-* Install Python dependencies:
-```
-pip install -r requirements.txt
-```
-
-* Frontend Setup:
-
-*Install Node.js dependencies:
-```
-npm install
-```
-* Run Django Backend:
-
-* Navigate to the Django project directory:
-```
-cd backend
-```
-* Run the Django development server:
-```
-python manage.py runserver
-```
-* Run React Frontend:
-
-* Navigate to the React project directory:
-```
-cd frontend
-```
-*Start the React development server:
-```
-npm start
 ```
