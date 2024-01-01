@@ -1,16 +1,12 @@
-# React/DjangoRF Authentication App
-Just create a bracnh 
+# Virtual Room of Requirements - React/DjangoRF Authentication App
 
-Virtaul Room of Requirements
+Welcome to the Virtual Room of Requirements, an authentication app built using React for the frontend and DjangoRF for the backend. The primary goal is to gradually improve code readability through patching. Please follow the instructions below to set up the project and run it on your local machine.
 
-will gradually improve code readability through patching
+## Requirements
 
-you need to install postgresql to test
-
-Check the settings in backend folder
-you can change the db used there
-
-
+- [Python](https://www.python.org/)
+- [Node.js](https://nodejs.org/)
+- [PostgreSQL](https://www.postgresql.org/)
 
 ## Installations
 * On Root Folder Create a new Virtual Environment
@@ -56,3 +52,10 @@ npm install --save @fortawesome/fontawesome-free
 npm install --save @fortawesome/free-solid-svg-icons
 
 ```
+
+
+## Future Updates
+
+A `requirements.txt` file will be added in the future for easier dependency management. Feel free to contribute and gradually improve code readability through patching.
+for now that is the list of modules i used in backend front end
+
