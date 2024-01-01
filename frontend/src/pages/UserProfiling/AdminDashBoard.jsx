@@ -6,6 +6,8 @@ import DashboardInquiryPage from '../Dashboard/DashboardInquiryPage';
 import AllUsersPage from '../UserProfiling/AllUsersPage';
 import AdminDashBoardStats from '../Dashboard/AdminDashBoardStats';
 import Footer from '../../components/wholepage/Footer';
+import InventoryProfilingTable from '../../components/Displaycomponents/InventoryProfilingTable';
+
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState('dashboard');
@@ -68,6 +70,7 @@ const AdminDashboard = () => {
          
               </button>
             </li>
+            {/* Inventory */}
             <li className="mb-2 flex justify-center">
               <button
                 onClick={() => handlePageChange('inventory')}
@@ -77,6 +80,18 @@ const AdminDashboard = () => {
               >
                 <i className="fa-solid fa-warehouse"></i>
                 <span className="text-xl"> Inventory</span>
+              </button>
+            </li>
+               {/* ItemPRofile */}
+               <li className="mb-2 flex justify-center">
+              <button
+                onClick={() => handlePageChange('itemprofile')}
+                className={`text-gray-300  hover:bg-gray-700 px-4 py-2 w-full block ${
+                  selectedPage === 'itemprofile' ? 'bg-gray-700' : ''
+                }`}
+              >
+                <i className="fa-solid fa-basket-shopping"></i>
+                <span className="text-xl"> ItemProfiles</span>
               </button>
             </li>
              {/* INquiries */}
@@ -149,10 +164,16 @@ const AdminDashboard = () => {
                 </section>
                
               )}
-              {/* Inquiries */}
+              {/* inventory */}
               {selectedPage === 'inventory' && (
                 <section className="mb-8">
-                  Inventory for now
+                  Invenroty
+                </section>
+              )} 
+              {/* itemprofile */}
+              {selectedPage === 'itemprofile' && (
+                <section className="mb-8">
+                  <InventoryProfilingTable Admin={true}/>
                 </section>
               )}
               
@@ -169,10 +190,12 @@ const AdminDashboard = () => {
                 </section>
               )}
                {/* Posts */}
-               {selectedPage === 'posts' && (
+              {selectedPage === 'posts' && (
                 <section className="mb-8">
                   <h2 className="text-xl font-semibold mb-4">PostsContent</h2>
                   {/* ... (your users content) */}
+                  
+                  
                 </section>
               )}
 

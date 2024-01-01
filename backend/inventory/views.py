@@ -13,7 +13,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     
 class ItemProfilingPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 30
     page_size_query_param = 'page_size'
     max_page_size = 1000
     
@@ -23,11 +23,26 @@ class ItemProfilingViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
     
-    #Different Serializer for Creation
+    # Different Serializer for Creation
     def get_serializer_class(self):
         if self.action == 'create':
             return ItemProfilingCreateSerializer
         return ItemProfilingSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category_param = self.request.query_params.get('category', None)
+        returnable_param = self.request.query_params.get('returnable', None)
+
+        if category_param:
+            # Assuming 'category' is a field in your ItemProfiling model
+            queryset = queryset.filter(category=category_param)
+
+        if returnable_param is not None and returnable_param != '':
+            # Assuming 'returnable' is a BooleanField in your ItemProfiling model
+            queryset = queryset.filter(returnable=(returnable_param.lower() == 'true'))
+
+        return queryset
     
 
 class ItemCopyViewSet(viewsets.ModelViewSet):

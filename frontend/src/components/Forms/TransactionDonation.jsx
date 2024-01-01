@@ -318,7 +318,7 @@ const TransactionDonation = () => {
             </h1>
             {/* User Modal Content */}
             <dialog id="ChooseUser" className="modal">
-              <div className="modal-box w-11/12 max-w-5xl">
+              <div className="modal-box w-11/12 max-w-5xl h-full">
                 <h3 className="font-bold text-lg">Users</h3>
                 <UsersTable type={2} onSelectUser={handleSelectUser} />
                 <div className="modal-action">
@@ -431,7 +431,7 @@ const TransactionDonation = () => {
 
             {/* Item profile Content */}
             <dialog id="ChooseItems" className="modal">
-                <div className="modal-box w-11/12 max-w-5xl">
+                <div className="modal-box w-11/12 max-w-5xl h-full">
                   <h3 className="font-bold text-lg">Items Here</h3>
               
                     <InventoryProfilingTable onSelectItem={handleSelectItems}/>

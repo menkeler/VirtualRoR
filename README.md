@@ -50,7 +50,8 @@ npm install babel-plugin-macros
 npm i @fortawesome/fontawesome-free
 npm install --save @fortawesome/fontawesome-free
 npm install --save @fortawesome/free-solid-svg-icons
-
+npm i apexcharts
+npm i react-apexcharts
 ```
 
 
