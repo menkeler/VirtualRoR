@@ -9,7 +9,8 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
     description: item.description,
     selectedCategory: { value: category.id, label: category.name }, // Set initial value as an object
   });
-
+  
+  const [editMode, setEditMode] = useState(false); 
   const { name, description, selectedCategory } = formData;
 
   const handleInputChange = (selectedOption) => {
@@ -18,7 +19,9 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
       selectedCategory: selectedOption,
     }));
   };
-
+  const handleEditButtonClick = () => {
+    setEditMode((prevEditMode) => !prevEditMode);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -40,7 +43,7 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
     
     // close the modal after submission
     document.getElementById(`EditItem${item.id}`).close();
-
+    setEditMode(false);
   
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -65,6 +68,7 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
       ...prevData,
       selectedCategory: { value: category.id, label: category.name },
     }));
+    setEditMode(false);
   };
 
   useEffect(() => { 
@@ -81,8 +85,9 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
   return (
     <>
       <button className="btn" onClick={() => document.getElementById(`EditItem${item.id}`).showModal()}>
-        Edit Item
+        Details
       </button>
+      
       <dialog id={`EditItem${item.id}`} className="modal">
         <div className="modal-box h-full">
           <h3 className="font-bold text-lg">{item.name}!</h3>
@@ -98,16 +103,27 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
               <label htmlFor="name" className="text-lg font-bold mb-2">
                 Name
               </label>
-              <input
+              {editMode ? (
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={name}
+                  onChange={(e) => setFormData((prevData) => ({ ...prevData, name: e.target.value }))}
+                  required
+                  className={`border rounded-md p-2 w-full bg-white`}
+                />
+              ) : (
+                <input
                 type="text"
                 id="name"
                 name="name"
-                placeholder="Enter your name here..."
                 value={name}
                 onChange={(e) => setFormData((prevData) => ({ ...prevData, name: e.target.value }))}
-                required
-                className={`border rounded-md p-2 w-full bg-white`}
+                readOnly
+                className={`border rounded-md p-2 bg-base-100 w-full`}
               />
+              )}
             </div>
 
             {/* Description Textarea */}
@@ -115,6 +131,7 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
               <label htmlFor="description" className="text-lg font-bold mb-2">
                 Description
               </label>
+              {editMode ? (
               <textarea
                 id="description"
                 name="description"
@@ -125,6 +142,17 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
                 className={`border rounded-md p-2 w-full bg-white`}
                 rows="4"
               ></textarea>
+              ) : (
+                <textarea
+                id="description"
+                name="description"
+                placeholder="Enter your description here..."
+                value={description}
+                readOnly
+                className={`border rounded-md p-2 w-full bg-base-100`}
+                rows="4"
+              ></textarea>
+              )}
             </div>
 
             {/* Category Select */}
@@ -132,6 +160,7 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
               <label htmlFor="selectedCategory" className="text-lg font-bold mb-2">
                 Category
               </label>
+              {editMode ? (
               <Select
                 id="selectedCategory"
                 name="selectedCategory"
@@ -145,11 +174,34 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
                 required
                 className={`border rounded-md p-2 w-full bg-white`}
               />
+              ) : (
+                <Select
+                id="selectedCategory"
+                name="selectedCategory"
+                value={selectedCategory}
+                onChange={handleInputChange}
+                options={categoriesList.map((categoryOption) => ({
+                  value: categoryOption.id,
+                  label: categoryOption.name,
+                }))}
+                isSearchable
+                required
+                isDisabled
+                className={`border rounded-md p-2 w-full bg-base-100`}
+              />
+              )}
             </div>
-
-            <div className="flex justify-end">
-              <button type="submit" className="btn bg-accent text-white">
-                Submit
+            <div className="flex justify-between">
+            <div className="flex">
+              {editMode && (
+                <button type="submit" className="btn bg-accent text-white">
+                  Confirm
+                </button>
+              )}
+            </div>
+            <div className="flex">
+              <button type="button" onClick={handleEditButtonClick} className="btn bg-accent text-white">
+                Edit
               </button>
               <button
                 type="button"
@@ -159,6 +211,7 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
                 Close
               </button>
             </div>
+          </div>
           </form>
         </div>
       </dialog>

@@ -198,6 +198,11 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
               <h2 className="text-base font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
                 {user.first_name} {user.last_name}
               </h2>
+              <div className="avatar">
+                          <div className="mask mask-squircle w-12 h-12">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg" alt="Avatar" />
+                          </div>
+                        </div>
               <p className="text-sm text-gray-600 overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
                 {user.email}
               </p>

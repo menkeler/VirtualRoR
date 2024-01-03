@@ -59,10 +59,10 @@ const CategoryAdd = ({onFormSubmit}) => {
             <label htmlFor="categoryName" className="text-sm">
               Category Name:
             </label>
-            <input type="text" id="categoryName" className="input" value={createdCategory} onChange={(e) => setCreatedCategory(e.target.value)} />
+            <input type="text" id="categoryName" className="input" required value={createdCategory} onChange={(e) => setCreatedCategory(e.target.value)} />
           </div>
           <div className="modal-action">
-            <button className="btn btn-accent mr-4" type="button" onClick={handleCreateCategory}>
+            <button className="btn btn-accent mr-4" type="button" disabled={!createdCategory.trim()}  onClick={handleCreateCategory}>
               Create Category
             </button>
             <button className="btn btn-accent" type="button" onClick={() => document.getElementById('CreateCategory').close()}>

@@ -180,7 +180,10 @@ const TransactionRelease = () => {
 
         <div className="modal-action">
           <form method="dialog">
-           <button type="button" className='btn btn-accent mr-2 text-white' onClick={handleSubmit}>Submit</button>
+           <button type="button" className='btn btn-accent mr-2 text-white' 
+           onClick={handleSubmit}
+           disabled={!Remarks.trim()||!selectedInquiry||!inquiries}
+           >Submit</button>
             <button className="btn">Close</button>
           </form>
         </div>

@@ -297,23 +297,23 @@ const TransactionDonation = () => {
             <h3 className="font-bold text-lg">Donor</h3>
             <h1 className="mb-4">
               <div className="flex items-center space-x-4">
-                {selectedUser && (
-                  <>
-                    <div className="p-4 border rounded-lg bg-gray-100">
-                      <p className="font-semibold text-gray-600">ID:</p>
-                      <p className="text-blue-500">{selectedUser.user_id}</p>
-                    </div>
-                    <div className="p-4 border rounded-lg bg-gray-100">
-                      <p className="font-semibold text-gray-600">Name:</p>
-                      <p className="text-blue-500">{selectedUser.first_name} {selectedUser.last_name}</p>
-                    </div>
-                    <div className="p-4 border rounded-lg bg-gray-100">
-                      <p className="font-semibold text-gray-600">Email:</p>
-                      <p className="text-blue-500">{selectedUser.email}</p>
-                    </div>
-                  </>
-                )}
-                <button className="btn" onClick={() => document.getElementById('ChooseUser').showModal()}>Choose user</button>
+               {selectedUser && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+                  <div className="p-4 border rounded-lg bg-gray-100">
+                    <p className="font-bold text-gray-600">ID:</p>
+                    <p className="font-bold">{selectedUser.user_id}</p>
+                  </div>
+                  <div className="p-4 border rounded-lg bg-gray-100">
+                    <p className="font-bold text-gray-600">Name:</p>
+                    <p className="font-bold">{`${selectedUser.first_name} ${selectedUser.last_name}`}</p>
+                  </div>
+                  <div className="p-4 border rounded-lg bg-gray-100">
+                    <p className="font-bold text-gray-600">Email:</p>
+                    <p className="font-bold">{selectedUser.email}</p>
+                  </div>
+                </div>
+              )}
+                <button className="btn btn-accent" onClick={() => document.getElementById('ChooseUser').showModal()}>Choose user</button>
               </div>
             </h1>
             {/* User Modal Content */}
@@ -323,7 +323,7 @@ const TransactionDonation = () => {
                 <UsersTable type={2} onSelectUser={handleSelectUser} />
                 <div className="modal-action">
                   <form method="dialog">
-                    <button className="btn">Close</button>
+                    <button className="btn btn-error">Close</button>
                   </form>
                 </div>
               </div>
@@ -334,7 +334,7 @@ const TransactionDonation = () => {
 
             <h1 className="mb-4">
               <CreateItemProfile />
-            <button className="btn" onClick={() => document.getElementById('ChooseItems').showModal()}>Choose Items</button>
+            <button className="btn btn-accent" onClick={() => document.getElementById('ChooseItems').showModal()}>Choose Items</button>
             <div className="overflow-x-auto w-full max-h-screen">
             <table className="table w-full">
               {/* head */}
@@ -423,7 +423,7 @@ const TransactionDonation = () => {
             <h3 className="font-bold text-lg">Remarks</h3>
             <textarea
                 className="resize-none border rounded-md p-2 mt-2 w-full"
-                placeholder="Enter your remarks here..."
+                placeholder="Enter your remarks here...(Required)"
                 value={Remarks}
                 onChange={handleRemarksChange}
             />
@@ -438,7 +438,7 @@ const TransactionDonation = () => {
 
                   <div className="modal-action">
                     <form method="dialog">
-                      <button className="btn">Close</button>
+                      <button className="btn btn-error">Close</button>
                     </form>
                   </div>
                 </div>
@@ -495,8 +495,11 @@ const TransactionDonation = () => {
            {/* Transaction MOdel CLOse */}
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-accent mr-2" type='button' onClick={handleDonationSubmit}>Submit</button>
-              <button className="btn">Close</button>
+              <button className="btn btn-accent mr-2" type='button' 
+              onClick={handleDonationSubmit}
+              disabled={!Remarks||!selectedUser||!items}
+              >Submit</button>
+              <button className="btn btn-error">Close</button>
             </form>
           </div>
         </div>

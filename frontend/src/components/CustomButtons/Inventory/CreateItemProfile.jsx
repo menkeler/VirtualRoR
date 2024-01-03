@@ -119,7 +119,10 @@ const CreateItemProfile = ({onFormSubmit}) => {
              
                 <button className="btn btn-accent mr-2" type='button' onClick={()=>document.getElementById('CategoryList').showModal()}>Categories</button>
               <div>
-                <button className="btn btn-accent mr-4" onClick={handleSubmit}>Add Item</button>
+                <button className="btn btn-accent mr-4" onClick={handleSubmit} 
+                 disabled={!itemName.trim() || !selectedOption || !itemDescription.trim() || !selectedCategory}
+
+                >Add Item</button>
                 <button className="btn btn-accent" type="button" onClick={() => { resetForm(); document.getElementById('ItemProfileModal').close(); }}>Cancel</button>
               </div>
             </div>

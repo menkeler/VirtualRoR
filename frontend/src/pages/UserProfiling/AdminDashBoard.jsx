@@ -7,7 +7,7 @@ import AllUsersPage from '../UserProfiling/AllUsersPage';
 import AdminDashBoardStats from '../Dashboard/AdminDashBoardStats';
 import Footer from '../../components/wholepage/Footer';
 import InventoryProfilingTable from '../../components/Displaycomponents/InventoryProfilingTable';
-
+import InventoryTable from '../../components/Displaycomponents/InventoryTable';
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState('dashboard');
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
               {/* inventory */}
               {selectedPage === 'inventory' && (
                 <section className="mb-8">
-                  Invenroty
+                  <InventoryTable type={2}/>
                 </section>
               )} 
               {/* itemprofile */}

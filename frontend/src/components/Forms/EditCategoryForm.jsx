@@ -58,7 +58,7 @@ const EditCategoryForm = ({ category, onFormSubmit }) => {
               onChange={(e) => setEditedValue(e.target.value)}
             />
             <div className="modal-action">
-              <button type="button" className="btn btn-primary mr-2" onClick={handleCategorySubmit}>
+              <button type="button" className="btn btn-primary mr-2"   disabled={!editedValue.trim()} onClick={handleCategorySubmit}>
                 Save
               </button>
               <button
