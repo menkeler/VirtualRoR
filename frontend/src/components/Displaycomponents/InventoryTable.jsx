@@ -118,7 +118,7 @@ const InventoryTable = ({type}) => {
                 ]}
                 isSearchable
                 placeholder="Search or select category"
-                className="select w-full bg-white"
+                className="w-full bg-white"
                 maxMenuHeight={200}
                 isDisabled={isFetching}
               />

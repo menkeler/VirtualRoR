@@ -8,8 +8,9 @@ from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 
+
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('name') 
     serializer_class = CategorySerializer
     
 class ItemProfilingPagination(PageNumberPagination):
@@ -41,6 +42,9 @@ class ItemProfilingViewSet(viewsets.ModelViewSet):
         if returnable_param is not None and returnable_param != '':
             # Assuming 'returnable' is a BooleanField in your ItemProfiling model
             queryset = queryset.filter(returnable=(returnable_param.lower() == 'true'))
+            
+        #alphabetical order
+        queryset = queryset.order_by('name')
 
         return queryset
     

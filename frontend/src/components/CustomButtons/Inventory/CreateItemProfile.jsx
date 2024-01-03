@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import client from '../../../api/client';
 import Cookies from 'js-cookie';
 import Select from 'react-select-virtualized';
-import CategoryAdd from './Categoryadd';
+import CategoryAdd from './CategoryAdd';
 
 const CreateItemProfile = () => {
   // Instead of single form use state i decided to use it like this more readable
@@ -27,6 +27,15 @@ const CreateItemProfile = () => {
   useEffect(() => {
     fetchData();
   }, [selectedCategory]);
+
+  const handleFormSubmit = () => {
+    console.log('Form submitted. Fetching categories...');
+    // Refetch categories after form submission in categories
+    fetchData();
+  };
+  
+  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,7 +114,7 @@ const CreateItemProfile = () => {
               />
             </div>
             <div className="flex justify-between items-center mt-6">
-                <CategoryAdd/>
+                <CategoryAdd onFormSubmit={handleFormSubmit}/>
               <div>
                 <button className="btn btn-accent mr-4" onClick={handleSubmit}>Add Item</button>
                 <button className="btn btn-accent" type="button" onClick={() => { resetForm(); document.getElementById('ItemProfileModal').close(); }}>Cancel</button>
