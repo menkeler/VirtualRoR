@@ -4,10 +4,11 @@ import Cookies from 'js-cookie';
 import Select from 'react-select';
 import CategoryAdd from './CategoryAdd';
 import EditCategoryForm from '../../Forms/EditCategoryForm';
+import CategoryHook from '../../../hooks/CategoryHook';
 
-const CreateItemProfile = ({reFetchData}) => {
+const CreateItemProfile = ({onFormSubmit}) => {
   // Instead of single form use state i decided to use it like this more readable
-  const [categoryData, setCategoryData] = useState([]);
+  const {categoryData, loading, error, refetchCategory } = CategoryHook();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOption, setSelectedOption] = useState('');
   const [itemName, setItemName] = useState('');
@@ -15,24 +16,16 @@ const CreateItemProfile = ({reFetchData}) => {
 
   const authToken = Cookies.get('authToken');
 
-  const fetchData = async () => {
-    try {
-      const categRes = await client.get('inventory/categories/');
-      setCategoryData(categRes.data);
-  
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
 
   useEffect(() => {
-    fetchData();
+    refetchCategory();
   }, []);
 
   const handleFormSubmit = () => {
 
     // Refetch categories after form submission in categories
-    fetchData();
+    refetchCategory();
+    onFormSubmit()
     // console.log('Fetching categories',categoryData)
     // console.log('Form submitted. Fetching categories...');
   };
@@ -57,7 +50,7 @@ const CreateItemProfile = ({reFetchData}) => {
       });
   
       console.log('Item added successfully:', res.data);
-      reFetchData();
+      refetchCategory();
       resetForm();
       document.getElementById('ItemProfileModal').close();
     } catch (error) {

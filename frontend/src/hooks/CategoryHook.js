@@ -22,7 +22,7 @@ const CategoryHook = () => {
     fetchCategory();
   }, []); // Empty dependency array ensures the effect runs only once after the initial render
 
-  return { categoryData, loading, error, refetch: fetchCategory };
+  return { categoryData, loading, error, refetchCategory: fetchCategory };
 };
 
 export default CategoryHook;

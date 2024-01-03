@@ -33,7 +33,9 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
       const response = await client.patch(`/inventory/item-profiling/${formData.id}/`, postData);
       console.log('Submission successful:', response.data);
 
-
+      if (onSubmitSuccess && typeof onSubmitSuccess === 'function') {
+        onSubmitSuccess();
+      }
    
     
     // close the modal after submission
@@ -54,9 +56,7 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
     
     
     // Execute the callback function passed from the parent component
-    if (onSubmitSuccess && typeof onSubmitSuccess === 'function') {
-      onSubmitSuccess();
-    }
+    
   };
 
   

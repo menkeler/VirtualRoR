@@ -4,9 +4,7 @@ import Cookies from 'js-cookie';
 import Select from 'react-select';
 import CreateItemProfile from '../CustomButtons/Inventory/CreateItemProfile';
 import EditItemProfileForm from '../Forms/EditItemProfileForm';
-import EditCategoryForm from '../Forms/EditCategoryForm';
-import CategoryAdd from '../CustomButtons/Inventory/CategoryAdd';
-
+import CategoryHook from '../../hooks/CategoryHook';
 
 const InventoryProfilingTable = ({onSelectItem,Admin,type}) => {
     const [items, setItems] = useState([]);
@@ -14,7 +12,7 @@ const InventoryProfilingTable = ({onSelectItem,Admin,type}) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [totalPages, setTotalPages] = useState(1);
     const [categoryQuery, setCategoryQuery] = useState('');
-    const [categoryData, setCategoryData] = useState([]);
+    const {categoryData, loading, error, refetchCategory } = CategoryHook();
     const [typeQuery, setTypeQuery] = useState('');
   
 
@@ -24,9 +22,9 @@ const InventoryProfilingTable = ({onSelectItem,Admin,type}) => {
     }, [searchQuery, currentPage,typeQuery,categoryQuery]);
 
     useEffect(() => {
+
      // fetch once for mount of component
-      fetchCategory();
-    
+     refetchCategory()
     }, []);
     
 
@@ -37,15 +35,7 @@ const InventoryProfilingTable = ({onSelectItem,Admin,type}) => {
     };
 
     
-    const fetchCategory = async () => {
-      try {
-        const categRes = await client.get('inventory/categories/');
-        setCategoryData(categRes.data);
-       
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };    
+ 
     
     
     const fetchItems = async (page,type,category) => {
@@ -94,7 +84,7 @@ if(Admin){
       
       <div className="flex">
     
-        <CreateItemProfile />
+      <CreateItemProfile onFormSubmit={handleFormSubmitSuccess}/>
       
         {/* Search bar */}
         <div className="flex ml-2">

@@ -3,7 +3,7 @@ import client from '../../api/client';
 import Cookies from 'js-cookie';
 import Select from 'react-select';
 import { useCart } from '../../contexts/CartContext';
-
+import CategoryHook from '../../hooks/CategoryHook';
 
 
 const InventoryTable = ({type}) => {
@@ -11,7 +11,7 @@ const InventoryTable = ({type}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
-  const [categoryData, setCategoryData] = useState([]);
+  const { categoryData, loading, error, refetchCategory } = CategoryHook();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const { state, dispatch } = useCart();
@@ -38,49 +38,40 @@ const InventoryTable = ({type}) => {
       console.log(`Item with id ${itemId} is already in the cart`);
     }
   };
+  
+  const fetchItems = async (page,category) => {
+    try {
+      setIsFetching(true);
+      const authToken = Cookies.get('authToken');
+      const encodedSearchQuery = encodeURIComponent(searchQuery);
+
+
+      const response = await client.get(`inventory/inventories/?page=${page}&search_category=${category}&search=${encodedSearchQuery}`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
+        },
+      });
+
+      const { results, count } = response.data;
+      console.log(results)
+      setInventory(results);
+      setTotalPages(Math.ceil(count / 30));
+
+      // console.log(response.data);
+      // console.log(selectedCategory);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+      setCurrentPage(1);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categRes = await client.get('inventory/categories/');
-        setCategoryData(categRes.data);
-        // console.log('Categories:', categRes.data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
 
-    const fetchItems = async (page,category) => {
-      try {
-        setIsFetching(true);
-        const authToken = Cookies.get('authToken');
-        const encodedSearchQuery = encodeURIComponent(searchQuery);
-
-
-        const response = await client.get(`inventory/inventories/?page=${page}&search_category=${category}&search=${encodedSearchQuery}`, {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
-        });
-
-        const { results, count } = response.data;
-        console.log(results)
-        setInventory(results);
-        setTotalPages(Math.ceil(count / 30));
-
-        // console.log(response.data);
-        // console.log(selectedCategory);
-      } catch (error) {
-        console.error('Error fetching items:', error);
-        setCurrentPage(1);
-      } finally {
-        setIsFetching(false);
-      }
-    };
-
-    
     fetchItems(currentPage,selectedCategory);
-    fetchCategories();
+    refetchCategory();
 
   }, [searchQuery, currentPage, selectedCategory]);
 
