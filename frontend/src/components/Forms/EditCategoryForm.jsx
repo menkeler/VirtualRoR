@@ -6,6 +6,7 @@ const EditCategoryForm = ({ category, onFormSubmit }) => {
   useEffect(() => {
     setEditedValue(category.name);
   }, [category]);
+  
 
   const handleCategorySubmit = (e) => {
     e.preventDefault();

@@ -12,7 +12,8 @@ const CategoryAdd = ({onFormSubmit}) => {
       const authToken = Cookies.get('authToken');
 
       const res = await client.post('inventory/categories/', {
-        name: createdCategory.trim().toLowerCase()
+        name: createdCategory
+        // .trim().toLowerCase()
       }, {
         headers: { Authorization: `Token ${authToken}` },
       });
@@ -22,22 +23,26 @@ const CategoryAdd = ({onFormSubmit}) => {
       // Clear input field
       setCreatedCategory('');
 
-      // Close the modal
-      document.getElementById('CreateCategory').close();
-
-      if (onFormSubmit && typeof onFormSubmit === 'function') {
-        onFormSubmit();
-      }
-    
 
     } catch (error) {
-      console.error('Category creation failed. Please try again.', error);
+      if (error.response && error.response.status === 400) {
+        // Handle duplicate category error
+        alert('Category creation failed. Duplicate category.');
+        // You can add code here to notify the user or take specific actions for duplicate category
+      } else {
+        // Handle other errors
+        console.error('Category creation failed. Please try again.', error);
+      }
     }
-    // Add your logic for creating a category here
 
     // Close the modal after handling the category creation
     document.getElementById('CreateCategory').close();
-    onFormSubmit()
+    
+    if (onFormSubmit && typeof onFormSubmit === 'function') {
+      // console.log('code worekd')
+      onFormSubmit();
+    }
+  
   };
 
   return (

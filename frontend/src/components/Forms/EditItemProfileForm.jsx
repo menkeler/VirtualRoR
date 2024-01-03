@@ -48,6 +48,7 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
   
   const resetForm = () => {
     setFormData({
+       id: item.id,
       name: item.name,
       description: item.description,
       selectedCategory: { value: category.id, label: category.name },

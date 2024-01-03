@@ -16,42 +16,32 @@ const InventoryProfilingTable = ({onSelectItem,Admin,type}) => {
     const [categoryQuery, setCategoryQuery] = useState('');
     const [categoryData, setCategoryData] = useState([]);
     const [typeQuery, setTypeQuery] = useState('');
+  
 
+    useEffect(() => {
+      fetchItems(currentPage,typeQuery, categoryQuery?.value ?? '');
+      
+    }, [searchQuery, currentPage,typeQuery,categoryQuery]);
 
+    useEffect(() => {
+     // fetch once for mount of component
+      fetchCategory();
+    
+    }, []);
+    
 
     const handleFormSubmitSuccess = () => {
       // Fetch new data after successful form submission
       fetchItems(currentPage, typeQuery, categoryQuery?.value ?? '');
       console.log("refetched data")
     };
-    
-    const handleFormSubmit = () => {
-      console.log('Form submitted. Fetching categories...');
-      // Refetch categories after form submission in categories
-      fetchCategory();
-    };
 
-    useEffect(() => {
-      fetchItems(currentPage,typeQuery, categoryQuery?.value ?? '');
-
-    }, [searchQuery, currentPage,typeQuery,categoryQuery]);
-
-    useEffect(() => {
-     // fetch once for mount of component
-      fetchCategory();
-    }, []);
-    
-
-
-
-
-    
     
     const fetchCategory = async () => {
       try {
         const categRes = await client.get('inventory/categories/');
         setCategoryData(categRes.data);
-        console.log('Categories:', categRes.data);
+       
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -104,9 +94,8 @@ if(Admin){
       
       <div className="flex">
     
-        <CreateItemProfile />
-        <button className="btn btn-accent mr-2" onClick={()=>document.getElementById('CategoryList').showModal()}>Categories</button>
-        
+        <CreateItemProfile  />
+      
         {/* Search bar */}
         <div className="flex ml-2">
           <input
@@ -145,37 +134,7 @@ if(Admin){
           />
         </div>
       </div>
-      <CategoryAdd onFormSubmit={handleFormSubmit} />
-      {/* Categories Modal */}
-      <dialog id="CategoryList" className="modal">
-        <div className="modal-box w-11/12 max-w-5xl bg-white rounded-lg p-8">
-        
-        
-          <h3 className="font-bold text-2xl mb-4">Categories</h3>
-          
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-
-            {/* edit Category FOrm */}
-            {categoryData.map((category) => (
-              <div key={category.id} className="card bg-base-100 p-4 rounded-md shadow-lg">
-                <h2 className="card-title text-3xl font-semibold overflow-hidden whitespace-nowrap">
-                  {category.name}
-                </h2>
-                
-                   <EditCategoryForm key={category.id} category={category} onFormSubmit={handleFormSubmit} />
-              </div>
-            ))}
-          </div>
-
-        <div className="modal-action mt-8">
-          <form method="dialog">
-            <button className="btn btn-secondary" onClick={() => document.getElementById('CategoryList').close()}>
-              Close
-            </button>
-          </form>
-        </div>
-      </div>
-    </dialog>
+     
      
 
 
