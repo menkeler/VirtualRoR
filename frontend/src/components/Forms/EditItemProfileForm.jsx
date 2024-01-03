@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import client from '../../api/client';
+
 const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }) => {
   const [formData, setFormData] = useState({
     id: item.id,
@@ -28,17 +29,30 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
     };
 
     try {
+      console.log(postData);
       const response = await client.patch(`/inventory/item-profiling/${formData.id}/`, postData);
       console.log('Submission successful:', response.data);
+
+
+   
+    
+    // close the modal after submission
+    document.getElementById(`EditItem${item.id}`).close();
+
+  
     } catch (error) {
-      console.error('Error submitting donation:', error);
+      if (error.response && error.response.status === 400) {
+        // Handle duplicate name error (status code 400)
+        alert('Error: Duplicate name. Please choose a different name.');
+      } else {
+        console.error('Error submitting donation:', error);
+  
+        // Handle other errors
+        alert('Error: Something went wrong. Please try again later.');
+      }
     }
     
- 
-
-
-    // For testing purposes, you can close the modal after submission
-    document.getElementById(`EditItem${item.id}`).close();
+    
     // Execute the callback function passed from the parent component
     if (onSubmitSuccess && typeof onSubmitSuccess === 'function') {
       onSubmitSuccess();
@@ -47,15 +61,13 @@ const EditItemProfileForm = ({ item, category, categoriesList, onSubmitSuccess }
 
   
   const resetForm = () => {
-    setFormData({
-       id: item.id,
-      name: item.name,
-      description: item.description,
+    setFormData((prevData) => ({
+      ...prevData,
       selectedCategory: { value: category.id, label: category.name },
-    });
+    }));
   };
 
-  useEffect(() => {
+  useEffect(() => { 
     // Call resetForm when the modal is closed
     const modalElement = document.getElementById(`EditItem${item.id}`);
     modalElement.addEventListener('close', resetForm);

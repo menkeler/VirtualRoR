@@ -26,7 +26,7 @@ class ItemProfilingViewSet(viewsets.ModelViewSet):
     
     # Different Serializer for Creation
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action in ['create', 'update', 'partial_update']:
             return ItemProfilingCreateSerializer
         return ItemProfilingSerializer
 

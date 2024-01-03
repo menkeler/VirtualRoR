@@ -77,7 +77,7 @@ const CreateItemProfile = () => {
         Create Item Profile
       </button>
       <dialog id="ItemProfileModal" className="modal">
-        <div className="modal-box w-11/12 max-w-1xl p-6">
+        <div className="modal-box w-11/12 max-w-1xl h-full p-6">
           <h3 className="font-bold text-lg mb-4">Item Profiling</h3>
           <form>
           <label htmlFor="item_name" className="text-sm">Name:</label>
@@ -115,7 +115,7 @@ const CreateItemProfile = () => {
                 isSearchable
                 placeholder="Search or select category"
               
-                maxMenuHeight={80} 
+                maxMenuHeight={200} 
               />
             </div>
             <div className="flex justify-between items-center mt-6">
