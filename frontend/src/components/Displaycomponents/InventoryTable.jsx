@@ -69,10 +69,8 @@ const InventoryTable = ({type}) => {
 
 
   useEffect(() => {
-
     fetchItems(currentPage,selectedCategory);
     refetchCategory();
-
   }, [searchQuery, currentPage, selectedCategory]);
 
   const handlePageChange = (newPage) => {

@@ -17,15 +17,17 @@ const CreateItemProfile = ({onFormSubmit}) => {
   const authToken = Cookies.get('authToken');
 
 
-  useEffect(() => {
-    refetchCategory();
-  }, []);
+  // useEffect(() => {
+  //   refetchCategory();
+  // }, []);
 
   const handleFormSubmit = () => {
 
     // Refetch categories after form submission in categories
     refetchCategory();
-    onFormSubmit()
+    if (onFormSubmit) {
+      onFormSubmit();
+    }
     // console.log('Fetching categories',categoryData)
     // console.log('Form submitted. Fetching categories...');
   };

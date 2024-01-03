@@ -20,7 +20,9 @@ const EditCategoryForm = ({ category, onFormSubmit }) => {
       // Check the response or handle it as needed
   
       document.getElementById(`Edit ${category.name}`).close();
+
       onFormSubmit(); // Notify the parent component to refetch categories
+      
     } catch (error) {
       if (error.response && error.response.status === 400) {
         // Handle duplicate name error (status code 400)

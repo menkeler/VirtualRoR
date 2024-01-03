@@ -21,11 +21,11 @@ const InventoryProfilingTable = ({onSelectItem,Admin,type}) => {
       
     }, [searchQuery, currentPage,typeQuery,categoryQuery]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-     // fetch once for mount of component
-     refetchCategory()
-    }, []);
+    //  // fetch once for mount of component
+    //  refetchCategory()
+    // }, []);
     
 
     const handleFormSubmitSuccess = () => {
