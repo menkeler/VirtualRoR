@@ -94,7 +94,7 @@ if(Admin){
       
       <div className="flex">
     
-        <CreateItemProfile  />
+        <CreateItemProfile />
       
         {/* Search bar */}
         <div className="flex ml-2">

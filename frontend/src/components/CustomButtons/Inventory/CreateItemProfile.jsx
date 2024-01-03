@@ -4,7 +4,8 @@ import Cookies from 'js-cookie';
 import Select from 'react-select';
 import CategoryAdd from './CategoryAdd';
 import EditCategoryForm from '../../Forms/EditCategoryForm';
-const CreateItemProfile = () => {
+
+const CreateItemProfile = ({reFetchData}) => {
   // Instead of single form use state i decided to use it like this more readable
   const [categoryData, setCategoryData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -56,6 +57,7 @@ const CreateItemProfile = () => {
       });
   
       console.log('Item added successfully:', res.data);
+      reFetchData();
       resetForm();
       document.getElementById('ItemProfileModal').close();
     } catch (error) {
