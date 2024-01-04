@@ -8,6 +8,10 @@ import AdminDashBoardStats from '../Dashboard/AdminDashBoardStats';
 import Footer from '../../components/wholepage/Footer';
 import InventoryProfilingTable from '../../components/Displaycomponents/InventoryProfilingTable';
 import InventoryTable from '../../components/Displaycomponents/InventoryTable';
+import PostsTable from '../../components/Displaycomponents/PostsTable';
+
+
+
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState('dashboard');
@@ -193,9 +197,7 @@ const AdminDashboard = () => {
               {selectedPage === 'posts' && (
                 <section className="mb-8">
                   <h2 className="text-xl font-semibold mb-4">PostsContent</h2>
-                  {/* ... (your users content) */}
-                  
-                  
+                  <PostsTable/>                       
                 </section>
               )}
 

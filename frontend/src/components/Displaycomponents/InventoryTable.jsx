@@ -149,7 +149,7 @@ const InventoryTable = ({type}) => {
                   {item.item.category && (
                     <div className="badge bg-info text-gray-800">{item.item.category.name}</div>
                   )}
-                  {!item.item.returnable && item.quantity > 0 &&(<button className="btn btn-outline btn-primary" onClick={() => addToCart(item.id, item.item.name,null,item.quantity)}>Add to Cart</button>)}
+                  {!item.item.returnable && item.quantity > 0 &&(<button className="btn btn-outline btn-primary" onClick={() => addToCart(item.id, item.item.name,null,item.quantity)}>Reserve</button>)}
                   { item.quantity <= 0 && (
                     <div className="py-4">
                       <span className="inline-block bg-red-500 text-white px-3 py-1 rounded-full uppercase text-xs font-semibold">
@@ -191,7 +191,7 @@ const InventoryTable = ({type}) => {
                                   )}
                                 </td>
                                 <td className="py-2 px-4 border-b">
-                                {!copy.is_borrowed && (<button className="btn btn-outline btn-primary" onClick={() => addToCart(null, item.item.name + ' ID: ' + copy.id,copy.id,1)}>Add to Cart</button>
+                                {!copy.is_borrowed && (<button className="btn btn-outline btn-primary" onClick={() => addToCart(null, item.item.name + ' ID: ' + copy.id,copy.id,1)}>Borrow</button>
                                )}
                                </td>
                               </tr>

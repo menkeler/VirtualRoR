@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './../components/wholepage/Navbar';
 import Footer from '../components/wholepage/Footer';
 import InquiryDonation from './../components/Forms/InquiryDonation';
@@ -12,20 +12,44 @@ function Home() {
   const [posts, setPosts] = useState([])
   const [postType, setPostType] = useState('')
   const [donorsTopTen, setDonorsTopTen] = useState([])
-  useEffect(() => {
-    fetchPosts(postType);
-    fetchToptenDonors()
-  }, [postType]);
+  const [page, setPage] = useState(1);
 
-  const fetchPosts = async (type) => {
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop ===
+        document.documentElement.offsetHeight
+      ) {
+        // User has scrolled to the bottom
+        setPage((prevPage) => prevPage + 1);
+      }
+      else {
+       setPage((prevPage) => Math.max(prevPage - 1, 1));
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchPosts(page,postType);
+    fetchToptenDonors()
+  }, [page,postType]);
+
+  const fetchPosts = async (page,type) => {
     try {
-      const response = await client.get('posts/posts/');
-      setPosts(response.data);
+      const response = await client.get(`posts/posts/?page=${page}&status=&category=${type}`);
+      setPosts(response.data.results);
       console.log(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
   };
+  
 
   const fetchToptenDonors = async () => {
     try {
@@ -61,7 +85,10 @@ function Home() {
                 className="tab ml-56 bg-base-100"
                 aria-label="Posts"
                 checked={activeTab === 'Posts'}
-                onChange={() => handleTabChange('Posts')}
+                onChange={() => {
+                  handleTabChange('Posts');
+                  setPostType('');
+                }}
               />
               <div role="tabpanel" className=" tab-content">
               {/* POSTS Cards */}
@@ -83,11 +110,20 @@ function Home() {
                 className="tab bg-accent"
                 aria-label="Regular"
                 checked={activeTab === 'Regular'}
-                onChange={() => handleTabChange('Regular')}
+                onChange={() => {
+                  handleTabChange('Regular');
+                  setPostType('Regular');
+                }}
               />
               <div role="tabpanel" className="tab-content p-10">
-              Regular
-                {/* Donation Content Goes Here */}
+              {posts.map((post) => (
+                <div key={post.id} className="mb-5">
+                {post.category === 'Regular' && (
+                
+                  <Postcard Data={post} />
+                )}
+                </div>
+              ))}
               </div>
               <input
                 type="radio"
@@ -96,11 +132,20 @@ function Home() {
                 className="tab bg-accent"
                 aria-label="Announcements"
                 checked={activeTab === 'Announcements'}
-                onChange={() => handleTabChange('Announcements')}
+                onChange={() => {
+                  handleTabChange('Announcements');
+                  setPostType('Announcements');
+                }}
               />
               <div role="tabpanel" className="tab-content p-10">
-                Announcements
-                {/* Announcements Content Goes Here */}
+              {posts.map((post) => (
+                <div key={post.id} className="mb-5">
+                {post.category === 'Announcements' && (
+                
+                <PostCardAnnouncement Data={post} />
+                )}
+                </div>
+              ))}
               </div>
 
               <input
@@ -110,11 +155,21 @@ function Home() {
                 className="tab bg-accent"
                 aria-label="News"
                 checked={activeTab === 'News'}
-                onChange={() => handleTabChange('News')}
+                onChange={() => {
+                  handleTabChange('News');
+                  setPostType('News');
+                }}
               />
               <div role="tabpanel" className="tab-content p-10">
               News
-                {/* Donation Content Goes Here */}
+              {posts.map((post) => (
+                <div key={post.id} className="mb-5">
+                {post.category === 'News' && (
+                
+                  <Postcard Data={post} />
+                )}
+                </div>
+              ))}
               </div>
             </div>
 
