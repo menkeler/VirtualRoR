@@ -43,4 +43,5 @@ class PostViewSet(viewsets.ModelViewSet):
         if user_param:
             queryset = queryset.filter(user_id=user_param)
 
-        return queryset
+        return queryset.order_by('?')
+    # 
