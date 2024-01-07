@@ -22,7 +22,7 @@ class UserPagination(PageNumberPagination):
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all().order_by('user_id')
     pagination_class = UserPagination
     filter_backends = [filters.SearchFilter]
@@ -33,6 +33,12 @@ class UserViewSet(viewsets.ModelViewSet):
         # Additional filtering based on your requirements
         # You can customize this further based on your needs
         return queryset
+    
+    @action(detail=False, methods=['GET'])
+    def newest_user(self, request):
+        newest_user = User.objects.latest('user_id')  # Assuming 'user_id' is the field indicating the user ID
+        serializer = self.get_serializer(newest_user)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def total_users_count(self, request):

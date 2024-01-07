@@ -3,47 +3,39 @@ import Navbar from '../../components/wholepage/Navbar';
 import { useAuth } from '../../contexts/AuthContext';
 import client from '../../api/client';
 import Footer from '../../components/wholepage/Footer';
+import TransactionsTable from '../../components/Displaycomponents/TransactionsTable';
+import InquiryTable from '../../components/Displaycomponents/InquiryTable';
 function UserProfilePage() {
-  
-  const {isLoggedIn, userData, fetchData } = useAuth();
+  const { isLoggedIn, userData, fetchData } = useAuth();
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     first_name: userData.user.first_name,
     department: userData.user.department,
     contact: userData.user.contact,
-    // Add other fields you want to edit
   });
-
-  // State for success message
+  //show success message
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const handleEditClick = () => {
     setEditing(true);
   };
-console.log(userData)
+
+  // put date udpate user info
   const handleSaveClick = async () => {
     try {
-      // Make a PUT request to update user data
       const res = await client.put(`users/users/${userData.user.user_id}/edit_user/`, formData);
-      
-      // Assuming the API request is successful, update the state and end the editing mode
       setFormData({
         first_name: res.data.first_name,
         department: res.data.department,
         contact: res.data.contact,
-        
       });
-  
       setEditing(false);
       await fetchData();
-
-      // Display a success message
       setShowSuccessMessage(true);
-      
-      // Hide the success message after a few seconds
+
       setTimeout(() => {
         setShowSuccessMessage(false);
-      }, 3000); 
+      }, 3000);
 
     } catch (error) {
       console.error('Error submitting form data:', error);
@@ -57,137 +49,123 @@ console.log(userData)
     });
   };
 
-  if (!isLoggedIn) {
-    // Redirect to login or handle non-logged-in state
-    return <div>Please log in to view this page.</div>;
-  }
+
 
   return (
     <>
       <Navbar />
-      <h1 className="text-3xl font-bold text-center text-green-600 my-6">User Profile</h1>
-      <div className="card card-side bg-base-100 shadow-xl mx-28">
-        {/* Display user profile */}
-        <figure><img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" alt="Movie" className=' h-52 w-52 rounded-full'/></figure>
-        <div className="card-body">
-          {/* Display input fields or h2 based on editing state */}
-          <h2 className="card-title">
-            {editing ? (
-              <>
+      <div className="mx-4 md:mx-10 lg:mx-20 xl:mx-32">
+        <h1 className="text-3xl font-bold text-center text-green-600 my-6">User Profile</h1>
+        <div className="card card-side bg-base-100 shadow-xl">
+          <figure><img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" alt="Movie" className='h-52 w-52 rounded-full mx-auto'/></figure>
+          <div className="card-body">
+            <h2 className="card-title">
+              {editing ? (
+                <>
+                  <label>
+                    First Name:
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </>
+              ) : (
+                <>Name: {userData.user.first_name} {userData.user.last_name}</>
+              )}
+            </h2>
+            <h2 className="card-title">Email: {userData.user.email}</h2>
+            <h2 className="card-title">
+              {editing ? (
                 <label>
-                  First Name:
+                  Department:
+                  <select
+                    name="department"
+                    value={formData.department}
+                    onChange={handleChange}
+                  >
+                    <option value="CS">CS</option>
+                    <option value="Nursing">Nursing</option>
+                  </select>
+                </label>
+              ) : (
+                <>Department: {userData.user.department}</>
+              )}
+            </h2>
+            <h2 className="card-title">
+              {editing ? (
+                <label>
+                  Contact:
                   <input
                     type="text"
-                    name="first_name"
-                    value={formData.first_name}
+                    name="contact"
+                    value={formData.contact}
                     onChange={handleChange}
                   />
                 </label>
-              </>
-            ) : (
-              <>Name: {userData.user.first_name} {userData.user.last_name}</>
-            )}
-          </h2>
+              ) : (
+                <>Contact: {userData.user.contact}</>
+              )}
+            </h2>
+            <h2 className="card-title">
+              Role: {userData.user.staff?.position || 'Client'}
+            </h2>
 
-          {/* Other fields */}
-          <h2 className="card-title">Email: {userData.user.email}</h2>
-          <h2 className="card-title">
-            {editing ? (
-              <label>
-                Department:
-                <select
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange} 
-                >
-                  <option value="CS">CS</option>
-                  <option value="Nursing">Nursing</option>
-                  {/* Add department options */}
-                </select>
-              </label>
-            ) : (
-              <>Department: {userData.user.department}</>
-            )}
-          </h2>
-          <h2 className="card-title">
-            {editing ? (
-              <label>
-                Contact:
-                <input
-                  type="text"
-                  name="contact"
-                  value={formData.contact}
-                  onChange={handleChange}
-                />
-              </label>
-            ) : (
-              <>Contact: {userData.user.contact}</>
-            )}
-          </h2>
-
-          {/* Display Role */}
-          <h2 className="card-title">
-            Role: {userData.user.staff?.position || 'Client'}
-          </h2>
-
-          <div className="card-actions justify-end">
-            {editing ? (
-              <button onClick={handleSaveClick} className="btn btn-primary">
-                Save
-              </button>
-            ) : (
-              <button onClick={handleEditClick} className="btn btn-primary">
-                Edit Profile
-              </button>
-            )}
-          </div>
-
-          {/* Display success message */}
-          {showSuccessMessage && (
-            <div role="alert" className="alert alert-success">
-              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Your changes have been successfully saved!</span>
+            <div className="card-actions justify-end">
+              {editing ? (
+                <button onClick={handleSaveClick} className="btn btn-primary">
+                  Save
+                </button>
+              ) : (
+                <button onClick={handleEditClick} className="btn btn-primary">
+                  Edit Profile
+                </button>
+              )}
             </div>
-          )}
+
+            {showSuccessMessage && (
+              <div role="alert" className="alert alert-success">
+                <span>Your changes have been successfully saved!</span>
+              </div>
+            )}
+          </div>
         </div>
+
+        <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-semibold mb-8">My Activities</h1>
+
+        <div className="mb-8">
+          <details className="collapse bg-gray-100  rounded-lg p-4 shadow-xl">
+            <summary className="collapse-title text-3xl font-medium">Transactions</summary>
+            <div className="collapse-content">
+              <TransactionsTable User={userData.user.user_id} />
+            </div>
+          </details>
+        </div>
+
+        <div className="mb-8">
+          <details className="collapse bg-gray-100  rounded-lg  p-4 shadow-xl">
+            <summary className="collapse-title text-3xl font-medium">Inquiries</summary>
+            <div className="collapse-content">
+              <InquiryTable User={userData.user.user_id} />
+            </div>
+          </details>
+        </div>
+
+        <div className="mb-8">
+          <details className="collapse bg-gray-100  rounded-lg  p-4 shadow-xl">
+            <summary className="collapse-title text-3xl font-medium">Posts</summary>
+            <div className="collapse-content">
+              Posts
+            </div>
+          </details>
+        </div>
+
       </div>
-      {/* end of card */}
-
-      <h1 className="text-3xl font-bold text-center text-green-600 my-6">My Transactions</h1>
-      <div className="card card-side bg-base-100 shadow-xl mt-5 mx-28">
-        {/* Display user profile */}
-
-        <div className="card-body">
-          {/* Display input fields or h2 based on editing state */}
-          <h2 className="card-title">
-      
-          </h2>
-
-          <div className="card-actions justify-end">
-      
-          </div>
-        </div>
-      </div>   
-      {/* end of card */}
-      <h1 className="text-3xl font-bold text-center text-green-600 my-6">My Inquiries</h1>
-      <div className="card card-side bg-base-100 shadow-xl mt-5 mx-28">
-        {/* Display user profile */}
-
-        <div className="card-body">
-          {/* Display input fields or h2 based on editing state */}
-          <h2 className="card-title">
-      
-          </h2>
-
-          <div className="card-actions justify-end">
-      
-          </div>
-        </div>
-      </div>   
-      {/* end of card */}
-      <Footer/>
+      </div>
+      <Footer />
     </>
   );
 }

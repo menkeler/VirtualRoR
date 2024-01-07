@@ -138,9 +138,9 @@ function LoginButton() {
   return (
     <div>
       {isLoggedIn ? (
-        <>
-          <button onClick={submitLogout}>Logout</button>
-        </>
+     <>
+     <button onClick={submitLogout} className="w-full flex items-center justify-center">Logout</button>
+   </>
       ) : (
         <div className="flex items-center justify-center">
         <button

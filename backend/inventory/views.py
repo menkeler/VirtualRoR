@@ -4,6 +4,7 @@ from rest_framework import status,viewsets, filters
 from .models import Category, ItemProfiling, ItemCopy, Inventory
 from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer,ItemCopyCreateSerializer, InventorySerializer,InventoryCreateSerializer,ItemProfilingCreateSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
@@ -89,7 +90,30 @@ class ItemCopyViewSet(viewsets.ModelViewSet):
         print("Saved Item Copies:", saved_copies)
         return Response({"item_copies": saved_copies}, status=status.HTTP_201_CREATED)
 
+    @action(detail=False, methods=['get'])
+    def get_borrowed_and_lost_items_count(self, request):
+        borrowed_items_count = ItemCopy.objects.filter(
+            is_borrowed=True,
+            condition__in=['Acceptable', 'Good', 'Like new', 'Damaged']
+        ).count()
 
+        lost_items = ItemCopy.objects.filter(
+            is_borrowed=True,
+            condition='Lost'
+        )
+
+        lost_items_count = lost_items.count()
+        
+        lost_serializer = ItemCopySerializer(lost_items, many=True)
+        
+        response_data = {
+            'borrowed_items_count': borrowed_items_count,
+            'lost_items_count': lost_items_count,
+            'lost_items': lost_serializer.data
+        }
+        return Response(response_data)
+    
+    
 class EditItemCopyStatusViewSet(viewsets.ModelViewSet):
     queryset = ItemCopy.objects.all()
     serializer_class = ItemCopySerializer

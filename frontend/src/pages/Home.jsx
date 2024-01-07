@@ -8,11 +8,16 @@ import PostCardAnnouncement from '../components/Posts/PostCardAnnouncement';
 import client from '../api/client';
 
 function Home() {
-  const [activeTab, setActiveTab] = useState('Posts');
+  const [activeTab, setActiveTab] = useState('');
   const [posts, setPosts] = useState([])
   const [postType, setPostType] = useState('')
   const [donorsTopTen, setDonorsTopTen] = useState([])
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  //for anti duplication rendering on mounted post 
+  //cant think of another solution optimize for later
+  const uniquePostIds = new Set();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,9 +28,7 @@ function Home() {
         // User has scrolled to the bottom
         setPage((prevPage) => prevPage + 1);
       }
-      else {
-       setPage((prevPage) => Math.max(prevPage - 1, 1));
-      }
+
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -37,13 +40,16 @@ function Home() {
 
   useEffect(() => {
     fetchPosts(page,postType);
-    fetchToptenDonors()
   }, [page,postType]);
 
+  useEffect(() => {
+    fetchToptenDonors();
+  }, []);
+  
   const fetchPosts = async (page,type) => {
     try {
       const response = await client.get(`posts/posts/?page=${page}&status=&category=${type}`);
-      setPosts(response.data.results);
+      setPosts((prevPosts) => [...prevPosts, ...response.data.results]);
       console.log(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -70,113 +76,108 @@ function Home() {
   return (
     <>
       <Navbar />
-        <div className="flex bg-gray-200">
+       <div className="flex justify-center bg-gray-200">
+
+        
         {/* Left SIde */}
-        <div className=" flex-grow p-4">
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full max-w-screen-xl p-4">
 
+              <div role="tablist" className="tabs col-span-3 tabs-boxed tabs-lg w-2/3 mx-auto bg-gray-200 rounded  sticky top-0 left-1/2"> 
+                <input
+                    type="radio"
+                    name="my_tabs_1"
+                    role="tab"
+                    className="tab bg-accent"
+                    aria-label="All"
+                    checked={activeTab === ''}
+                    onChange={() => {
+                      handleTabChange('');
+                      setPostType('');
+                      setPosts([])
+                      setPage(1)
+                    }}
+                  />
+             
+                   <input
+                    type="radio"
+                    name="my_tabs_1"
+                    role="tab"
+                    className="tab bg-accent"
+                    aria-label="Regular"
+                    checked={activeTab === 'Regular'}
+                    onChange={() => {
+                      handleTabChange('Regular');
+                      setPostType('Regular');
+                      setPosts([])
+                      setPage(1)
+                    }}
+                  />
+                  <input
+                    type="radio"
+                    name="my_tabs_1"
+                    role="tab"
+                    className="tab bg-accent"
+                    aria-label="Announcements"
+                    checked={activeTab === 'Announcements'}
+                    onChange={() => {
+                      handleTabChange('Announcements');
+                      setPostType('Announcements');
+                      setPosts([])
+                      setPage(1)
+                    }}
+                  />
+                  <input
+                    type="radio"
+                    name="my_tabs_1"
+                    role="tab"
+                    className="tab bg-accent"
+                    aria-label="News"
+                    checked={activeTab === 'News'}
+                    onChange={() => {
+                      handleTabChange('News');
+                      setPostType('News');
+                      setPosts([])
+                      setPage(1)
+                    }}
+                  />
+                  
+                <div className="grid grid-cols-1 gap-1 tab-content p-1">
+                  
+                {posts.map((post) => {
+                  //for anti duplication rendering on mounted post 
+                  //cant think of another solution optimize for later
+                // Check if the post ID is already in the set
+                if (!uniquePostIds.has(post.id) && (post.category === activeTab || activeTab === '')) {
+                  // Add the post ID to the set
+                  uniquePostIds.add(post.id);
 
-
-
-        <div role="tablist" className="tabs tabs-boxed tabs-lg  ml-64 mx-auto bg-gray-200 py-4 rounded">
-              <input
-                type="radio"
-                name="my_tabs_1"
-                role="tab"
-                className="tab ml-56 bg-base-100"
-                aria-label="Posts"
-                checked={activeTab === 'Posts'}
-                onChange={() => {
-                  handleTabChange('Posts');
-                  setPostType('');
-                }}
-              />
-              <div role="tabpanel" className=" tab-content">
-              {/* POSTS Cards */}
-              {posts.map((post) => (
-                <div key={post.id} className="mb-5">
-                {post.category === 'Announcements' ? (
-                  <PostCardAnnouncement Data={post} />
-                ) : (
-                  <Postcard Data={post} />
-                )}
-                </div>
-              ))}
-                {/* Mixed Posts Content Goes Here */}
+                  return (
+                    <div key={post.id} className="mb-5">
+                      {activeTab === 'Announcements' ? (
+                        <PostCardAnnouncement Data={post} />
+                      ) : (
+                     
+                        post.category === 'Announcements' ? (
+                          <PostCardAnnouncement Data={post} />
+                        ) : (
+                          <Postcard Data={post} />
+                          
+                        )
+                      )}
+                    </div>
+                  );
+                  
+                }
+                return null;
+              })}
+                </div>                      
               </div>
-              <input
-                type="radio"
-                name="my_tabs_1"
-                role="tab"
-                className="tab bg-accent"
-                aria-label="Regular"
-                checked={activeTab === 'Regular'}
-                onChange={() => {
-                  handleTabChange('Regular');
-                  setPostType('Regular');
-                }}
-              />
-              <div role="tabpanel" className="tab-content p-10">
-              {posts.map((post) => (
-                <div key={post.id} className="mb-5">
-                {post.category === 'Regular' && (
-                
-                  <Postcard Data={post} />
-                )}
-                </div>
-              ))}
-              </div>
-              <input
-                type="radio"
-                name="my_tabs_1"
-                role="tab"
-                className="tab bg-accent"
-                aria-label="Announcements"
-                checked={activeTab === 'Announcements'}
-                onChange={() => {
-                  handleTabChange('Announcements');
-                  setPostType('Announcements');
-                }}
-              />
-              <div role="tabpanel" className="tab-content p-10">
-              {posts.map((post) => (
-                <div key={post.id} className="mb-5">
-                {post.category === 'Announcements' && (
-                
-                <PostCardAnnouncement Data={post} />
-                )}
-                </div>
-              ))}
-              </div>
-
-              <input
-                type="radio"
-                name="my_tabs_1"
-                role="tab"
-                className="tab bg-accent"
-                aria-label="News"
-                checked={activeTab === 'News'}
-                onChange={() => {
-                  handleTabChange('News');
-                  setPostType('News');
-                }}
-              />
-              <div role="tabpanel" className="tab-content p-10">
-              News
-              {posts.map((post) => (
-                <div key={post.id} className="mb-5">
-                {post.category === 'News' && (
-                
-                  <Postcard Data={post} />
-                )}
-                </div>
-              ))}
-              </div>
-            </div>
 
         </div>
       {/* Right Side */}
-      <div className="flex-1/3 p-4 justify-center items-center mr-72">
-
+     
+      <div className="sticky top-0 max-h-screen overflow-y-auto scrollbar-hidden">
         {/* Post Now */}
         <div className="card w-80 bg-base-100 shadow-xl my-5">
           <span className="text-xl font-bold text-left mb-2">Post now~</span>
@@ -240,8 +241,8 @@ function Home() {
     </div>
 
   </div>
-
-        </div>
+</div>
+    
         <Footer />
     </>
   );

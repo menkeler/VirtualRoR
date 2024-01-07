@@ -4,10 +4,10 @@ from rest_framework import status
 from .models import Post
 from .serializers import PostSerializer, PostCreateSerializer
 from rest_framework.pagination import PageNumberPagination
-
+from rest_framework.decorators import action
 
 class PostPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 30
     page_size_query_param = 'page_size'
     max_page_size = 1000
     
@@ -27,6 +27,7 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    
     def get_queryset(self):
         queryset = Post.objects.all()
         status = self.request.query_params.get('status', None)
@@ -44,4 +45,11 @@ class PostViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user_id=user_param)
 
         return queryset.order_by('?')
-    # 
+    
+    @action(detail=False, methods=['GET'])
+    def latest_post(self, request):
+        latest_post = Post.objects.latest('created_at')  # Assuming 'created_at' is the field indicating the creation timestamp
+        serializer = self.get_serializer(latest_post)
+        return Response(serializer.data)
+    
+    

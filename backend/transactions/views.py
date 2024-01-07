@@ -27,7 +27,7 @@ class InquiryViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return InquiryCreateSerializer
         return InquirySerializer
-
+    
     def get_queryset(self):
         queryset = super().get_queryset()
 
@@ -63,7 +63,12 @@ class InquiryViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    
+    @action(detail=False, methods=['GET'])
+    def latest_inquiry(self, request):
+        latest_inquiry = Inquiry.objects.latest('id')  # Assuming 'created_at' is the field indicating the creation timestamp
+        serializer = self.get_serializer(latest_inquiry)
+        return Response(serializer.data)
+ 
     
 class TransactionPagination(PageNumberPagination):
     page_size = 50
@@ -84,6 +89,13 @@ class TransactionViewSet(viewsets.ModelViewSet):
     def total_transactions(self, request):
         total_transactions = self.get_queryset().count()
         return Response({'total_transactions': total_transactions}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['GET'])
+    def latest_transaction(self, request):
+        latest_transaction = Transaction.objects.latest('id')  # Assuming 'created_at' is the field indicating the creation timestamp
+        serializer = self.get_serializer(latest_transaction)
+        return Response(serializer.data)
+ 
     
     @action(detail=False, methods=['GET'])
     def total_donations_this_month(self, request):

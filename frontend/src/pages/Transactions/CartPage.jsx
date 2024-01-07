@@ -145,126 +145,123 @@ const handleSubmit = async (e)  => {
 };
 
 
-  return (
-    <>
-      <Navbar />
-      <div className="flex">
-      <div className="md:container md:mx-auto flex-2 pl-96">
-          <div className="bg-gray-100 p-4 rounded-md mt-5 shadow-md ">
-            <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
-            <button
-              className="bg-blue-500 text-white px-3 py-1 rounded-md mb-4"
-              onClick={clearAllItems}
+return (
+  <>
+    <Navbar />
+    <div className="md:container mx-auto md:px-4">
+      <div className="bg-gray-100 p-4 rounded-md mt-5 shadow-md">
+        <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
+        <button
+          className="bg-blue-500 text-white px-3 py-1 rounded-md mb-4"
+          onClick={clearAllItems}
+        >
+          Clear All
+        </button>
+        {cartState.cartItems.length === 0 ? (
+          <p>Your cart is empty.</p>
+        ) : (
+          cartState.cartItems.map((cartItem, index) => (
+            <div
+              key={index}
+              className="bg-white p-4 mb-4 rounded-md shadow-md flex flex-col md:flex-row items-center justify-between"
             >
-              Clear All
-            </button>
-            {cartState.cartItems.length === 0 ? (
-              <p>Your cart is empty.</p>
-            ) : (
-              cartState.cartItems.map((cartItem, index) => (
-                <div key={index} className="bg-white p-4 mb-4 rounded-md shadow-md flex items-center justify-between">
-                  <div>
-                    <p className="text-lg font-semibold">{cartItem.name}</p>
-                    {/* Number input for quantity adjustment */}
-                    {!cartItem.item && (
-                        <>
-                          <p className="text-gray-600">Quantity:</p>
-                          <input
-                            type="number"
-                            value={cartItem.quantity}
-                            min="1"
-                            max={cartItem.maxquantity}
-                            onChange={(e) =>
-                              adjustQuantity(cartItem.item, cartItem.inventory, parseInt(e.target.value))
-                            }
-                            className="w-16 border border-gray-300 rounded-md p-1"
-                          />
-                        </>
-                      )}
-                    
-                  </div>
-                  {/* Remove button */}
-                  <button
-                    className="bg-red-500 text-white px-3 py-1 rounded-md"
-                    onClick={() => removeFromCart(cartItem.item, cartItem.inventory)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-          {/* INQUIRY RESERVATION FORM */}
-        </div>
-        <div className="flex-1 text-center p-8">
-
-          <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Reserve Items</h2>
-          <button
-            className="btn btn-secondary text-white mt-4"
-            onClick={() => document.getElementById('InquiryReservation').showModal()}
-            disabled={cartState.cartItems.length === 0}
-          >
-            Reserve Items
-          </button>
-
-          {cartState.cartItems.length === 0 && (
-            <p className="text-red-500 mt-2">Add items to the cart to proceed with the reservation.</p>
-          )}
-
-          <dialog id="InquiryReservation" className="modal">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg">Reserve</h3>
-              <p className="py-4">Reserve the Cart Items</p>
-
-              <div className="mb-4">
-                <label htmlFor="datePreferred" className="block text-sm font-medium text-gray-700">
-                  Preferred Date:
-                </label>
-                <input
-                  type="date"
-                  id="datePreferred"
-                  name="datePreferred"
-                  value={datePreferred}
-                  onChange={(e) => setDatePreferred(e.target.value)}
-                  className="mt-1 p-2 border rounded-md w-full"
-                />
+              <div className="mb-2 md:mb-0 md:mr-4">
+                <p className="text-lg font-semibold">{cartItem.name}</p>
+                {!cartItem.item && (
+                  <>
+                    <p className="text-gray-600">Quantity:</p>
+                    <input
+                      type="number"
+                      value={cartItem.quantity}
+                      min="1"
+                      max={cartItem.maxquantity}
+                      onChange={(e) =>
+                        adjustQuantity(
+                          cartItem.item,
+                          cartItem.inventory,
+                          parseInt(e.target.value)
+                        )
+                      }
+                      className="w-16 border border-gray-300 rounded-md p-1"
+                    />
+                  </>
+                )}
               </div>
-
-              <div className="mb-4">
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                  Message:
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="mt-1 p-2 border rounded-md w-full"
-                  rows="4"
-                ></textarea>
-              </div>
-
-              <div className="modal-action">
-                <form method="dialog">
-                  <button type="button" className="btn btn-accent mr-2" onClick={handleSubmit}>
-                    Submit
-                  </button>
-                  <button className="btn bg-red-500 text-white">Close</button>
-                </form>
-              </div>
+              <button
+                className="bg-red-500 text-white px-3 py-1 rounded-md"
+                onClick={() => removeFromCart(cartItem.item, cartItem.inventory)}
+              >
+                Remove
+              </button>
             </div>
-          </dialog>
-        </div>
-
-        
-        </div>
+          ))
+        )}
       </div>
-      <Footer/>
-    </>
-  );
+    </div>
+
+    <div className="md:text-center p-8">
+      <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Reserve Items</h2>
+        <button
+          className="btn btn-secondary text-white mt-4"
+          onClick={() => document.getElementById('InquiryReservation').showModal()}
+          disabled={cartState.cartItems.length === 0}
+        >
+          Reserve Items
+        </button>
+
+        {cartState.cartItems.length === 0 && (
+          <p className="text-red-500 mt-2">Add items to the cart to proceed with the reservation.</p>
+        )}
+
+        <dialog id="InquiryReservation" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Reserve</h3>
+            <p className="py-4">Reserve the Cart Items</p>
+
+            <div className="mb-4">
+              <label htmlFor="datePreferred" className="block text-sm font-medium text-gray-700">
+                Preferred Date:
+              </label>
+              <input
+                type="date"
+                id="datePreferred"
+                name="datePreferred"
+                value={datePreferred}
+                onChange={(e) => setDatePreferred(e.target.value)}
+                className="mt-1 p-2 border rounded-md w-full"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                Message:
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="mt-1 p-2 border rounded-md w-full"
+                rows="4"
+              ></textarea>
+            </div>
+
+            <div className="modal-action">
+              <form method="dialog">
+                <button type="button" className="btn btn-accent mr-2" onClick={handleSubmit}>
+                  Submit
+                </button>
+                <button className="btn bg-red-500 text-white">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      </div>
+    </div>
+    <Footer />
+  </>
+);
 };
 
 export default CartPage;
-
-
