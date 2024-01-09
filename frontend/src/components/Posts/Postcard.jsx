@@ -2,10 +2,10 @@ import React from 'react';
 
 const Postcard = ({ Data }) => {
   return (
-    <div className="card card-side bg-white shadow-xl mx-4 md:mx-8 rounded-lg overflow-hidden">
+    <div className="card card-side bg-white shadow-xl mx-0 md:mx-0 rounded-lg  w-full">
       {/* Display post content */}
       <div className="card-body p-4 md:p-6">
-        <div className="flex flex-col md:flex-row items-center mb-4">
+        <div className="flex  md:flex-row items-center mb-4">
           {/* Profile picture */}
           <img
             src="https://randomuser.me/api/portraits/men/1.jpg"
@@ -22,22 +22,23 @@ const Postcard = ({ Data }) => {
           </div>
         </div>
 
-        {/* Post title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-center md:text-left text-blue-600 mb-4">
-          {Data.title}
-        </h2>
+{/* Post title */}
 
-        {/* Post content */}
-        <div className="text-left mb-4 break-words">
-          {Data.message}
-        </div>
+{/* Post title */}
+<p className="text-2xl md:text-3xl font-bold text-left  text-blue-600 break-all ">
+  {Data.title}
+</p>
+
+<p className="text-left mb-4 break-all">
+  {Data.message}
+</p>
 
         {/* Post image */}
-        <div className="image-container w-full h-48 mb-4 md:mb-6 overflow-hidden">
+        <div className="image-container w-full h-64 mb-4 md:mb-6 overflow-hidden">
           <img
             src="https://placekitten.com/800/400"
             alt="Post Image"
-            className="w-full h-full object-cover rounded-lg"
+            className="w-64 h-64 object-cover rounded-lg"
           />
         </div>
 

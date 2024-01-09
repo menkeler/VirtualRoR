@@ -19,7 +19,7 @@ class ReservedItemCreateSerializer(serializers.ModelSerializer):
         
         
 class InquirySerializer(serializers.ModelSerializer):
-    inquirer = UserSerializer()  # Assuming you have a UserSerializer
+    inquirer = UserSerializer( read_only=True)  # Assuming you have a UserSerializer
     reserved_items = ReservedItemSerializer(many=True, read_only=True)
     class Meta:
         model = Inquiry

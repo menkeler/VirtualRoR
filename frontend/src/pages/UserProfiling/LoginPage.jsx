@@ -5,13 +5,16 @@ function LoginPage() {
   return (
     <>
       
-        <Navbar />
-        <div className="w-full vcarousel rounded-box">
+      <div className="flex flex-col max-h-screen">
+      <Navbar />
+
+      <div className="w-full vcarousel rounded-box overflow-hidden">
           <div className="carousel-item w-full">
             <img src="public/Loginbackground.jpg" className="w-auto object-cover" alt="Background" />
           </div>
         </div>
-        <Footer/>
+      <Footer />
+    </div>
     </>
   );
 }

@@ -75,20 +75,22 @@ function Home() {
 
   return (
     <>
-      <Navbar />
-       <div className="flex justify-center bg-gray-200">
 
+    <div className='bg-gray-200'>
+      <Navbar />
+  
+
+      <div className="md:flex  grid grid-col-2 min-h-screen  mt-5">
         
         {/* Left SIde */}
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full max-w-screen-xl p-4">
+        <div className="flex-grow p-8 md:ml-72">
 
-              <div role="tablist" className="tabs col-span-3 tabs-boxed tabs-lg w-2/3 mx-auto bg-gray-200 rounded  sticky top-0 left-1/2"> 
+        <div role="tablist" className="tabs tabs-boxed tabs-lg lg:w-full lg:mx-auto bg-gray-200 rounded sticky top-0 z-50">
                 <input
                     type="radio"
                     name="my_tabs_1"
                     role="tab"
-                    className="tab bg-accent"
+                    className="tab bg-accent "
                     aria-label="All"
                     checked={activeTab === ''}
                     onChange={() => {
@@ -96,6 +98,7 @@ function Home() {
                       setPostType('');
                       setPosts([])
                       setPage(1)
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                   />
              
@@ -111,6 +114,7 @@ function Home() {
                       setPostType('Regular');
                       setPosts([])
                       setPage(1)
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                   />
                   <input
@@ -125,6 +129,7 @@ function Home() {
                       setPostType('Announcements');
                       setPosts([])
                       setPage(1)
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                   />
                   <input
@@ -139,9 +144,12 @@ function Home() {
                       setPostType('News');
                       setPosts([])
                       setPage(1)
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                   />
                   
+                            
+              </div>
                 <div className="grid grid-cols-1 gap-1 tab-content p-1">
                   
                 {posts.map((post) => {
@@ -154,16 +162,11 @@ function Home() {
 
                   return (
                     <div key={post.id} className="mb-5">
-                      {activeTab === 'Announcements' ? (
+                      {post.category === 'Announcements' ? (
                         <PostCardAnnouncement Data={post} />
                       ) : (
                      
-                        post.category === 'Announcements' ? (
-                          <PostCardAnnouncement Data={post} />
-                        ) : (
                           <Postcard Data={post} />
-                          
-                        )
                       )}
                     </div>
                   );
@@ -171,13 +174,16 @@ function Home() {
                 }
                 return null;
               })}
-                </div>                      
-              </div>
+                </div>  
+        </div> {/* left side */}
 
-        </div>
+
+
+
       {/* Right Side */}
      
-      <div className="sticky top-0 max-h-screen overflow-y-auto scrollbar-hidden">
+      <div className="w-1/4 sticky top-0 max-h-screen overflow-y-auto scrollbar-hidden lg:block sm:hidden">
+   
         {/* Post Now */}
         <div className="card w-80 bg-base-100 shadow-xl my-5">
           <span className="text-xl font-bold text-left mb-2">Post now~</span>
@@ -239,11 +245,14 @@ function Home() {
         ))}
       </div>
     </div>
+  </div> {/* rightisde */}
+ 
 
   </div>
-</div>
+
     
         <Footer />
+        </div>
     </>
   );
 }

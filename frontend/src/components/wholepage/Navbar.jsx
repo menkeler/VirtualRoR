@@ -68,7 +68,7 @@ const MobileDropdown = () => (
 
   return (
     <>
-      <div className='shadow-lg p-4 w-full'>
+      <div className='shadow-lg bg-neutral-100 p-4 w-full'>
         <div className="navbar bg-neutral-100 w-full flex items-center justify-between">
         {isLoggedIn && (
           <div className="lg:hidden">
@@ -89,7 +89,7 @@ const MobileDropdown = () => (
           />
         </Link>
       </div>
-         
+    
           {/* Mobile-friendly menu */}
           {mobileMenuOpen && <MobileDropdown />}
 
@@ -101,11 +101,9 @@ const MobileDropdown = () => (
           <NavLink to="/profile">Profile</NavLink>
           {userData?.user?.staff && (
             <NavLink to="/admin/dashboard">Admin Dashboard</NavLink>
-          )}
-          
-         
+          )}   
         </div>
- )}
+        )}
           {isLoggedIn ? (
             <div className="lg:flex-none gap-2 lg:flex items-center">
               <NavLink to="/Cart">

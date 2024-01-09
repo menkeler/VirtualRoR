@@ -43,7 +43,7 @@ const NewRegularPostPage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-3xl mx-auto mt-5 bg-white shadow-md rounded-md overflow-hidden">
+      <div className="max-w-3xl mx-auto my-10 bg-white shadow-md rounded-md overflow-hidden">
         <form onSubmit={handleSubmitPost}>
           <div className="p-6">
             <h2 className="text-2xl font-bold mb-2 text-left">Post</h2>

@@ -236,11 +236,13 @@ def confirm_reservation(request, inquiry_id, purpose):
     elif purpose == 'Rejected':
         inquiry.status = 'Rejected'
         inquiry.save()
-
+        return Response(InquirySerializer(inquiry).data, status=status.HTTP_200_OK)
+    
     elif purpose == 'Cancelled':
         inquiry.status = 'Cancelled'
         inquiry.save()
-
+        return Response(InquirySerializer(inquiry).data, status=status.HTTP_200_OK)
+    
     return Response({'detail': 'Reservation cannot be confirmed.'}, status=status.HTTP_400_BAD_REQUEST)
 
 #if Resereved item is borrowable which is item is the same as itemCopy status for borrwed
