@@ -2,6 +2,7 @@ import React,{useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import client from '../../api/client';
 import TransactionDetails from '../../components/Displaycomponents/TransactionDetails';
+import TransactionsHook from '../../hooks/TransactionsHook';
 import InquiryDetails from '../../components/Displaycomponents/InquiryDetails';
 const AdminDashBoardStats = () => {
   const [alldata, setAlldata] = useState({
@@ -13,7 +14,9 @@ const AdminDashBoardStats = () => {
     latestPost: '',
     lostAndBorrwedItems:'',
   });
+
   
+
   const endpoints = {
     totalUsers: 'users/users/total_users_count',
     totalTransaction: 'transactions/transactions/total_transactions/',
@@ -200,7 +203,7 @@ const AdminDashBoardStats = () => {
       </div>
 
       <button className='btn btn-accent' onClick={()=>document.getElementById(`Detail${alldata.latestTransactions.id}`).showModal()}>View more</button>
-      <TransactionDetails fetchTransactions ={ fetchTransactions()}transaction={alldata.latestTransactions}/>
+      <TransactionDetails fetchTransactions ={ fetchData} transaction={alldata.latestTransactions}/>
     </div>
   </div>
 )}
@@ -229,7 +232,7 @@ const AdminDashBoardStats = () => {
                   </div>
               </div>
               <button className='btn btn-accent' onClick={()=>document.getElementById(`DetailInquiry${alldata.latestInquiry.id}`).showModal()}>View more</button>
-          <InquiryDetails inquiry={alldata.latestInquiry}/>
+          <InquiryDetails Admin={true} inquiry={alldata.latestInquiry}/>
       </div>        
 </div>
 
@@ -249,64 +252,3 @@ const AdminDashBoardStats = () => {
 
 export default AdminDashBoardStats
 
-
-
-
-
-
-
-
-
-
-
-{/* 
-
-
-
-
-
-                                 
-
-
-              <div className="flex-grow card rounded-box place-items-center p-6">
-                <h3 className="font-bold text-lg mb-4">Client Details</h3>
-                <div className="mb-2">Name: {transaction.participant.first_name} {transaction.participant.last_name}</div>
-                <div className="mb-2">Department: {transaction.participant.department}</div>
-                <div className="mb-2">
-                  Position: {transaction.participant.staff ? transaction.participant.staff.position : 'Client'}
-                </div>
-                <div className="mb-2">Email: {transaction.participant.email}</div>
-                <div className="mb-2">Contact: {transaction.participant.contact}</div>
-              </div>
-            </div>
-            <div className="border-t border-gray-200 my-8"></div>
-
-            <div className="flex flex-col w-full">
-            <h3 className="font-bold text-lg mb-4">Transaction Items</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full mb-5 bg-white border border-gray-300">
-        
-                  <thead className="bg-gray-200">
-                    <tr>
-                      <th className="py-2 px-4 border-b">Name</th>
-                      <th className="py-2 px-4 border-b">Type</th>
-                      <th className="py-2 px-4 border-b">Quantity/Condition</th>
-                      <th className="py-2 px-4 border-b">Actions</th>
-                    </tr>
-                  </thead>
-     
-                  <tbody>
-              
-                      <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
-                        <td className="py-2 px-4 border-b">
-                          {item.inventory && item.inventory.item ? item.inventory.item.name : item.item.inventory.itemprofiling.item_name +" ID: " + item.item.id}
-                        </td>
-                        <td className="py-2 px-4 border-b">
-                          {item.item
-                            ? 'Borrowable'
-                            : 'Consumable'}
-                        </td>
-                        <td className={`py-2 px-4 border-b ${item.item && item.condition === 'Lost' ? 'bg-red-500' : ''}`}>
-                          {item.item ? item.condition : item.quantity}
-                        </td>
-                  */}
