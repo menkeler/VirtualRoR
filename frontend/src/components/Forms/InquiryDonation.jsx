@@ -6,8 +6,10 @@ import { useAuth } from '../../contexts/AuthContext';
 const InquiryDonation = () => {
   const [message, setMessage] = useState('');
   const [datePreferred, setDatePreferred] = useState('');
+
   const [inputError, setInputError] = useState(false);
-  const { userData } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const {userData } = useAuth();
 
 
   const authToken = Cookies.get('authToken');
@@ -16,6 +18,7 @@ const InquiryDonation = () => {
     e.preventDefault();
     if (message && datePreferred) {
       try {
+        setLoading(true);
         console.log(userData.user.user_id);
         const response = await client.post('transactions/inquiries/', {
           message: message,
@@ -31,6 +34,8 @@ const InquiryDonation = () => {
         console.log('Submission successful:', response.data);
       } catch (error) {
         console.error('Error submitting donation:', error);
+      }finally {
+        setLoading(false); // Set loading back to false after processing
       }
     } else {
       setInputError(true);
@@ -83,7 +88,7 @@ const InquiryDonation = () => {
             </div>
 
             <div className="flex justify-end">
-              <button type="submit" onClick={handleDonationSubmit} className="btn bg-accent text-white">
+              <button type="submit" onClick={handleDonationSubmit} className="btn bg-accent text-white" disabled={loading}>
                 Submit
               </button>
               <button

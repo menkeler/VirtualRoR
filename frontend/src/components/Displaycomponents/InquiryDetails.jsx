@@ -1,6 +1,24 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import client from '../../api/client';
 
-const InquiryDetails = ({inquiry,Admin,handleAccept}) => {
+const InquiryDetails = ({inquiry,Admin,fetchData}) => {
+
+
+//to confirm inquiries donation and for reserving items
+const handleAccept = async (e, inquiryId, purpose) => {
+  e.preventDefault();
+  console.log('clicked');
+  try {
+    const response = await client.post(`transactions/confirm_reservation/${inquiryId}/${purpose}/`);
+    fetchData()
+    document.getElementById(`DetailInquiry${inquiryId}`).close();
+    console.log('Submission successful:', response.data);
+  } catch (error) {
+    console.error('Error Accept:', error);
+    console.error('Error Response:', error.response?.data?.detail);
+  }
+};
+
   return (
     <dialog key={`DetailInquiry${inquiry.id}`} id={`DetailInquiry${inquiry.id}`} className="modal">
     {/* MODAL */}

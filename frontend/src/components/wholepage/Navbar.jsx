@@ -21,7 +21,6 @@ const Navbar = () => {
     <RouterNavLink
       to={to}
       className="text-gray-800 hover:text-gray-900 px-6 py-3 rounded-full transition duration-300 focus:outline-none focus:ring focus:border-blue-300"
-      activeClassName="bg-gray-200 text-blue-500"
     >
       {children}
     </RouterNavLink>

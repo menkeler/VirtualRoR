@@ -19,7 +19,11 @@ const InquiryTable = ({User,Admin}) => {
     fetchInquiries(currentPage, statusQuery,typeQuery);
   }, [currentPage,statusQuery,typeQuery,searchQuery]); // Empty dependency array to run the effect only once when the component mounts
 
-  const fetchInquiries = async (page,status,type) => {
+  const fetchInquiries = async (
+    page = currentPage,
+    status = statusQuery,
+    type = typeQuery
+  ) => {
     try {
       const encodedSearchQuery = encodeURIComponent(searchQuery);
       const response = await client.get(`transactions/inquiries/?page=${page}&ordering=status&status=${encodeURIComponent(status)}&type=${encodeURIComponent(type)}&search=${encodedSearchQuery}&user=${UserId}`);
@@ -32,6 +36,7 @@ const InquiryTable = ({User,Admin}) => {
       setCurrentPage(1);
     }
   };
+
   const handleStatusQuery = function (e, status) {
     e.preventDefault();
     setStatusQuery(status);
@@ -44,21 +49,6 @@ const InquiryTable = ({User,Admin}) => {
   const handleWeekChange = (selectedWeek) => {
     setWeekValue(selectedWeek);
   };
-
-//to confirm inquiries donation and for reserving items
-const handleAccept = async (e, inquiryId, purpose) => {
-  e.preventDefault();
-  console.log('clicked');
-  try {
-    const response = await client.post(`transactions/confirm_reservation/${inquiryId}/${purpose}/`);
-    fetchInquiries(currentPage, statusQuery, typeQuery);
-    document.getElementById(`DetailInquiry${inquiryId}`).close();
-    console.log('Submission successful:', response.data);
-  } catch (error) {
-    console.error('Error Accept:', error);
-    console.error('Error Response:', error.response?.data?.detail);
-  }
-};
 
 
 
@@ -228,7 +218,7 @@ const handleAccept = async (e, inquiryId, purpose) => {
 
       {/* MOdal outside the table to avoid DOM NESTING */}
       {inquiries.map((inquiry) => (
-          <InquiryDetails handleAccept ={handleAccept}key={`DetailInquiry${inquiry.id}`} Admin={Admin} inquiry={inquiry}/>
+          <InquiryDetails fetchData={fetchInquiries} key={`DetailInquiry${inquiry.id}`} Admin={Admin} inquiry={inquiry}/>
       ))}
       
     </div>

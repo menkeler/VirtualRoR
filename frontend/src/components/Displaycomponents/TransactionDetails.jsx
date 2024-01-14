@@ -4,7 +4,9 @@ const TransactionDetails = ({transaction,fetchTransactions}) => {
 
   const [selectedCondition, setSelectedCondition] = useState('');
   const [selectStatus, setSelectStatus] = useState('');
-
+  
+  //purpose for loadgin is to not send multiple transactions and spam
+  const [loading, setLoading] = useState(false);
 
   const handleConditionButtonClick = (condition) => {
     setSelectedCondition(condition);  
@@ -30,6 +32,7 @@ const TransactionDetails = ({transaction,fetchTransactions}) => {
     
     if (selectStatus && selectedCondition) {
       try {
+        setLoading(true);
         if (selectStatus === "Returned") {
           const payload = {
             "status": "Returned",
@@ -84,6 +87,7 @@ const TransactionDetails = ({transaction,fetchTransactions}) => {
 
         fetchTransactions()
         document.getElementById(`Update${itemId.item.id}`).close();
+        setLoading(false);
     }
   
 
@@ -235,6 +239,7 @@ const TransactionDetails = ({transaction,fetchTransactions}) => {
                                                   className="btn btn-accent mr-2"
                                                   type="button"
                                                   onClick={(e) => handleSubmit(e, item)}
+                                                  disabled={loading}
                                                 >
                                                   Submit
                                                 </button>

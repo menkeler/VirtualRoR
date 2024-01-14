@@ -179,7 +179,6 @@ const AdminDashBoardStats = () => {
   </div>
 )}
 
-
 {alldata.latestTransactions && (
   <div className="col-span-2 card shadow bg-base-100">
     <h3 className="text-lg font-semibold mb-2">Latest Transaction</h3>
@@ -208,8 +207,6 @@ const AdminDashBoardStats = () => {
   </div>
 )}
 
-
-
 {alldata.latestInquiry && (
 
   <div className="col-span-2 card shadow bg-base-100">
@@ -232,20 +229,13 @@ const AdminDashBoardStats = () => {
                   </div>
               </div>
               <button className='btn btn-accent' onClick={()=>document.getElementById(`DetailInquiry${alldata.latestInquiry.id}`).showModal()}>View more</button>
-          <InquiryDetails Admin={true} inquiry={alldata.latestInquiry}/>
+          <InquiryDetails fetchData={fetchData} Admin={true} inquiry={alldata.latestInquiry}/>
       </div>        
 </div>
 
-
 )}
-
-
-
       </div>
     </section>
-
-
-
     </>
   )
 }
