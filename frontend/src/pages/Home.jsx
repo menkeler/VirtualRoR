@@ -75,7 +75,7 @@ function Home() {
 
   return (
     <>
-
+    <p>why</p>
     <div className='bg-gray-200'>
       <Navbar />
   
