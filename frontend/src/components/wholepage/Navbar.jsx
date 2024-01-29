@@ -65,7 +65,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="shadow-lg bg-neutral-100 p-1 w-full">
+      <div className="shadow-lg bg-neutral-100 p-2 w-full">
         <div className="navbar bg-neutral-100 w-full flex items-center justify-between">
           {isLoggedIn && (
             <div className="lg:hidden">
@@ -82,7 +82,7 @@ const Navbar = () => {
               <img
                 alt="Tailwind CSS Navbar component"
                 src="/public/Logo.png"
-                className="aspect-[5/1] w-120 h-16 lg:w-120 lg:h-10" // Adjust the width and height based on your preference
+                className="aspect-[4/1] w-120 h-16 lg:w-120 lg:h-10" // Adjust the width and height based on your preference
               />
             </Link>
           </div>
