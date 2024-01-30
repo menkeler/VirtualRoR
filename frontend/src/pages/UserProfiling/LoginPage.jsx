@@ -1,20 +1,21 @@
-import React from 'react';
-import Navbar from '../../components/wholepage/Navbar';
-import Footer from '../../components/wholepage/Footer';
+import React from "react";
+import Navbar from "../../components/wholepage/Navbar";
+import Footer from "../../components/wholepage/Footer";
 function LoginPage() {
   return (
     <>
-      
-      <div className="flex flex-col max-h-screen">
-      <Navbar />
+      <div className="flex flex-col h-screen">
+        <Navbar />
 
-      <div className="w-full vcarousel rounded-box overflow-hidden">
-          <div className="carousel-item w-full">
-            <img src="public/Loginbackground.jpg" className="w-auto object-cover" alt="Background" />
-          </div>
+        <div className="w-screen overflow-hidden items-center justify-center">
+          <img
+            src="public/Loginbackground.jpg"
+            className="w-screen h-screen"
+            alt="Background"
+          />
         </div>
-      <Footer />
-    </div>
+        {/* <Footer /> */}
+      </div>
     </>
   );
 }
