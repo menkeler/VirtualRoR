@@ -1,6 +1,6 @@
 # Virtual Room of Requirements - React/DjangoRF Authentication App
 
-Welcome to the Virtual Room of Requirements, an authentication app built using React for the frontend and DjangoRF for the backend. The primary goal is to gradually improve code readability through patching. Please follow the instructions below to set up the project and run it on your local machine.
+Welcome to the Virtual Room of Requirements, an authentication app built using React for the frontend, DjangoRF for the backend, and Postgres DB for the databases. The primary goal is to gradually improve code readability through patching. Please follow the instructions below to set up the project and run it on your local machine.
 
 ## Requirements
 
