@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import Navbar from '../../components/wholepage/Navbar';
-import { useAuth } from '../../contexts/AuthContext';
-import client from '../../api/client';
-import Footer from '../../components/wholepage/Footer';
-import TransactionsTable from '../../components/Displaycomponents/TransactionsTable';
-import InquiryTable from '../../components/Displaycomponents/InquiryTable';
+import React, { useState } from "react";
+import { Helmet } from "react-helmet";
+import Navbar from "../../components/wholepage/Navbar";
+import { useAuth } from "../../contexts/AuthContext";
+import client from "../../api/client";
+import Footer from "../../components/wholepage/Footer";
+import TransactionsTable from "../../components/Displaycomponents/TransactionsTable";
+import InquiryTable from "../../components/Displaycomponents/InquiryTable";
 function UserProfilePage() {
   const { isLoggedIn, userData, fetchData } = useAuth();
   const [editing, setEditing] = useState(false);
@@ -23,7 +24,10 @@ function UserProfilePage() {
   // put date udpate user info
   const handleSaveClick = async () => {
     try {
-      const res = await client.put(`users/users/${userData.user.user_id}/edit_user/`, formData);
+      const res = await client.put(
+        `users/users/${userData.user.user_id}/edit_user/`,
+        formData
+      );
       setFormData({
         first_name: res.data.first_name,
         department: res.data.department,
@@ -36,9 +40,8 @@ function UserProfilePage() {
       setTimeout(() => {
         setShowSuccessMessage(false);
       }, 3000);
-
     } catch (error) {
-      console.error('Error submitting form data:', error);
+      console.error("Error submitting form data:", error);
     }
   };
 
@@ -49,15 +52,24 @@ function UserProfilePage() {
     });
   };
 
-
-
   return (
     <>
+      <Helmet>
+        <title>My Profile - Virtual RoR</title>
+      </Helmet>
       <Navbar />
       <div className="mx-4 md:mx-10 lg:mx-20 xl:mx-32">
-        <h1 className="text-3xl font-bold text-center text-green-600 my-6">User Profile</h1>
+        <h1 className="text-3xl font-bold text-center text-green-600 my-6">
+          User Profile
+        </h1>
         <div className="card card-side bg-base-100 shadow-xl">
-          <figure><img src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg" alt="Movie" className='h-52 w-52 rounded-full mx-auto'/></figure>
+          <figure>
+            <img
+              src="https://daisyui.com/images/stock/photo-1635805737707-575885ab0820.jpg"
+              alt="Movie"
+              className="h-52 w-52 rounded-full mx-auto"
+            />
+          </figure>
           <div className="card-body">
             <h2 className="card-title">
               {editing ? (
@@ -73,7 +85,9 @@ function UserProfilePage() {
                   </label>
                 </>
               ) : (
-                <>Name: {userData.user.first_name} {userData.user.last_name}</>
+                <>
+                  Name: {userData.user.first_name} {userData.user.last_name}
+                </>
               )}
             </h2>
             <h2 className="card-title">Email: {userData.user.email}</h2>
@@ -110,7 +124,7 @@ function UserProfilePage() {
               )}
             </h2>
             <h2 className="card-title">
-              Role: {userData.user.staff?.position || 'Client'}
+              Role: {userData.user.staff?.position || "Client"}
             </h2>
 
             <div className="card-actions justify-end">
@@ -134,36 +148,39 @@ function UserProfilePage() {
         </div>
 
         <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-semibold mb-8">My Activities</h1>
+          <h1 className="text-3xl font-semibold mb-8">My Activities</h1>
 
-        <div className="mb-8">
-          <details className="collapse bg-gray-100  rounded-lg p-4 shadow-xl">
-            <summary className="collapse-title text-3xl font-medium">Transactions</summary>
-            <div className="collapse-content">
-              <TransactionsTable User={userData.user.user_id} />
-            </div>
-          </details>
+          <div className="mb-8">
+            <details className="collapse bg-gray-100  rounded-lg p-4 shadow-xl">
+              <summary className="collapse-title text-3xl font-medium">
+                Transactions
+              </summary>
+              <div className="collapse-content">
+                <TransactionsTable User={userData.user.user_id} />
+              </div>
+            </details>
+          </div>
+
+          <div className="mb-8">
+            <details className="collapse bg-gray-100  rounded-lg  p-4 shadow-xl">
+              <summary className="collapse-title text-3xl font-medium">
+                Inquiries
+              </summary>
+              <div className="collapse-content">
+                <InquiryTable User={userData.user.user_id} />
+              </div>
+            </details>
+          </div>
+
+          <div className="mb-8">
+            <details className="collapse bg-gray-100  rounded-lg  p-4 shadow-xl">
+              <summary className="collapse-title text-3xl font-medium">
+                Posts
+              </summary>
+              <div className="collapse-content">Posts</div>
+            </details>
+          </div>
         </div>
-
-        <div className="mb-8">
-          <details className="collapse bg-gray-100  rounded-lg  p-4 shadow-xl">
-            <summary className="collapse-title text-3xl font-medium">Inquiries</summary>
-            <div className="collapse-content">
-              <InquiryTable User={userData.user.user_id} />
-            </div>
-          </details>
-        </div>
-
-        <div className="mb-8">
-          <details className="collapse bg-gray-100  rounded-lg  p-4 shadow-xl">
-            <summary className="collapse-title text-3xl font-medium">Posts</summary>
-            <div className="collapse-content">
-              Posts
-            </div>
-          </details>
-        </div>
-
-      </div>
       </div>
       <Footer />
     </>

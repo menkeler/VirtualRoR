@@ -93,7 +93,7 @@ const Navbar = () => {
           {/* Desktop navigation links */}
           {isLoggedIn && (
             <div
-              className={`lg:px-64 lg:grid lg:grid-cols-${
+              className={`lg:grid lg:grid-cols-${
                 userData?.user?.staff ? 4 : 3
               } lg:gap-4 lg:justify-center hidden lg:flex`}
             >

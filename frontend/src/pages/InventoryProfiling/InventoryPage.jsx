@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import client from '../../api/client';
-import Navbar from '../../components/wholepage/Navbar';
-import Cookies from 'js-cookie';
-import { useAuth } from '../../contexts/AuthContext';
-import InventoryTable from '../../components/Displaycomponents/InventoryTable';
-import Footer from '../../components/wholepage/Footer';
+import React, { useState, useEffect } from "react";
+import client from "../../api/client";
+import Navbar from "../../components/wholepage/Navbar";
+import Cookies from "js-cookie";
+import { useAuth } from "../../contexts/AuthContext";
+import InventoryTable from "../../components/Displaycomponents/InventoryTable";
+import Footer from "../../components/wholepage/Footer";
 const InventoryPage = () => {
-
-  const { userData } = useAuth(); 
+  const { userData } = useAuth();
 
   return (
     <>
       <Navbar />
-      
-      <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md">
 
-        <div><InventoryTable type={1}/></div>
+      <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md">
+        <div>
+          <InventoryTable type={1} />
+        </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };
