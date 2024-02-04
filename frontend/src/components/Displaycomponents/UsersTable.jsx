@@ -2,36 +2,71 @@ import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
 import SemiCircleGauge from './SemiCircleGauge';
+import { useAuth } from '../../contexts/AuthContext';
 const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
+  const {userData} = useAuth();
+
+  const handleChangeRole = async (e, user_id, role) => {
+    e.preventDefault();
 
 
-  useEffect(() => {
-    const fetchUsers = async (page) => {
-      try {
-        const authToken = Cookies.get('authToken');
-        const encodedSearchQuery = encodeURIComponent(searchQuery);
-        const response = await client.get(`users/users/?page=${page}&search=${encodedSearchQuery}`, {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
-        });
 
+    const userConfirmed = window.confirm(`Are you sure you want to change the role to ${role} for user ID: ${user_id}?`);
+
+    if (!userConfirmed) {
+      // User canceled the role change
+      return;
+    }
+    try {
+      if (role === 'student') {
+        console.log('Changing role to student for user ID:', user_id);
+        const response = await client.delete(`users/users/${user_id}/remove_staff/`);
+        fetchUsers(currentPage);
+        document.getElementById(`change_role_user_${user_id}`).close()
         
-        const { results, count } = response.data;
-
-        setUsers(results);
-        setTotalPages(Math.ceil(count / 30));
-
-        // console.log(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        setCurrentPage(1);
+      } else {
+        console.log('Changing role to staff for user ID:', user_id);
+        const response = await client.post(`users/users/${user_id}/become_staff/`);
+        fetchUsers(currentPage);
+        document.getElementById(`change_role_user_${user_id}`).close()
       }
-    };
+  
+
+
+    } catch (error) {
+      console.error('Error:', error);
+   
+    }
+  };
+  
+  const fetchUsers = async (page) => {
+    try {
+      const authToken = Cookies.get('authToken');
+      const encodedSearchQuery = encodeURIComponent(searchQuery);
+      const response = await client.get(`users/users/?page=${page}&search=${encodedSearchQuery}`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
+        },
+      });
+
+      
+      const { results, count } = response.data;
+
+      setUsers(results);
+      setTotalPages(Math.ceil(count / 30));
+
+      // console.log(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setCurrentPage(1);
+    }
+  };
+  useEffect(() => {
+ 
 
     fetchUsers(currentPage);
   }, [searchQuery, currentPage]);
@@ -54,6 +89,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   if (type === 1) {
       return (
         <>
+     
           {/* Search bar */}
           <input
             type="text"
@@ -123,6 +159,15 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
               </p>
               <p className="text-gray-600 mb-2">
                 <span className="font-bold">Role:</span> {user.staff && user.staff.position !== null ? user.staff.position : 'Client'}
+
+                {/* change role button*/}
+              
+                {(!user.staff || (user.staff?.position !== 'Director')) && userData.user.staff?.position === 'Director' && (
+                <button className="btn" onClick={() => document.getElementById(`change_role_user_${user.user_id}`).showModal()}>
+                  ChangeRole
+                </button>
+              )}
+           
               </p>
               <p className="text-gray-600 mb-2">
                 <span className="font-bold">Email:</span> {user.email}
@@ -178,6 +223,34 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
               »
             </button>
           </div>
+
+            {/* Modals  */}
+            {/* change role modal  */}
+            {users.map((user) => (
+        
+            <dialog key={user.user_id} id={`change_role_user_${user.user_id}`} className="modal">
+                  <div className="modal-box">
+                    <h3 className="font-bold text-lg">Change User Role!</h3>
+                    <button 
+                    className="btn bg-blue-500 mr-2" 
+                    onClick={(e) => handleChangeRole(e,user.user_id,"student")}
+                    disabled={!user.staff}
+                    
+                    >Student</button>
+                    <button 
+                    className="btn bg-green-500" 
+                    onClick={(e) => handleChangeRole(e,user.user_id,"staff")}
+                    disabled={user.staff}
+                    >Staff</button>
+                    <div className="modal-action">
+                      <form method="dialog">
+                        {/* if there is a button in form, it will close the modal */}
+                        <button className="btn">Close</button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
+           ))}
         </>
       );
     } else if (type === 2) {

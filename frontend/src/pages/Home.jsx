@@ -48,7 +48,7 @@ function Home() {
   
   const fetchPosts = async (page,type) => {
     try {
-      const response = await client.get(`posts/posts/?page=${page}&status=&category=${type}`);
+      const response = await client.get(`posts/posts/?page=${page}&status=Accepted&category=${type}`);
       setPosts((prevPosts) => [...prevPosts, ...response.data.results]);
       console.log(response.data);
     } catch (error) {

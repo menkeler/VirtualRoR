@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
-import Select from 'react-select';
+import InventoryTable from '../Displaycomponents/InventoryTable';
 
 const TransactionRelease = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -100,17 +100,17 @@ const TransactionRelease = () => {
     <dialog id="CreateTransaction" className="modal">
     <div className="modal-box w-11/12 max-w-5xl">
         <h3 className="font-bold text-lg">Create Transaction</h3>
-        <button className="btn mx-2 mt-2" onClick={()=>document.getElementById('SelectTransaction').showModal()}>Select Transaction</button> 
+        <button className="btn mx-2 mt-2" onClick={()=>document.getElementById('SelectInventory').showModal()}>Walk-In</button> 
+        <button className="btn mx-2 mt-2" onClick={()=>document.getElementById('SelectTransaction').showModal()}>Load Reservations</button> 
 
         <div className="flex flex-col items-center">
 
-          {selectedInquiry ? (
+          {selectedInquiry && (
             <>
               <h3 className="font-bold mt-3 text-lg">Reservation ID: {selectedInquiry.id}</h3>
             </>
-          ) : (
-            <h3 className="font-bold mt-3 text-lg">Reservation ID: None</h3>
-          )}
+          ) 
+          }
               
               <h3 className="font-bold mt-3 text-lg">Inquirer</h3>
               <h1 className="mb-4">
@@ -260,6 +260,22 @@ const TransactionRelease = () => {
       </div>
     </dialog>
     
+
+    {/* inventor ymodal */}
+
+    <dialog id="SelectInventory" className="modal">
+    <div className="modal-box w-11/12 max-w-5xl">
+        <h3 className="font-bold text-lg">Select Reservation</h3>
+        <p className="py-4"></p>
+      
+                            <InventoryTable type={2}/>
+        <div className="modal-action">
+          <form method="dialog">
+            <button className="btn">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
     </>
   )
 }

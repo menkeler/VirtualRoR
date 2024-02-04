@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import UsersTable from '../Displaycomponents/UsersTable';
 import CreateItemProfile from '../CustomButtons/Inventory/CreateItemProfile';
 import InventoryProfilingTable from '../Displaycomponents/InventoryProfilingTable';
+import ManualUserCreation from '../CustomButtons/Transactions/ManualUserCreation';
 
 const TransactionDonation = () => {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -142,10 +143,14 @@ const TransactionDonation = () => {
     const updatedCopies = itemCopies.filter((copy) => copy.item !== itemIdToRemove);
     setItemCopies(updatedCopies);
   };
-  
+  //handle new user and select it after
+  const handleUserIdChange = (userData) => {
+    handleSelectUser(userData)
+    // You can perform additional actions or set state in the parent component if needed
+  };
   //handle selected user for transaction
    const handleSelectUser = (selectedUser) => {
-    console.log(`Selected user in TransactionDonation:`, selectedUser);
+    // console.log(`Selected user in TransactionDonation:`, selectedUser);
 
     const { user_id, first_name, last_name, email } = selectedUser;
 
@@ -313,6 +318,7 @@ const TransactionDonation = () => {
                   </div>
                 </div>
               )}
+              <ManualUserCreation onUserIdChange={handleUserIdChange}/>
                 <button className="btn btn-accent" onClick={() => document.getElementById('ChooseUser').showModal()}>Choose user</button>
               </div>
             </h1>

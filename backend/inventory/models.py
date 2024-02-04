@@ -4,7 +4,18 @@ from django.dispatch import receiver
 
 class Category(models.Model):
     name = models.CharField(max_length=150 , unique=True)
+    
+    def delete(self, *args, **kwargs):
+        # Get or create the "Uncategorized" category
+        uncategorized_category, created = Category.objects.get_or_create(name='Uncategorized')
 
+        # Update products associated with this category to "Uncategorized"
+        products_to_update = ItemProfiling.objects.filter(category=self)
+        products_to_update.update(category=uncategorized_category)
+
+        # Call the parent class delete method to perform the actual deletion
+        super().delete(*args, **kwargs)
+        
     def __str__(self):
         return self.name
 

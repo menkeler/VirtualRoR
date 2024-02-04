@@ -27,7 +27,22 @@ const PostsTable = () => {
         setCurrentPage(1);
       }
     };
-  
+
+    const handleChangePostStatus = async (e, post_id,status) => {
+      try {
+        const response = await client.patch(`posts/posts/${post_id}/`, {
+          status: status,
+        });
+        document.getElementById(`Detail${post_id}`).close()
+        // Handle the response as needed
+        fetchPosts(currentPage,statusQuery,typeQuery);
+        console.log('Updated post status:', response.data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    
+
   const handleStatusQuery = function (e, status) {
     e.preventDefault();
     setStatusQuery(status);
@@ -76,7 +91,16 @@ const PostsTable = () => {
         checked={statusQuery === 'Accepted'}
         onChange={(e) => handleStatusQuery(e, 'Accepted')}
       />
-  
+      <input
+        type="radio"
+        name="my_tabs_1"
+        role="tab"
+        className="tab"
+        aria-label="Rejected"
+        checked={statusQuery === 'Rejected'}
+        onChange={(e) => handleStatusQuery(e, 'Rejected')}
+      />
+
     
       <select
         id="inquiryType"
@@ -181,15 +205,17 @@ const PostsTable = () => {
       </div>
   )}
 
-  <p className="py-2 font-bold">
-    <strong className="text-blue-500">Created At:</strong> {new Date(post.created_at).toLocaleString()}
-  </p>
-  <div className="modal-action mt-8">
-    <form method="dialog">
-      <button className="btn bg-blue-500 text-white hover:bg-blue-600">Close</button>
-    </form>
-  </div>
-</div>
+      <p className="py-2 font-bold">
+        <strong className="text-blue-500">Created At:</strong> {new Date(post.created_at).toLocaleString()}
+      </p>
+      <div className="modal-action mt-8">
+        <form method="dialog">
+          <button className="btn bg-green-500 text-white hover:bg-blue-600" type='button' onClick={(e) => handleChangePostStatus(e, post.id,"Accepted")}>Accept</button>
+          <button className="btn bg-red-500 text-white hover:bg-blue-600" type='button' onClick={(e) => handleChangePostStatus(e, post.id,"Rejected")}>Reject</button>
+          <button className="btn bg-blue-500 text-white hover:bg-blue-600">Close</button>
+        </form>
+      </div>
+    </div>
       </dialog>
       ))}
     </div>

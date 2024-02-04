@@ -141,10 +141,9 @@ const CreateItemProfile = ({onFormSubmit}) => {
             {/* edit Category FOrm */}
             {categoryData.map((category) => (
               <div key={category.id} className="card bg-base-100 p-4 rounded-md shadow-lg">
-                <h2 className="card-title text-3xl font-semibold overflow-hidden whitespace-nowrap">
+                <h2 className="card-title text-xl font-semibold overflow-hidden whitespace-nowrap">
                   {category.name}
                 </h2>
-                
                    <EditCategoryForm key={category.id} category={category} onFormSubmit={handleFormSubmit} />
               </div>
             ))}

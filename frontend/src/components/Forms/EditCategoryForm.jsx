@@ -7,6 +7,31 @@ const EditCategoryForm = ({ category, onFormSubmit }) => {
     setEditedValue(category.name);
   }, [category]);
 
+
+  const handleDeleteCategory = async (e) => {
+    e.preventDefault();
+  
+    // Show a confirmation dialog
+    const userConfirmed = window.confirm("Are you sure you want to delete this category?");
+  
+    if (!userConfirmed) {
+      // User cancelled the deletion
+      return;
+    }
+  
+    try {
+    
+      const response = await client.delete(`/inventory/categories/${category.id}/`);
+      onFormSubmit()  
+      // Check the response or handle it as needed
+  
+      document.getElementById(`Edit ${category.name}`).close();
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
   const handleCategorySubmit = async (e) => {
     e.preventDefault();
     console.log('Saving edited value:', editedValue);
@@ -43,9 +68,12 @@ const EditCategoryForm = ({ category, onFormSubmit }) => {
 
   return (
     <>
+    {category.name !== 'Uncategorized' && (
       <button className="btn" onClick={() => document.getElementById(`Edit ${category.name}`).showModal()}>
         Edit
       </button>
+
+    )}
       <dialog id={`Edit ${category.name}`} className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Edit: {category.name}</h3>
@@ -58,6 +86,13 @@ const EditCategoryForm = ({ category, onFormSubmit }) => {
               onChange={(e) => setEditedValue(e.target.value)}
             />
             <div className="modal-action">
+            <button
+                type="button"
+                className="btn bg-red-500 mr-auto" 
+                onClick={handleDeleteCategory}
+              >
+                Delete Category
+              </button>
               <button type="button" className="btn btn-primary mr-2"   disabled={!editedValue.trim()} onClick={handleCategorySubmit}>
                 Save
               </button>

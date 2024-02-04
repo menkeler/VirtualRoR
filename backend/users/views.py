@@ -50,17 +50,28 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.create(request.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        response_data = {
+            'user_id': user.user_id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'contact': user.contact,
+            'department': user.department,
+            'date_joined': user.date_joined,
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
     
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def checkregister(self, request):
         email = request.data.get('email', None)
         user_exists = User.objects.filter(email=email).exists()
-
+        print(f"Checking registration for email: {email}")
+        print(f"User exists: {user_exists}")
         if user_exists:
             return Response({'detail': 'User already registered'}, status=status.HTTP_200_OK)
         else:
-            return Response({'detail': 'User not registered'}, status=status.HTTP_200_OK)   
+            return Response({'detail': 'User not registered'}, status=status.HTTP_202_ACCEPTED)   
             
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def login(self, request):
