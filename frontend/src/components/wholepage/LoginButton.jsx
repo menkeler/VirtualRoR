@@ -93,7 +93,7 @@ function LoginButton() {
         const authToken = loginResponse.data.token;
 
         const expirationDate = new Date();
-        expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000); // 1 hour in milliseconds
+        expirationDate.setTime(expirationDate.getTime() + 4 * 60 * 60 * 1000); // 1 hour in milliseconds
 
         // Store the token in a cookie
         Cookies.set("authToken", authToken, {

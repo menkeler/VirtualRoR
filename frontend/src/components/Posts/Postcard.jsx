@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Postcard = ({ Data }) => {
   return (
@@ -16,22 +16,24 @@ const Postcard = ({ Data }) => {
           {/* User information */}
           <div className="text-center md:text-left">
             {/* User name */}
-            <p className="text-lg font-semibold">{Data.author.first_name} {Data.author.last_name}</p>
+            <p className="text-lg font-semibold">
+              {Data.author.first_name} {Data.author.last_name}
+            </p>
             {/* Date */}
-            <p className="text-sm text-gray-500">{new Date(Data.created_at).toLocaleString()}</p>
+            <p className="text-sm text-gray-500">
+              {new Date(Data.created_at).toLocaleString()}
+            </p>
           </div>
         </div>
 
-{/* Post title */}
+        {/* Post title */}
 
-{/* Post title */}
-<p className="text-2xl md:text-3xl font-bold text-left  text-blue-600 break-all ">
-  {Data.title}
-</p>
+        {/* Post title */}
+        <p className="text-2xl md:text-3xl font-bold text-left  text-blue-600 break-all ">
+          {Data.title}
+        </p>
 
-<p className="text-left mb-4 break-all">
-  {Data.message}
-</p>
+        <p className="text-left mb-4 break-all">{Data.message}</p>
 
         {/* Post image */}
         <div className="image-container w-full h-64 mb-4 md:mb-6 overflow-hidden">

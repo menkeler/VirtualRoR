@@ -142,12 +142,12 @@ const Navbar = () => {
                   <div className="flex flex-row gap-2 items-center">
                     {/* User Name and Position */}
                     <div className="ml-2">
-                      <h1 className="text-xs font-semibold text-gray-800">
+                      <h1 className="text-xs font-semibold text-gray-800 hidden lg:block">
                         {userData?.user &&
                           `${userData.user.first_name} ${userData.user.last_name}`}
                       </h1>
                       {userData?.user?.staff?.position && (
-                        <p className="text-[10px] text-gray-500">
+                        <p className="text-[10px] text-gray-500 hidden lg:block">
                           {userData.user.staff.position}
                         </p>
                       )}
