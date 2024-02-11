@@ -65,29 +65,30 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="shadow-lg bg-neutral-100 p-2 w-full">
+      <div className="shadow-lg bg-neutral-100 p-2 w-full sticky top-0 z-40">
         {/* Mobile Menu Toggle  ------------------------------------------------------------------*/}
         <div className="navbar bg-neutral-100 w-full flex items-center justify-between">
-          {isLoggedIn && (
-            <div className="lg:hidden">
-              <button
-                onClick={toggleMobileMenu}
-                className="px-4 py-2 text-gray-600 text-3xl hover:text-gray-800"
-              >
-                ☰
-              </button>
+          <div>
+            {isLoggedIn && (
+              <div className="lg:hidden">
+                <button
+                  onClick={toggleMobileMenu}
+                  className="px-4 py-2 text-gray-600 text-3xl hover:text-gray-800"
+                >
+                  ☰
+                </button>
+              </div>
+            )}
+            {/* Logo -------------------------------------------------------------------------------*/}
+            <div className="flex items-center w-120 h-10">
+              <Link to="/Home">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="/public/Logo.png"
+                  className="aspect-[4/1] w-120 h-10 lg:min-w-120 lg:h-10" // Adjust the width and height based on your preference
+                />
+              </Link>
             </div>
-          )}
-
-          {/* Logo -------------------------------------------------------------------------------*/}
-          <div className="flex items-center w-120 h-10">
-            <Link to="/Home" className="justify-between">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="/public/Logo.png"
-                className="aspect-[4/1] w-120 h-10 lg:min-w-120 lg:h-10" // Adjust the width and height based on your preference
-              />
-            </Link>
           </div>
 
           {/* Mobile-friendly menu ---------------------------------------------------------------*/}

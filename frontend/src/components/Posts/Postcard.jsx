@@ -2,45 +2,43 @@ import React from "react";
 
 const Postcard = ({ Data }) => {
   return (
-    <div className="card card-side bg-white shadow-xl mx-0 md:mx-0 rounded-lg  w-full">
+    <div className="card card-compact shadow-xl bg-white rounded-md z-10">
       {/* Display post content */}
-      <div className="card-body p-4 md:p-6">
-        <div className="flex  md:flex-row items-center mb-4">
+      <div className="card-body p-4">
+        <div className="flex  md:flex-row items-center mb-1">
           {/* Profile picture */}
           <img
             src="https://randomuser.me/api/portraits/men/1.jpg"
             alt="Profile Picture"
-            className="w-12 h-12 rounded-full mb-4 md:mb-0 md:mr-4"
+            className="w-8 h-8 rounded-full mb-2 mr-2"
           />
 
           {/* User information */}
-          <div className="text-center md:text-left">
+          <div>
             {/* User name */}
-            <p className="text-lg font-semibold">
+            <p className="text-sm font-semibold text-left">
               {Data.author.first_name} {Data.author.last_name}
             </p>
             {/* Date */}
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-gray-500 text-left">
               {new Date(Data.created_at).toLocaleString()}
             </p>
           </div>
         </div>
 
         {/* Post title */}
-
-        {/* Post title */}
-        <p className="text-2xl md:text-3xl font-bold text-left  text-blue-600 break-all ">
+        <p className="text-2xl font-semibold text-left text-slate-800 break-all border-solid border-b border-slate-400 break-all">
           {Data.title}
         </p>
-
-        <p className="text-left mb-4 break-all">{Data.message}</p>
+        {/* Post Message*/}
+        <p className="text-left mb-1 mt-2 break-all">{Data.message}</p>
 
         {/* Post image */}
-        <div className="image-container w-full h-64 mb-4 md:mb-6 overflow-hidden">
+        <div className="image-container w-full max-h-100 mb-4 md:mb-6 overflow-hidden">
           <img
             src="https://placekitten.com/800/400"
             alt="Post Image"
-            className="w-64 h-64 object-cover rounded-lg"
+            className="w-full object-cover rounded-lg"
           />
         </div>
 

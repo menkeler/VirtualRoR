@@ -80,10 +80,10 @@ function Home() {
 
         <div className="md:flex grid grid-col-2 min-h-screen mt-5">
           {/* Left Side */}
-          <div className="flex-grow p-8 md:ml-72">
+          <div className="flex-grow px-8 md:ml-[20vw] md:mr-12">
             <div
               role="tablist"
-              className="tabs tabs-lifted tabs-md lg:w-full lg:mx-auto bg-gray-300 sticky top-0 z-50"
+              className="tabs tabs-lifted tabs-md lg:w-full lg:mx-auto bg-gray-300 sticky top-0 z-10 rounded-tl-lg rounded-tr-lg"
             >
               <input
                 type="radio"
@@ -175,7 +175,7 @@ function Home() {
           </div>{" "}
           {/* left side */}
           {/* Right Side */}
-          <div className="w-1/4 sticky top-0 max-h-screen overflow-y-auto scrollbar-hidden lg:block sm:hidden">
+          <div className="w-1/4 sticky top-50 max-h-screen overflow-y-auto scrollbar-hidden lg:block sm:hidden">
             {/* Post Now */}
             <div className="card w-80 bg-base-100 shadow-xl my-5">
               <span className="text-xl font-bold text-left mb-2">
