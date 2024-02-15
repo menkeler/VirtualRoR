@@ -312,3 +312,44 @@ def process_transaction(request, inquiry_id):
         return Response({'detail': 'Transaction processed successfully.'}, status=status.HTTP_200_OK)
 
     return Response({'detail': 'Transaction cannot be processed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def process_walkin(request):
+    # Extract data from the request body
+    transaction_items = request.data.get('transaction_items', [])
+    remarks = request.data.get('remarks', '')
+    user = request.data.get('user_id')
+    # Create a Transaction without associating it with any specific inquiry
+    transaction = Transaction.objects.create(
+            participant=user,
+            transaction_type='Release',
+            remarks=remarks
+        )
+    is_active = False
+    # Process each transaction item
+    for item_data in transaction_items:
+        # Assuming item_data contains the necessary information for creating TransactionItem
+        if item_data.get('item') is not None:
+            # For ItemCopy
+            transaction_item = TransactionItem.objects.create(
+                transaction=transaction,
+                item=item_data['item'],
+                quantity=item_data.get('quantity', 1),  # Default to 1 if quantity is not provided
+                status="Active" 
+            )
+            is_active = True
+        elif item_data.get('inventory') is not None:
+            transaction_item = TransactionItem.objects.create(
+                transaction=transaction,
+                inventory=item_data['inventory'],
+                quantity=item_data['quantity'],
+                status="Consumable" 
+            )
+            
+    transaction.is_active = is_active
+    transaction.save()
+
+    # Return a response indicating a successful transaction
+    return Response({'detail': 'Transaction processed successfully.'}, status=status.HTTP_200_OK)
+

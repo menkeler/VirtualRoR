@@ -265,7 +265,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
           />
 
          {/* List of names */}
-        <div className="mt-4 grid gap-4 grid-cols-3">
+        {/* <div className="mt-4 grid gap-4 grid-cols-3">
           {users.map((user) => (
             <div key={user.user_id} className="p-5 bg-white rounded-lg shadow-md">
               <h2 className="text-base font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
@@ -287,7 +287,35 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
               </button>
             </div>
           ))}
-        </div>
+        </div> */}
+        <div className="overflow-x-auto">
+        <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.user_id}>
+              <td>{user.first_name} {user.last_name}</td>
+              <td>{user.email}</td>
+              <td>
+                <button
+                  onClick={() => handleSelectUser(user)}
+                  className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                >
+                  Select
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
 
           {/* Pagination controls */}
           <div className="join mt-4">

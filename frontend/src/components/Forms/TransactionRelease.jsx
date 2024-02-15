@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import Cookies from 'js-cookie';
 import InventoryTable from '../Displaycomponents/InventoryTable';
+import UsersTable from '../Displaycomponents/UsersTable';
 
 const TransactionRelease = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -11,7 +12,8 @@ const TransactionRelease = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
   const [Remarks, setRemarks] = useState('');
-
+  const [currentUser, setCurrentUser] = useState('');
+  const [items, setItems] = useState([])
   const fetchInquiries = async (page) => {
     try {
       const response = await client.get(`transactions/inquiries/?page=${page}&ordering=status&status=Accepted&type=Reservation&search=${searchQuery}`);
@@ -28,8 +30,8 @@ const TransactionRelease = () => {
 
   useEffect(() => {
     fetchInquiries(currentPage)
-
-  }, [currentPage,searchQuery]);
+    console.log(selectedInquiry); 
+  }, [currentPage,searchQuery,selectedInquiry]);
 
   // INquiry selected
   const handleSelectInquiry = (inquiry) => {
