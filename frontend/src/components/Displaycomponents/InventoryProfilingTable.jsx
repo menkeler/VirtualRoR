@@ -225,8 +225,8 @@ if(Admin){
         />
       </div>
 
-      {/* List of names */}
-          <div className="mt-4 grid gap-6 grid-cols-3">
+  
+          {/* <div className="mt-4 grid gap-6 grid-cols-3">
               {items.map((item) => (
                   <div key={item.id} className="p-6 bg-white rounded-lg shadow-md overflow-hidden">
                   <h2 className="text-lg font-semibold overflow-wrap break-word whitespace-normal mb-2">
@@ -250,20 +250,54 @@ if(Admin){
               <span className="badge bg-green-500 text-white ml-2">Consumable</span>
               )}
 
-              {/* Display additional information */}
+              
               <p className="text-sm text-gray-500 mb-2">
                   Category: {item.category.name}
               </p>
-              {/* Add more details as needed */}
-              <button
+      
+             
+              </div>
+          ))}
+          </div> */}
+
+          <div className="overflow-x-auto">
+  <table className="table">
+    {/* head */}
+    <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Returnable</th>
+        <th>Category</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {/* rows */}
+      {items.map((item, index) => (
+        <tr key={item.id}>
+          <th>{index + 1}</th>
+          <td>{item.name}</td>
+          <td>{item.description.length > 60 ? `${item.description.substring(0, 60)}...` : item.description}</td>
+
+          <td>{item.returnable ? "Borrowable" : "Consumable"}</td>
+          <td>{item.category.name}</td>
+          <td>
+          <button
                   onClick={() => handleSelectItem(item)}
                   className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
               >
                   Select
               </button>
-              </div>
-          ))}
-          </div>
+
+              </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 
         {/* Pagination controls */}
         <div className="join mt-4">

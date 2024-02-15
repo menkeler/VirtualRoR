@@ -25,7 +25,7 @@ class ItemProfiling(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='items/', default='default.png')
-
+    isDeleted = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 
