@@ -275,9 +275,9 @@ const TransactionDonation = () => {
               console.error('Error:', error);
             }
           }
-
+          document.getElementById('TransactionDonation').close();
           //Step 4 is at the use effect
-     
+              ///ADD fetch table here
         } catch (error) {
           console.error('Error:', error);
         }
@@ -326,7 +326,7 @@ const TransactionDonation = () => {
             <dialog id="ChooseUser" className="modal">
               <div className="modal-box w-11/12 max-w-5xl h-full">
                 <h3 className="font-bold text-lg">Users</h3>
-                <UsersTable type={2} onSelectUser={handleSelectUser} />
+                <UsersTable type={2} onSelectUser={handleUserIdChange} />
                 <div className="modal-action">
                   <form method="dialog">
                     <button className="btn btn-error">Close</button>

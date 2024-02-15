@@ -15,11 +15,14 @@ const TransactionRelease = () => {
   const [currentUser, setCurrentUser] = useState('');
   const [items, setItems] = useState([])
 
-  const [payload, setPayload] = useState({
+  const initialPayload = {
     user_id: currentUser.user_id,
     remarks: "test",
     transaction_items: []
-  });
+  };
+
+  const [payload, setPayload] = useState(initialPayload);
+  
   const handleUserIdChange = (userData) => {
     handleSelectUser(userData)
     // You can perform additional actions or set state in the parent component if needed
@@ -36,6 +39,7 @@ const TransactionRelease = () => {
     console.log(`Selected user in TransactionDonation:`, selectedUser);
     document.getElementById('ChooseUser').close();
   };
+  
   const addItemToPayload = (item) => {
     // Convert the id property to the item property
     const newItem = item.condition ? { ...item, item: item.id, quantity: 1 } : { ...item, quantity: 1 };
@@ -184,7 +188,7 @@ const TransactionRelease = () => {
   return (
     <>
     
-    <button className="btn mt-3 mx-2" onClick={()=>document.getElementById('CreateTransaction').showModal()}>Release</button>
+    <button className="btn" onClick={()=>document.getElementById('CreateTransaction').showModal()}>Release</button>
 
 
     {/* Modal */}
@@ -202,7 +206,7 @@ const TransactionRelease = () => {
             </>
           ) 
           }
-<ManualUserCreation onUserIdChange={handleUserIdChange}/>
+          <ManualUserCreation onUserIdChange={handleUserIdChange}/>
                 <button className="btn btn-accent" onClick={() => document.getElementById('ChooseUser').showModal()}>Choose user</button>
               <h3 className="font-bold mt-3 text-lg">Inquirer</h3>
               <h1 className="mb-4">
