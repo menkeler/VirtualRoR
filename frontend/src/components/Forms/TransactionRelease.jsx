@@ -3,7 +3,7 @@ import client from '../../api/client';
 import Cookies from 'js-cookie';
 import InventoryTable from '../Displaycomponents/InventoryTable';
 import UsersTable from '../Displaycomponents/UsersTable';
-
+import ManualUserCreation from '../CustomButtons/Transactions/ManualUserCreation';
 const TransactionRelease = () => {
   const [inquiries, setInquiries] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
@@ -14,6 +14,63 @@ const TransactionRelease = () => {
   const [Remarks, setRemarks] = useState('');
   const [currentUser, setCurrentUser] = useState('');
   const [items, setItems] = useState([])
+
+  const [payload, setPayload] = useState({
+    user_id: currentUser.user_id,
+    remarks: "test",
+    transaction_items: []
+  });
+  const handleUserIdChange = (userData) => {
+    handleSelectUser(userData)
+    // You can perform additional actions or set state in the parent component if needed
+  };
+  const handleSelectUser = (selectedUser) => {
+    // console.log(`Selected user in TransactionDonation:`, selectedUser);
+
+    const { user_id, first_name, last_name, email } = selectedUser;
+    setPayload(prevPayload => ({
+      ...prevPayload,
+      user_id: user_id
+  }));
+    setCurrentUser({ user_id, first_name, last_name, email });
+    console.log(`Selected user in TransactionDonation:`, selectedUser);
+    document.getElementById('ChooseUser').close();
+  };
+  const addItemToPayload = (item) => {
+    // Convert the id property to the item property
+    const newItem = item.condition ? { ...item, item: item.id, quantity: 1 } : { ...item, quantity: 1 };
+    delete newItem.id;
+
+    // Check if the item already exists in the transaction_items array based on both id and item properties
+    const isDuplicate = payload.transaction_items.some(existingItem => 
+        existingItem.id === item.id || existingItem.item === newItem.item
+    );
+    
+    // If the item is not a duplicate, add it to the payload
+    if (!isDuplicate) {
+        // If the item has a condition, create a new object with item instead of id
+        const itemToAdd = newItem;
+
+        setPayload(prevState => ({
+            ...prevState,
+            transaction_items: [...prevState.transaction_items, itemToAdd]
+        }));
+    } else {
+        console.log("Item is already in the payload.");
+    }
+};
+
+
+
+
+
+  
+  const handleItemAdd  = (item) => {
+   
+    addItemToPayload(item);
+  
+  };
+
   const fetchInquiries = async (page) => {
     try {
       const response = await client.get(`transactions/inquiries/?page=${page}&ordering=status&status=Accepted&type=Reservation&search=${searchQuery}`);
@@ -30,8 +87,9 @@ const TransactionRelease = () => {
 
   useEffect(() => {
     fetchInquiries(currentPage)
-    console.log(selectedInquiry); 
-  }, [currentPage,searchQuery,selectedInquiry]);
+    console.log("payload",payload);
+    console.log("inquiries",selectedInquiry);   
+  }, [currentPage,searchQuery,selectedInquiry,payload]);
 
   // INquiry selected
   const handleSelectInquiry = (inquiry) => {
@@ -82,16 +140,47 @@ const TransactionRelease = () => {
         // Handle error
         console.error('Error:', error);
       }
-
-
-
       
       document.getElementById('CreateTransaction').close();
     }
    
   }
 
+  const handleSubmitWalkin = async (e) => {
+    e.preventDefault();
+    
 
+      console.log('submit')
+      
+
+      try {
+
+        const responseTransaction = await client.post(`transactions/process_walkin/`, payload ,{
+          headers: {
+            Authorization: `Token ${authToken}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        
+      
+        if (responseTransaction.status >= 200 && responseTransaction.status < 300) {
+          // Request was successful
+          console.log('Transaction successful:', responseTransaction.data);
+        } else {
+          // Request was not successful
+          console.error('Transaction failed with status:', responseTransaction.status);
+        }
+
+      } catch (error) {
+        // Handle error
+        console.error('Error:', error);
+      }
+      
+      document.getElementById('CreateTransaction').close();
+  
+   
+  }
+  
   return (
     <>
     
@@ -113,7 +202,8 @@ const TransactionRelease = () => {
             </>
           ) 
           }
-              
+<ManualUserCreation onUserIdChange={handleUserIdChange}/>
+                <button className="btn btn-accent" onClick={() => document.getElementById('ChooseUser').showModal()}>Choose user</button>
               <h3 className="font-bold mt-3 text-lg">Inquirer</h3>
               <h1 className="mb-4">
                 <div className="flex items-center space-x-4 mt-3">
@@ -165,6 +255,23 @@ const TransactionRelease = () => {
                       </tr>
                       ))}
 
+                         {payload && payload.transaction_items.map((result, index) => (
+                      <tr key={result.id}>
+                          <td>{index+1}</td>
+                          {result.inventory ? (
+                          <>
+                              <td className="truncate text-center">{result.inventory.itemprofiling.item_name} ID: {result.inventory.id}</td>
+                              <td className="text-center">{result.condition}</td>
+                          </>
+                          ) : (
+                          <>
+                              <td className="text-center">{result.item.name}</td>
+                              <td className="text-center">{result.quantity}</td>
+                          </>
+                          )}
+                      </tr>
+                      ))}
+
                       </tbody>
                   </table>
               </div> 
@@ -182,10 +289,17 @@ const TransactionRelease = () => {
 
         <div className="modal-action">
           <form method="dialog">
+
+          <button type="button" className='btn btn-accent mr-2 text-white' 
+           onClick={handleSubmitWalkin}
+          
+           >Submit</button>
            <button type="button" className='btn btn-accent mr-2 text-white' 
            onClick={handleSubmit}
            disabled={!Remarks.trim()||!selectedInquiry||!inquiries}
            >Submit</button>
+
+
             <button className="btn">Close</button>
           </form>
         </div>
@@ -229,7 +343,7 @@ const TransactionRelease = () => {
                         <td>{index+1}</td>
                         {result.item ? (
                         <>
-                            <td className="truncate text-center">{result.item.inventory.itemprofiling.item_name} ID: {result.item.id}</td>
+                            <td className="truncate text-center">{result.item.inventory.itemprofiling.item_name} ID: {result.id}</td>
                             <td className="text-center">{result.item.condition}</td>
                         </>
                         ) : (
@@ -270,7 +384,7 @@ const TransactionRelease = () => {
         <h3 className="font-bold text-lg">Select Reservation</h3>
         <p className="py-4"></p>
       
-                            <InventoryTable type={2}/>
+        <InventoryTable handleItemAdd={handleItemAdd} />
         <div className="modal-action">
           <form method="dialog">
             <button className="btn">Close</button>
@@ -278,9 +392,22 @@ const TransactionRelease = () => {
         </div>
       </div>
     </dialog>
+    {/* User Modal Content */}
+    <dialog id="ChooseUser" className="modal">
+              <div className="modal-box w-11/12 max-w-5xl h-full">
+                <h3 className="font-bold text-lg">Users</h3>
+                <UsersTable type={2} onSelectUser={handleSelectUser} />
+                <div className="modal-action">
+                  <form method="dialog">
+                    <button className="btn btn-error">Close</button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
     </>
   )
 }
+
 
 export default TransactionRelease
 
