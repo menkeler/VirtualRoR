@@ -260,43 +260,47 @@ if(Admin){
           ))}
           </div> */}
 
-          <div className="overflow-x-auto">
-  <table className="table">
-    {/* head */}
-    <thead>
+<div class="overflow-x-auto">
+  <table class="table w-full">
+    <thead class="text-slate-800 bg-slate-100">
       <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Returnable</th>
-        <th>Category</th>
-        <th></th>
+        <th class="px-4 py-2"></th>
+        <th class="px-4 py-2">Name</th>
+        <th class="px-4 py-2">Description</th>
+        <th class="px-4 py-2">Returnable</th>
+        <th class="px-4 py-2">Category</th>
+        <th class="px-4 py-2"></th>
       </tr>
     </thead>
-    <tbody>
-      {/* rows */}
+
+    <tbody class="text-slate-700">
       {items.map((item, index) => (
-        <tr key={item.id}>
-          <th>{index + 1}</th>
-          <td>{item.name}</td>
-          <td>{item.description.length > 60 ? `${item.description.substring(0, 60)}...` : item.description}</td>
-
-          <td>{item.returnable ? "Borrowable" : "Consumable"}</td>
-          <td>{item.category.name}</td>
-          <td>
-          <button
-                  onClick={() => handleSelectItem(item)}
-                  className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-              >
-                  Select
-              </button>
-
-              </td>
+        <tr key={item.id} class="hover:bg-slate-200">
+          <td class="px-4 py-2">{index + 1}</td>
+          <td class="px-4 py-2">{item.name}</td>
+          <td class="px-4 py-2">
+            {item.description.length > 60
+              ? `${item.description.substring(0, 60)}...`
+              : item.description}
+          </td>
+          <td class="px-4 py-2">
+            {item.returnable ? "Borrowable" : "Consumable"}
+          </td>
+          <td class="px-4 py-2">{item.category.name}</td>
+          <td class="px-4 py-2">
+            <button
+              onClick={() => handleSelectItem(item)}
+              class="px-3 py-2 bg-lime-500 text-white rounded hover:bg-lime-600 focus:outline-none focus:shadow-outline-lime active:bg-lime-700"
+            >
+              Select
+            </button>
+          </td>
         </tr>
       ))}
     </tbody>
   </table>
 </div>
+
 
 
         {/* Pagination controls */}

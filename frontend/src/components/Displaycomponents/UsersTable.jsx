@@ -288,33 +288,35 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
             </div>
           ))}
         </div> */}
-        <div className="overflow-x-auto">
-        <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.user_id}>
-              <td>{user.first_name} {user.last_name}</td>
-              <td>{user.email}</td>
-              <td>
-                <button
-                  onClick={() => handleSelectUser(user)}
-                  className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                >
-                  Select
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <div class="overflow-x-auto">
+  <table class="table w-full">
+    <thead class="text-slate-800 bg-slate-100">
+      <tr>
+        <th class="px-4 py-2">Name</th>
+        <th class="px-4 py-2">Email</th>
+        <th class="px-4 py-2">Action</th>
+      </tr>
+    </thead>
+
+    <tbody class="text-slate-700">
+      {users.map((user) => (
+        <tr key={user.user_id} class="hover:bg-slate-200">
+          <td class="px-4 py-2">{user.first_name} {user.last_name}</td>
+          <td class="px-4 py-2">{user.email}</td>
+          <td class="px-4 py-2">
+            <button
+              onClick={() => handleSelectUser(user)}
+              class="px-3 py-1 bg-lime-500 text-white rounded hover:bg-lime-600 focus:outline-none focus:shadow-outline-lime active:bg-lime-700"
+            >
+              Select
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 
 
           {/* Pagination controls */}

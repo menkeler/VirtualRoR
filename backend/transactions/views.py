@@ -65,7 +65,7 @@ class InquiryViewSet(viewsets.ModelViewSet):
         if search_param:
             queryset = queryset.filter(Q(inquirer__first_name__icontains=search_param) | Q(inquirer__last_name__icontains=search_param))
 
-        return queryset
+        return queryset.all().order_by('-id')
 
     @action(detail=False, methods=['GET'])
     def latest_inquiry(self, request):
@@ -178,7 +178,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 Q(participant__first_name__icontains=search_param) | Q(participant__last_name__icontains=search_param)
             )
 
-        return queryset
+        return queryset.all().order_by('-id')
 
 class ReservedItemViewSet(viewsets.ModelViewSet):
     queryset = ReservedItem.objects.all()
@@ -343,11 +343,11 @@ def process_walkin(request):
     # Process each transaction item
     for item_data in transaction_items:
         # Assuming item_data contains the necessary information for creating TransactionItem
-        item = item_data.get('item')
-        if item is not None and isinstance(item, int):
+        item = item_data.get('inventory')
+        if item is not None:
             # Retrieve the ItemCopy instance based on the primary key provided in item_data
             try:
-                item_copy = ItemCopy.objects.get(pk=item_data['item'])
+                item_copy = ItemCopy.objects.get(pk=item_data['inventory']['id'])
             except ItemCopy.DoesNotExist:
                 return Response({'detail': 'ItemCopy not found'}, status=status.HTTP_404_NOT_FOUND)
 

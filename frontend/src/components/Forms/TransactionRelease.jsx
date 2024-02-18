@@ -39,20 +39,31 @@ const TransactionRelease = () => {
     console.log(`Selected user in TransactionDonation:`, selectedUser);
     document.getElementById('ChooseUser').close();
   };
+
   
   const addItemToPayload = (item) => {
-    // Convert the id property to the item property
-    const newItem = item.condition ? { ...item, item: item.id, quantity: 1 } : { ...item, quantity: 1 };
+
+    console.log('Adding item to',item)
+    let newItem;
+    if (item.condition) {
+        newItem = { ...item, inventory: item, quantity: 1 };
+    } else {
+        newItem = { ...item, item: item, quantity: 1 };
+    }
     delete newItem.id;
 
-    // Check if the item already exists in the transaction_items array based on both id and item properties
-    const isDuplicate = payload.transaction_items.some(existingItem => 
-        existingItem.id === item.id || existingItem.item === newItem.item
+    // Check if the item already exists in the transaction_items array based on either inventory or item properties
+    const isDuplicateItem = payload.transaction_items.some(existingItem => 
+        existingItem.item && newItem.item && existingItem.item.id === newItem.item.id
     );
-    
+
+    const isDuplicateInventory = payload.transaction_items.some(existingItem => 
+        existingItem.inventory && newItem.inventory && existingItem.inventory.id === newItem.inventory.id
+    );
+
     // If the item is not a duplicate, add it to the payload
-    if (!isDuplicate) {
-        // If the item has a condition, create a new object with item instead of id
+    if (!isDuplicateItem && !isDuplicateInventory) {
+        // If the item has a condition, create a new object with inventory instead of id
         const itemToAdd = newItem;
 
         setPayload(prevState => ({
@@ -63,6 +74,9 @@ const TransactionRelease = () => {
         console.log("Item is already in the payload.");
     }
 };
+
+
+
 
 
 
@@ -258,23 +272,23 @@ const TransactionRelease = () => {
                           )}
                       </tr>
                       ))}
-
-                         {payload && payload.transaction_items.map((result, index) => (
-                      <tr key={result.id}>
-                          <td>{index+1}</td>
-                          {result.inventory ? (
-                          <>
-                              <td className="truncate text-center">{result.inventory.itemprofiling.item_name} ID: {result.inventory.id}</td>
-                              <td className="text-center">{result.condition}</td>
-                          </>
-                          ) : (
-                          <>
-                              <td className="text-center">{result.item.name}</td>
-                              <td className="text-center">{result.quantity}</td>
-                          </>
-                          )}
-                      </tr>
+                      {payload && payload.transaction_items.map((result, index) => (
+                          <tr key={result.id}>
+                              <td>{index+1}</td>
+                              {result.inventory ? (
+                                  <>
+                                      <td className="truncate text-center">{result.inventory.inventory.itemprofiling.item_name} ID: {result.inventory.id}</td>
+                                      <td className="text-center">{result.condition}</td>
+                                  </>
+                              ) : (
+                                  <>
+                                      <td className="text-center">{result.item.item.name}</td>
+                                      <td className="text-center">{result.item.quantity}</td>
+                                  </>
+                              )}
+                          </tr>
                       ))}
+
 
                       </tbody>
                   </table>

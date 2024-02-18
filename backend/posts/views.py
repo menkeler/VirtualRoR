@@ -44,7 +44,9 @@ class PostViewSet(viewsets.ModelViewSet):
         if user_param:
             queryset = queryset.filter(user_id=user_param)
 
-        return queryset.order_by('?')
+        return queryset.all().order_by('-id')
+        # if want random use below
+        # return queryset.order_by('?')
     
     @action(detail=False, methods=['GET'])
     def latest_post(self, request):
