@@ -530,7 +530,7 @@ const InventoryTable = ({type, handleItemAdd}) => {
         {/* Pagination controls */}
         <div className="flex justify-between items-center mt-4">
           <button
-            className="btn"
+            className="btn" 
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1 || isFetching}
           >

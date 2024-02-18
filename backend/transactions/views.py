@@ -266,88 +266,66 @@ def process_reserved_items(inquiry):
             reserved_item.inventory.quantity -= available_quantity
             reserved_item.inventory.save()
 
-@api_view(['POST'])
-def process_transaction(request, inquiry_id):
-    # Retrieve the inquiry
-    inquiry = get_object_or_404(Inquiry, pk=inquiry_id)
-    
-    # Check if the inquiry is of type 'Reservation' and has a status of 'Accepted'
-    if inquiry.inquiry_type == 'Reservation' and inquiry.status == 'Accepted':
-        # Extract additional data from the request body
-        remarks = request.data.get('remarks', '')
+def cancel_reserved_items(inquiry):
+    for reserved_item in inquiry.reserved_items.all():
+        if hasattr(reserved_item, 'item') and reserved_item.item:
+            reserved_item.item.previous_is_borrowed = reserved_item.item.is_borrowed
+            reserved_item.item.is_borrowed = False
+            reserved_item.item.save()
+
+        elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
+            reserved_item.inventory.quantity += reserved_item.quantity
+            reserved_item.inventory.save()
+        reserved_item.delete()
         
-        is_active = False
-        # Create a Transaction with the participant as the inquirer
-        transaction = Transaction.objects.create(
-            inquiry=inquiry,
-            participant=inquiry.inquirer,
-            transaction_type='Release',
-            remarks=remarks
-        )
-        
-        # Process each reserved item in the transaction
-        for reserved_item in inquiry.reserved_items.all():
-            if reserved_item.item is not None:
-                # For ItemCopy
-                transaction_item = TransactionItem.objects.create(
-                    transaction=transaction,
-                    item=reserved_item.item,
-                    quantity=1,
-                    status="Active" 
-                )
-                is_active = True
-            elif reserved_item.inventory is not None:
-                transaction_item = TransactionItem.objects.create(
-                    transaction=transaction,
-                    inventory=reserved_item.inventory,
-                    quantity=reserved_item.quantity,
-                    status="Consumable" 
-                )
-                
-
-        # Update the inquiry status to 'Processed'
-        inquiry.status = 'Processed'
-        inquiry.save()
-        
-        transaction.is_active = is_active
-        transaction.save()
-
-
-        # Return a response indicating a successful transaction
-        return Response({'detail': 'Transaction processed successfully.'}, status=status.HTTP_200_OK)
-
-    return Response({'detail': 'Transaction cannot be processed.'}, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 @api_view(['POST'])
-def process_walkin(request):
+def process_transaction(request):
     # Extract data from the request body
     transaction_items = request.data.get('transaction_items', [])
     remarks = request.data.get('remarks', '')
     user_id = request.data.get('user_id')  # Change variable name to user_id for clarity
-
+    inquiry_id = request.data.get('inquiry') 
     try:
         # Retrieve the User object based on the user_id
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    if not inquiry_id:
+        inquiry = None
+    else:
+        inquiry = get_object_or_404(Inquiry, pk=inquiry_id)
+        
+        
     # Initialize transaction variable
     transaction_instance = None
-
+    
     try:
+        
         # Begin transaction
         with transaction.atomic():
             # Create a Transaction without associating it with any specific inquiry
-            transaction_instance = Transaction.objects.create(
-                participant=user,
-                transaction_type='Release',
-                remarks=remarks
-            )
+            if inquiry is not None:
+                cancel_reserved_items(inquiry)  # deletes reserved items
+                is_active = False
 
-            is_active = False
+                transaction_instance = Transaction.objects.create(
+                    inquiry=inquiry,
+                    participant=inquiry.inquirer,
+                    transaction_type='Release',
+                    remarks=remarks
+                )
+            else:
+                transaction_instance = Transaction.objects.create(
+                    inquiry=None,
+                    participant=user,
+                    transaction_type='Release',
+                    remarks=remarks
+                )
 
+                is_active = False
+    
             # Process each transaction item
             for item_data in transaction_items:
                 # Assuming item_data contains the necessary information for creating TransactionItem
@@ -355,7 +333,7 @@ def process_walkin(request):
                 if item is not None:
                     # Retrieve the ItemCopy instance based on the primary key provided in item_data
                     try:
-                        item_copy = ItemCopy.objects.get(pk=item_data['item']['id'])
+                        item_copy = ItemCopy.objects.get(pk=item['id'])
                     except ItemCopy.DoesNotExist:
                         raise ValidationError({'detail': 'ItemCopy not found'})
 

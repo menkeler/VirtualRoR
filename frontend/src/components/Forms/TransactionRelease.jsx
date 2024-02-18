@@ -1,369 +1,481 @@
-import React, { useState, useEffect } from 'react';
-import client from '../../api/client';
-import Cookies from 'js-cookie';
-import InventoryTable from '../Displaycomponents/InventoryTable';
-import UsersTable from '../Displaycomponents/UsersTable';
-import ManualUserCreation from '../CustomButtons/Transactions/ManualUserCreation';
+import React, { useState, useEffect } from "react";
+import client from "../../api/client";
+import Cookies from "js-cookie";
+import InventoryTable from "../Displaycomponents/InventoryTable";
+import UsersTable from "../Displaycomponents/UsersTable";
+import ManualUserCreation from "../CustomButtons/Transactions/ManualUserCreation";
 const TransactionRelease = () => {
   const [inquiries, setInquiries] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [totalPages, setTotalPages] = useState(1);
-  const [Remarks, setRemarks] = useState('');
-  const [currentUser, setCurrentUser] = useState('');
-  const [items, setItems] = useState([])
+  const [Remarks, setRemarks] = useState("");
+  const [currentUser, setCurrentUser] = useState("");
+  const [items, setItems] = useState([]);
 
   const initialPayload = {
-    user_id: currentUser.user_id,
-    remarks: "test",
-    transaction_items: []
+    user_id: "",
+    remarks: "",
+    transaction_items: [],
+    inquiry: "",
   };
 
   const [payload, setPayload] = useState(initialPayload);
-  
+
   const handleUserIdChange = (userData) => {
-    handleSelectUser(userData)
+    handleSelectUser(userData);
     // You can perform additional actions or set state in the parent component if needed
   };
   const handleSelectUser = (selectedUser) => {
+    handleReset();
     // console.log(`Selected user in TransactionDonation:`, selectedUser);
 
     const { user_id, first_name, last_name, email } = selectedUser;
-    setPayload(prevPayload => ({
+    setPayload((prevPayload) => ({
       ...prevPayload,
-      user_id: user_id
-  }));
+      user_id: user_id,
+    }));
     setCurrentUser({ user_id, first_name, last_name, email });
     console.log(`Selected user in TransactionDonation:`, selectedUser);
-    document.getElementById('ChooseUser').close();
+    document.getElementById("ChooseUser").close();
   };
 
-  
+  const handleReset = () => {
+    setCurrentUser("");
+    setSelectedInquiry(null); //
+    setPayload(initialPayload);
+    setRemarks("");
+  };
+
   const addItemToPayload = (item) => {
     // Check if the item ID or inventory ID already exists in the transaction_items array
-    const isDuplicate = payload.transaction_items.some(existingItem => {
-        if (existingItem.item && item.item) {
-            return existingItem.item.id === item.item.id;
-        } else if (existingItem.inventory && !item.item) {
-            return existingItem.inventory.id === item.inventory.id;
-        }
-        return false;
+    const isDuplicate = payload.transaction_items.some((existingItem) => {
+      return (
+        (existingItem.item &&
+          item.item &&
+          existingItem.item.id === item.item.id) ||
+        (existingItem.inventory &&
+          !item.item &&
+          existingItem.inventory.id === item.inventory.id)
+      );
     });
 
     if (!isDuplicate) {
-        // If neither the item ID nor the inventory ID is a duplicate, add the item to the payload
-        setPayload(prevState => ({
-            ...prevState,
-            transaction_items: [...prevState.transaction_items, item]
-        }));
+      // If neither the item ID nor the inventory ID is a duplicate, add the item to the payload
+      setPayload((prevState) => ({
+        ...prevState,
+        transaction_items: [
+          ...prevState.transaction_items,
+          {
+            ...item,
+            max_quantity: item.inventory ? item.inventory.quantity : 1,
+            quantity: 1,
+          },
+        ],
+      }));
     } else {
-        // Handle duplicate item or inventory ID here, maybe show an error message
-        console.log('Duplicate item or inventory ID found.');
+      // Handle duplicate item or inventory ID here, maybe show an error message
+      console.log("Duplicate item or inventory ID found.");
     }
-};
+  };
 
+  const handleRemoveItem = (itemToRemove) => {
+    // Remove the item from payload.transaction_items
+    const updatedTransactionItems = payload.transaction_items.filter(
+      (item) => item !== itemToRemove
+    );
+    setPayload((prevState) => ({
+      ...prevState,
+      transaction_items: updatedTransactionItems,
+    }));
+  };
 
+  const handleQuantityChange = (newValue, item) => {
+    // Find the item in the payload that matches the item's inventory ID
+    const payloadItem = payload.transaction_items.find((payloadItem) => {
+      return (
+        payloadItem.inventory && payloadItem.inventory.id === item.inventory.id
+      );
+    });
 
+    if (payloadItem) {
+      // Update the quantity of the payloadItem with the new value
+      payloadItem.quantity = parseInt(newValue);
 
+      // Ensure the quantity does not exceed max_quantity
+      if (payloadItem.quantity > payloadItem.max_quantity) {
+        payloadItem.quantity = payloadItem.max_quantity;
+      }
 
+      // Update the payload state
+      setPayload((prevState) => ({
+        ...prevState,
+        transaction_items: prevState.transaction_items.map((existingItem) =>
+          existingItem === payloadItem ? payloadItem : existingItem
+        ),
+      }));
+    } else {
+      console.error("Item not found in payload:", item);
+    }
+  };
 
-
-  
-  const handleItemAdd  = (item) => {
-   
+  const handleItemAdd = (item) => {
+    console.log("item addeed", item);
     addItemToPayload(item);
-  
   };
 
   const fetchInquiries = async (page) => {
     try {
-      const response = await client.get(`transactions/inquiries/?page=${page}&ordering=status&status=Accepted&type=Reservation&search=${searchQuery}`);
-      console.log(response.data)
+      const response = await client.get(
+        `transactions/inquiries/?page=${page}&ordering=status&status=Accepted&type=Reservation&search=${searchQuery}`
+      );
+      console.log(response.data);
       const { results, count } = response.data;
       setInquiries(results);
       setTotalPages(Math.ceil(count / 50));
-
     } catch (error) {
-      console.error('Error fetching transactions:', error);
+      console.error("Error fetching transactions:", error);
       setCurrentPage(1);
     }
-  };  
+  };
 
   useEffect(() => {
-    fetchInquiries(currentPage)
-    console.log("payload",payload);
-    console.log("inquiries",selectedInquiry);   
-  }, [currentPage,searchQuery,selectedInquiry,payload]);
+    fetchInquiries(currentPage);
+    console.log("payload", payload);
+    console.log("inquiries", selectedInquiry);
+  }, [currentPage, searchQuery, selectedInquiry, payload]);
 
   // INquiry selected
   const handleSelectInquiry = (inquiry) => {
-    
+    // Reset payload to initial state
+    setPayload(initialPayload);
+    setCurrentUser(inquiry.inquirer);
+    // Set the selected inquiry
     setSelectedInquiry(inquiry);
-    
-    document.getElementById('SelectTransaction').close();
+
+    // Create transaction items from reserved items of the selected inquiry
+    const newTransactionItems = inquiry.reserved_items.map((reservedItem) => ({
+      id: reservedItem.id, // Assuming reservedItem has an ID field
+      ...(reservedItem.item
+        ? { item: reservedItem.item } // Use item if it exists
+        : {
+            inventory: {
+              // Otherwise, use inventory
+              id: reservedItem.inventory.id, // Assuming inventory is nested within the reservedItem
+              item: reservedItem.inventory.item,
+              // Add other inventory fields as needed
+            },
+          }),
+      quantity: reservedItem.quantity,
+      // Add other fields from the reservedItem as needed
+    }));
+
+    // Update payload to include the new transaction items
+    setPayload((prevState) => ({
+      ...prevState,
+      inquiry: inquiry.id,
+      user_id: inquiry.inquirer.user_id,
+      transaction_items: [
+        ...newTransactionItems,
+        ...prevState.transaction_items,
+      ],
+    }));
+    console.log("Updated payload of all", payload);
+
+    // Close the SelectTransaction element
+    document.getElementById("SelectTransaction").close();
   };
 
   //REmarks
   const handleRemarksChange = (e) => {
-      setRemarks(e.target.value);
+    setRemarks(e.target.value);
   };
 
   //user token ehre for now
 
-  const authToken = Cookies.get('authToken');
+  const authToken = Cookies.get("authToken");
   //SUbmit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if(Remarks&&selectedInquiry){
-      console.log('submit')
-      
+
+    if (Remarks) {
+      console.log("submit");
 
       try {
-        const transactionData = {
-          "remarks": Remarks,
+        // Assuming payload is an object containing transaction-related data
+        const updatedPayload = {
+          ...payload, // Copy existing payload data
+          remarks: Remarks, // Update remarks with the new value
         };
 
-        const responseTransaction = await client.post(`transactions/process_transaction/${selectedInquiry.id}/`, transactionData ,{
-          headers: {
-            Authorization: `Token ${authToken}`,
-            'Content-Type': 'application/json',
+        // Now you can use the updatedPayload in your application
+
+        const responseTransaction = await client.post(
+          `transactions/process_transaction/`,
+          updatedPayload,
+          {
+            headers: {
+              Authorization: `Token ${authToken}`,
+              "Content-Type": "application/json",
+            },
           }
-        });
-        
-      
-        if (responseTransaction.status >= 200 && responseTransaction.status < 300) {
+        );
+
+        if (
+          responseTransaction.status >= 200 &&
+          responseTransaction.status < 300
+        ) {
           // Request was successful
-          console.log('Transaction successful:', responseTransaction.data);
+          console.log("Transaction successful:", responseTransaction.data);
         } else {
           // Request was not successful
-          console.error('Transaction failed with status:', responseTransaction.status);
+          console.error(
+            "Transaction failed with status:",
+            responseTransaction.status
+          );
         }
-
       } catch (error) {
         // Handle error
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
-      
-      document.getElementById('CreateTransaction').close();
+      handleReset()
+      document.getElementById("CreateTransaction").close();
     }
-   
-  }
+  };
 
-  const handleSubmitWalkin = async (e) => {
-    e.preventDefault();
-    
-
-      console.log('submit')
-      
-
-      try {
-
-        const responseTransaction = await client.post(`transactions/process_walkin/`, payload ,{
-          headers: {
-            Authorization: `Token ${authToken}`,
-            'Content-Type': 'application/json',
-          }
-        });
-        
-      
-        if (responseTransaction.status >= 200 && responseTransaction.status < 300) {
-          // Request was successful
-          console.log('Transaction successful:', responseTransaction.data);
-        } else {
-          // Request was not successful
-          console.error('Transaction failed with status:', responseTransaction.status);
-        }
-
-      } catch (error) {
-        // Handle error
-        console.error('Error:', error);
-      }
-      
-      document.getElementById('CreateTransaction').close();
-  
-   
-  }
-  
   return (
     <>
-    
-    <button className="btn" onClick={()=>document.getElementById('CreateTransaction').showModal()}>Release</button>
+      <button
+        className="btn"
+        onClick={() => document.getElementById("CreateTransaction").showModal()}
+      >
+        Release
+      </button>
+
+      {/* Modal */}
+      <dialog id="CreateTransaction" className="modal">
+        <div className="modal-box w-11/12 max-w-5xl">
+          <h3 className="font-bold text-lg">Create Transaction</h3>
+          
+
+          <div className="flex flex-col items-center">
+          <div className="flex items-center">
+  <ManualUserCreation onUserIdChange={handleUserIdChange} />
+  <button
+    className="btn btn-accent ml-2" // Use Tailwind spacing utility classes to add margin
+    onClick={() => document.getElementById("ChooseUser").showModal()}
+  >
+    Choose user
+  </button>
+  <button
+    className="btn ml-2"
+    onClick={() =>
+      document.getElementById("SelectTransaction").showModal()
+    }
+  >
+    Load Reservations
+  </button>
+</div>
+<div className="flex flex-row">
+  <button
+    className="btn mx-2 mt-2"
+    onClick={() =>
+      document.getElementById("SelectInventory").showModal()
+    }
+    disabled={!currentUser} 
+  >
+    Add Item
+  </button>
+  
+  <button className="btn mx-2 mt-2" onClick={handleReset}>
+    Remove All
+  </button>
+</div>
 
 
-    {/* Modal */}
-    <dialog id="CreateTransaction" className="modal">
-    <div className="modal-box w-11/12 max-w-5xl">
-        <h3 className="font-bold text-lg">Create Transaction</h3>
-        <button className="btn mx-2 mt-2" onClick={()=>document.getElementById('SelectInventory').showModal()}>Walk-In</button> 
-        <button className="btn mx-2 mt-2" onClick={()=>document.getElementById('SelectTransaction').showModal()}>Load Reservations</button> 
-
-        <div className="flex flex-col items-center">
-
-          {selectedInquiry && (
-            <>
-              <h3 className="font-bold mt-3 text-lg">Reservation ID: {selectedInquiry.id}</h3>
-            </>
-          ) 
-          }
-          <ManualUserCreation onUserIdChange={handleUserIdChange}/>
-                <button className="btn btn-accent" onClick={() => document.getElementById('ChooseUser').showModal()}>Choose user</button>
-              <h3 className="font-bold mt-3 text-lg">Inquirer</h3>
-              <h1 className="mb-4">
-                <div className="flex items-center space-x-4 mt-3">
-              
-                  {selectedInquiry && (
-                    <>
-                      <div className="p-4 border rounded-lg bg-gray-100">
-                        <p className="font-semibold text-gray-600">ID:</p>
-                        <p className="text-blue-500">{selectedInquiry.inquirer.user_id}</p>
-                      </div>
-                      <div className="p-4 border rounded-lg bg-gray-100">
-                        <p className="font-semibold text-gray-600">Name:</p>
-                        <p className="text-blue-500">{selectedInquiry.inquirer.first_name} {selectedInquiry.inquirer.last_name}</p>
-                      </div>
-                      <div className="p-4 border rounded-lg bg-gray-100">
-                        <p className="font-semibold text-gray-600">Email:</p>
-                        <p className="text-blue-500">{selectedInquiry.inquirer.email}</p>
-                      </div>
-                    </>
-                  )}
-                  
-                </div>
-              </h1>
-              <h3 className="font-bold mt-3 text-lg">Items</h3>
-              <div className="overflow-x-auto w-full max-h-screen">
-                <table className="table w-full">
-                      <thead>
-                      <tr>
-                          <th></th>
-                          <th className="text-center">Name</th>
-                          <th className="text-center">Quantity/Condition</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      {selectedInquiry && selectedInquiry.reserved_items.map((result, index) => (
+            <h3 className="font-bold mt-3 text-lg">Inquirer</h3>
+            {selectedInquiry && (
+              <>
+                <h3 className="font-bold mt-3 text-lg">
+                  Reservation ID: {selectedInquiry.id}
+                </h3>
+              </>
+            )}
+            <h1 className="mb-4">
+              <div className="flex items-center space-x-4 mt-3">
+                {currentUser && (
+                  <>
+                    <div className="p-4 border rounded-lg bg-gray-100">
+                      <p className="font-semibold text-gray-600">ID:</p>
+                      <p className="text-blue-500">{currentUser.user_id}</p>
+                    </div>
+                    <div className="p-4 border rounded-lg bg-gray-100">
+                      <p className="font-semibold text-gray-600">Name:</p>
+                      <p className="text-blue-500">
+                        {currentUser.first_name} {currentUser.last_name}
+                      </p>
+                    </div>
+                    <div className="p-4 border rounded-lg bg-gray-100">
+                      <p className="font-semibold text-gray-600">Email:</p>
+                      <p className="text-blue-500">{currentUser.email}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </h1>
+            <h3 className="font-bold mt-3 text-lg">Items</h3>
+            <div className="overflow-x-auto w-full max-h-screen">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th className="text-center">Name</th>
+                    <th className="text-center">Quantity/Condition</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payload &&
+                    payload.transaction_items.map((result, index) => (
                       <tr key={result.id}>
-                          <td>{index+1}</td>
-                          {result.item ? (
+                        <td>{index + 1}</td>
+                        {result.item ? ( // If the item exists
                           <>
-                              <td className="truncate text-center">{result.item.inventory.itemprofiling.item_name} ID: {result.item.id}</td>
-                              <td className="text-center">{result.item.condition}</td>
+                            <td className="truncate text-center">
+                              {result.item.inventory.itemprofiling.item_name}{" "}
+                              ID: {result.item.id}
+                            </td>
+                            <td className="text-center">
+                              {result.item.condition}
+                            </td>
                           </>
-                          ) : (
+                        ) : (
+                          // If the item does not exist (i.e., inventory item)
                           <>
-                              <td className="text-center">{result.inventory.item.name}</td>
-                              <td className="text-center">{result.quantity}</td>
+                            <td className="text-center">
+                              {result.inventory.item.name}
+                            </td>
+                            <td className="text-center">
+                              <input
+                                type="number"
+                                min="1"
+                                max={
+                                  result.inventory
+                                    ? result.max_quantity // Use max_quantity if it exists
+                                    : result.quantity // Otherwise, use quantity
+                                }
+                                value={result.quantity} // Bind the input value to the quantity from the payload
+                                onChange={(e) => {
+                                  const newValue = e.target.value;
+                                  handleQuantityChange(newValue, result); // Call handleQuantityChange function when input changes
+                                }}
+                              />
+                            </td>
                           </>
-                          )}
+                        )}
+                        <td>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => handleRemoveItem(result)} // Call handleRemoveItem function when the button is clicked
+                          >
+                            Remove
+                          </button>
+                        </td>
                       </tr>
-                      ))}
-                      {payload && payload.transaction_items.map((result, index) => (
-                        <tr key={result.id}>
-                            <td>{index+1}</td>
-                            {result.item ? (
-                                <>
-                                    <td className="truncate text-center">{result.item.inventory.itemprofiling.item_name} ID: {result.item.id}</td>
-                                    <td className="text-center">{result.item.condition}</td>
-                                </>
-                            ) : (
-                                <>
-                                    <td className="text-center">{result.inventory.item.name}</td>
-                                    <td className="text-center">{result.inventory.quantity}</td>
-                                </>
-                            )}
-                        </tr>
-                      ))}
-                  
+                    ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Rmearks   */}
 
-                      </tbody>
-                  </table>
-              </div> 
-              {/* Rmearks   */}
-                
-              <h3 className="mt-5 font-bold text-lg">Remarks</h3>
-              <textarea
-                className="resize-none border rounded-md p-2 mt-2 w-full"
-                placeholder="Enter your remarks here..."
-                value={Remarks}
-                onChange={handleRemarksChange}
-              />
-            
+            <h3 className="mt-5 font-bold text-lg">Remarks</h3>
+            <textarea
+              className="resize-none border rounded-md p-2 mt-2 w-full"
+              placeholder="Enter your remarks here..."
+              value={Remarks}
+              onChange={handleRemarksChange}
+            />
           </div>
 
-        <div className="modal-action">
-          <form method="dialog">
+          <div className="modal-action">
+            <form method="dialog">
+              <button
+                type="button"
+                className="btn btn-accent mr-2 text-white"
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
 
-          <button type="button" className='btn btn-accent mr-2 text-white' 
-           onClick={handleSubmitWalkin}
-          
-           >Submit</button>
-           <button type="button" className='btn btn-accent mr-2 text-white' 
-           onClick={handleSubmit}
-           disabled={!Remarks.trim()||!selectedInquiry||!inquiries}
-           >Submit</button>
-
-
-            <button className="btn">Close</button>
-          </form>
+              <button className="btn">Close</button>
+            </form>
+          </div>
         </div>
-      </div>
-    </dialog>
+      </dialog>
 
-   
-    <dialog id="SelectTransaction" className="modal">
-    <div className="modal-box w-11/12 max-w-5xl">
-        <h3 className="font-bold text-lg">Select Reservation</h3>
-        <p className="py-4"></p>
-        <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search users..."
-            />
-        <div className="mt-4 grid gap-4 grid-cols-2">
+      <dialog id="SelectTransaction" className="modal">
+        <div className="modal-box w-11/12 max-w-5xl">
+          <h3 className="font-bold text-lg">Select Reservation</h3>
+          <p className="py-4"></p>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search users..."
+          />
+          <div className="mt-4 grid gap-4 grid-cols-2">
             {inquiries.map((inquiry) => (
-              <div key={inquiry.id} className="p-5 bg-white rounded-lg shadow-md">
+              <div
+                key={inquiry.id}
+                className="p-5 bg-white rounded-lg shadow-md"
+              >
                 <h2 className="text-base font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
-                 Reservation ID: {inquiry.id}
+                  Reservation ID: {inquiry.id}
                 </h2>
                 <p className="text-sm text-gray-600 overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
-                Inquirer: {inquiry.inquirer.first_name} {inquiry.inquirer.last_name}
+                  Inquirer: {inquiry.inquirer.first_name}{" "}
+                  {inquiry.inquirer.last_name}
                 </p>
-                <h2 className="text-base font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">Items</h2>
+                <h2 className="text-base font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
+                  Items
+                </h2>
                 <div className="overflow-x-auto">
-                <table className="table">
-             
+                  <table className="table">
                     <thead>
-                    <tr>
+                      <tr>
                         <th></th>
                         <th className="text-center">Name</th>
                         <th className="text-center">Quantity/Condition</th>
-                    </tr>
+                      </tr>
                     </thead>
                     <tbody>
-                    {inquiry.reserved_items.map((result, index) => (
-                    <tr key={result.id}>
-                        <td>{index+1}</td>
-                        {result.item ? (
-                        <>
-                            <td className="truncate text-center">{result.item.inventory.itemprofiling.item_name} ID: {result.id}</td>
-                            <td className="text-center">{result.item.condition}</td>
-                        </>
-                        ) : (
-                        <>
-                            <td className="text-center">{result.inventory.item.name}</td>
-                            <td className="text-center">{result.quantity}</td>
-                        </>
-                        )}
-                    </tr>
-                    ))}
-
+                      {inquiry.reserved_items.map((result, index) => (
+                        <tr key={result.id}>
+                          <td>{index + 1}</td>
+                          {result.item ? (
+                            <>
+                              <td className="truncate text-center">
+                                {result.item.inventory.itemprofiling.item_name}{" "}
+                                ID: {result.id}
+                              </td>
+                              <td className="text-center">
+                                {result.item.condition}
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td className="text-center">
+                                {result.inventory.item.name}
+                              </td>
+                              <td className="text-center">{result.quantity}</td>
+                            </>
+                          )}
+                        </tr>
+                      ))}
                     </tbody>
-                </table>
-                </div>               
+                  </table>
+                </div>
                 <button
                   onClick={() => handleSelectInquiry(inquiry)}
                   className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
@@ -374,53 +486,43 @@ const TransactionRelease = () => {
             ))}
           </div>
 
-        <div className="modal-action">
-          <form method="dialog">
-            <button className="btn">Close</button>
-          </form>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
         </div>
-      </div>
-    </dialog>
-    
+      </dialog>
 
-    {/* inventor ymodal */}
+      {/* inventor ymodal */}
 
-    <dialog id="SelectInventory" className="modal">
-    <div className="modal-box w-11/12 max-w-5xl">
-        <h3 className="font-bold text-lg">Select Reservation</h3>
-        <p className="py-4"></p>
-      
-        <InventoryTable handleItemAdd={handleItemAdd} />
-        <div className="modal-action">
-          <form method="dialog">
-            <button className="btn">Close</button>
-          </form>
+      <dialog id="SelectInventory" className="modal">
+        <div className="modal-box w-11/12 max-w-5xl">
+          <h3 className="font-bold text-lg">Select Items</h3>
+          <p className="py-4"></p>
+
+          <InventoryTable handleItemAdd={handleItemAdd} />
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Close</button>
+            </form>
+          </div>
         </div>
-      </div>
-    </dialog>
-    {/* User Modal Content */}
-    <dialog id="ChooseUser" className="modal">
-              <div className="modal-box w-11/12 max-w-5xl h-full">
-                <h3 className="font-bold text-lg">Users</h3>
-                <UsersTable type={2} onSelectUser={handleSelectUser} />
-                <div className="modal-action">
-                  <form method="dialog">
-                    <button className="btn btn-error">Close</button>
-                  </form>
-                </div>
-              </div>
-            </dialog>
+      </dialog>
+      {/* User Modal Content */}
+      <dialog id="ChooseUser" className="modal">
+        <div className="modal-box w-11/12 max-w-5xl h-full">
+          <h3 className="font-bold text-lg">Users</h3>
+          <UsersTable type={2} onSelectUser={handleSelectUser} />
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn btn-error">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </>
-  )
-}
+  );
+};
 
-
-export default TransactionRelease
-
-
-
-
-
-
-
-
+export default TransactionRelease;
