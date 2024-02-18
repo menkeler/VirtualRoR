@@ -464,7 +464,7 @@ const InventoryTable = ({type, handleItemAdd}) => {
                   {item.item.category && (
                     <div className="badge bg-info text-gray-800">{item.item.category.name}</div>
                   )}
-                  {!item.item.returnable && item.quantity > 0 &&(<button className="btn btn-outline btn-primary" onClick={() => handleItemAdd(item)}>Add to Transaction</button>)}
+                  {!item.item.returnable && item.quantity > 0 &&(<button className="btn btn-outline btn-primary" onClick={() => handleItemAdd({inventory:item})}>Add to Transaction</button>)}
                   { item.quantity <= 0 && (
                     <div className="py-4">
                       <span className="inline-block bg-red-500 text-white px-3 py-1 rounded-full uppercase text-xs font-semibold">
@@ -506,7 +506,7 @@ const InventoryTable = ({type, handleItemAdd}) => {
                                   )}
                                 </td>
                                 <td className="py-2 px-4 border-b">
-                                {!copy.is_borrowed && (<button className="btn btn-outline btn-primary" onClick={() => handleItemAdd(copy)}>Add to Transaction</button>
+                                {!copy.is_borrowed && (<button className="btn btn-outline btn-primary" onClick={() => handleItemAdd({item: copy})}>Add to Transaction</button>
                                )}
                                </td>
                               </tr>

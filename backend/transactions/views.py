@@ -16,7 +16,8 @@ from .serializers import (
     ReservedItemSerializer, ReservedItemCreateSerializer,
     CreateTransactionItemSerializer, CreateTransactionSerializer
 )
-
+from django.db import transaction
+from django.core.exceptions import ValidationError
 class InquiryPagination(PageNumberPagination):
     page_size = 50
     page_size_query_param = 'page_size'
@@ -318,6 +319,7 @@ def process_transaction(request, inquiry_id):
     return Response({'detail': 'Transaction cannot be processed.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @api_view(['POST'])
 def process_walkin(request):
     # Extract data from the request body
@@ -325,78 +327,86 @@ def process_walkin(request):
     remarks = request.data.get('remarks', '')
     user_id = request.data.get('user_id')  # Change variable name to user_id for clarity
 
-    # Retrieve the User object based on the user_id
     try:
+        # Retrieve the User object based on the user_id
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Create a Transaction without associating it with any specific inquiry
-    transaction = Transaction.objects.create(
-        participant=user,
-        transaction_type='Release',
-        remarks=remarks
-    )
+    # Initialize transaction variable
+    transaction_instance = None
 
-    is_active = False
-
-    # Process each transaction item
-    for item_data in transaction_items:
-        # Assuming item_data contains the necessary information for creating TransactionItem
-        item = item_data.get('inventory')
-        if item is not None:
-            # Retrieve the ItemCopy instance based on the primary key provided in item_data
-            try:
-                item_copy = ItemCopy.objects.get(pk=item_data['inventory']['id'])
-            except ItemCopy.DoesNotExist:
-                return Response({'detail': 'ItemCopy not found'}, status=status.HTTP_404_NOT_FOUND)
-
-            # Update the borrowed status of the ItemCopy
-            if item_copy.is_borrowed:
-                print("Error: Item is already borrowed.")
-            else:
-                item_copy.previous_is_borrowed = item_copy.is_borrowed
-                item_copy.is_borrowed = True
-                item_copy.save()
-
-            # For ItemCopy
-            transaction_item = TransactionItem.objects.create(
-                transaction=transaction,
-                item=item_copy,
-                quantity=item_data.get('quantity', 1),  # Default to 1 if quantity is not provided
-                status="Active" 
-            )
-            is_active = True
-        else:
-            # Extract the inventory ID from the dictionary
-            inventory_id = item_data['item']['id']  
-
-            try:
-                # Retrieve the Inventory instance based on the provided inventory_id
-                inventory_instance = Inventory.objects.get(pk=inventory_id)
-            except Inventory.DoesNotExist:
-                print(f"Inventory with ID {inventory_id} does not exist.")
-                # Handle the case where the Inventory instance does not exist
-                # You may return a response indicating the error or handle it as per your application logic
-            
-            # Now that you have the Inventory instance, you can create the TransactionItem
-            transaction_item = TransactionItem.objects.create(
-                transaction=transaction,
-                inventory=inventory_instance,  # Assign the Inventory instance, not just the ID
-                quantity = item_data.get('quantity', 1) ,
-                status="Consumable" 
+    try:
+        # Begin transaction
+        with transaction.atomic():
+            # Create a Transaction without associating it with any specific inquiry
+            transaction_instance = Transaction.objects.create(
+                participant=user,
+                transaction_type='Release',
+                remarks=remarks
             )
 
-             # Calculate the available quantity for subtraction
-            available_quantity = min(inventory_instance.quantity, transaction_item.quantity)
-            inventory_instance.quantity -= available_quantity
-            inventory_instance.save()
+            is_active = False
 
+            # Process each transaction item
+            for item_data in transaction_items:
+                # Assuming item_data contains the necessary information for creating TransactionItem
+                item = item_data.get('item')
+                if item is not None:
+                    # Retrieve the ItemCopy instance based on the primary key provided in item_data
+                    try:
+                        item_copy = ItemCopy.objects.get(pk=item_data['item']['id'])
+                    except ItemCopy.DoesNotExist:
+                        raise ValidationError({'detail': 'ItemCopy not found'})
 
-            
-    transaction.is_active = is_active
-    transaction.save()
+                    # Update the borrowed status of the ItemCopy
+                    if item_copy.is_borrowed:
+                        raise ValidationError({'detail': 'Item is already borrowed.'})
 
-    # Return a response indicating a successful transaction
-    return Response({'detail': 'Transaction processed successfully.'}, status=status.HTTP_200_OK)
+                    item_copy.previous_is_borrowed = item_copy.is_borrowed
+                    item_copy.is_borrowed = True
+                    item_copy.save()
 
+                    # For ItemCopy
+                    transaction_item = TransactionItem.objects.create(
+                        transaction=transaction_instance,
+                        item=item_copy,
+                        quantity=item_data.get('quantity', 1),  # Default to 1 if quantity is not provided
+                        status="Active"
+                    )
+                    is_active = True
+                else:
+                    # Extract the inventory ID from the dictionary
+                    inventory_id = item_data['inventory']['id']
+
+                    try:
+                        # Retrieve the Inventory instance based on the provided inventory_id
+                        inventory_instance = Inventory.objects.get(pk=inventory_id)
+                    except Inventory.DoesNotExist:
+                        raise ValidationError({'detail': f'Inventory with ID {inventory_id} does not exist.'})
+
+                    # Now that you have the Inventory instance, you can create the TransactionItem
+                    transaction_item = TransactionItem.objects.create(
+                        transaction=transaction_instance,
+                        inventory=inventory_instance,  # Assign the Inventory instance, not just the ID
+                        quantity=item_data.get('quantity', 1),
+                        status="Consumable"
+                    )
+
+                    # Calculate the available quantity for subtraction
+                    available_quantity = min(inventory_instance.quantity, transaction_item.quantity)
+                    inventory_instance.quantity -= available_quantity
+                    inventory_instance.save()
+
+            # If no exceptions were raised during transaction processing, commit the transaction
+            transaction_instance.is_active = is_active
+            transaction_instance.save()
+
+        # Return a response indicating a successful transaction
+        return Response({'detail': 'Transaction processed successfully.'}, status=status.HTTP_200_OK)
+
+    except ValidationError as e:
+        if transaction_instance:
+            # Rollback the transaction if a validation error occurs
+            transaction_instance.delete()
+        return Response(e.message_dict, status=status.HTTP_400_BAD_REQUEST)

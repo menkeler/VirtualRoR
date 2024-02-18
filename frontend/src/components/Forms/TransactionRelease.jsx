@@ -42,39 +42,27 @@ const TransactionRelease = () => {
 
   
   const addItemToPayload = (item) => {
+    // Check if the item ID or inventory ID already exists in the transaction_items array
+    const isDuplicate = payload.transaction_items.some(existingItem => {
+        if (existingItem.item && item.item) {
+            return existingItem.item.id === item.item.id;
+        } else if (existingItem.inventory && !item.item) {
+            return existingItem.inventory.id === item.inventory.id;
+        }
+        return false;
+    });
 
-    console.log('Adding item to',item)
-    let newItem;
-    if (item.condition) {
-        newItem = { ...item, inventory: item, quantity: 1 };
-    } else {
-        newItem = { ...item, item: item, quantity: 1 };
-    }
-    delete newItem.id;
-
-    // Check if the item already exists in the transaction_items array based on either inventory or item properties
-    const isDuplicateItem = payload.transaction_items.some(existingItem => 
-        existingItem.item && newItem.item && existingItem.item.id === newItem.item.id
-    );
-
-    const isDuplicateInventory = payload.transaction_items.some(existingItem => 
-        existingItem.inventory && newItem.inventory && existingItem.inventory.id === newItem.inventory.id
-    );
-
-    // If the item is not a duplicate, add it to the payload
-    if (!isDuplicateItem && !isDuplicateInventory) {
-        // If the item has a condition, create a new object with inventory instead of id
-        const itemToAdd = newItem;
-
+    if (!isDuplicate) {
+        // If neither the item ID nor the inventory ID is a duplicate, add the item to the payload
         setPayload(prevState => ({
             ...prevState,
-            transaction_items: [...prevState.transaction_items, itemToAdd]
+            transaction_items: [...prevState.transaction_items, item]
         }));
     } else {
-        console.log("Item is already in the payload.");
+        // Handle duplicate item or inventory ID here, maybe show an error message
+        console.log('Duplicate item or inventory ID found.');
     }
 };
-
 
 
 
@@ -273,22 +261,22 @@ const TransactionRelease = () => {
                       </tr>
                       ))}
                       {payload && payload.transaction_items.map((result, index) => (
-                          <tr key={result.id}>
-                              <td>{index+1}</td>
-                              {result.inventory ? (
-                                  <>
-                                      <td className="truncate text-center">{result.inventory.inventory.itemprofiling.item_name} ID: {result.inventory.id}</td>
-                                      <td className="text-center">{result.condition}</td>
-                                  </>
-                              ) : (
-                                  <>
-                                      <td className="text-center">{result.item.item.name}</td>
-                                      <td className="text-center">{result.item.quantity}</td>
-                                  </>
-                              )}
-                          </tr>
+                        <tr key={result.id}>
+                            <td>{index+1}</td>
+                            {result.item ? (
+                                <>
+                                    <td className="truncate text-center">{result.item.inventory.itemprofiling.item_name} ID: {result.item.id}</td>
+                                    <td className="text-center">{result.item.condition}</td>
+                                </>
+                            ) : (
+                                <>
+                                    <td className="text-center">{result.inventory.item.name}</td>
+                                    <td className="text-center">{result.inventory.quantity}</td>
+                                </>
+                            )}
+                        </tr>
                       ))}
-
+                  
 
                       </tbody>
                   </table>
