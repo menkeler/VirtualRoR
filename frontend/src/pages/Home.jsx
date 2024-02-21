@@ -80,10 +80,11 @@ function Home() {
 
         <div className="md:flex grid grid-col-2 min-h-screen mt-5">
           {/* Left Side */}
-          <div className="flex-grow px-8 md:ml-[20vw] md:mr-12">
+          <div className="bg-gray-100 flex-grow px-8 py-2 md:ml-[20vw] md:mr-12 rounded-lg">
+            <h1 className="text-lg font-bold mb-4 mt-8">Recent Posts</h1>
             <div
               role="tablist"
-              className="tabs tabs-lifted tabs-md lg:w-full lg:mx-auto bg-gray-300 sticky top-0 z-10 rounded-tl-lg rounded-tr-lg"
+              className="tabs tabs-bordered tabs-md lg:w-full lg:mx-auto bg-gray-300 sticky top-0 z-10 rounded-tl-lg rounded-tr-lg"
             >
               <input
                 type="radio"
@@ -126,21 +127,6 @@ function Home() {
                 onChange={() => {
                   handleTabChange("Announcements");
                   setPostType("Announcements");
-                  setPosts([]);
-                  setPage(1);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              />
-              <input
-                type="radio"
-                name="my_tabs_1"
-                role="tab"
-                className="tab"
-                aria-label="News"
-                checked={activeTab === "News"}
-                onChange={() => {
-                  handleTabChange("News");
-                  setPostType("News");
                   setPosts([]);
                   setPage(1);
                   window.scrollTo({ top: 0, behavior: "smooth" });

@@ -2,7 +2,7 @@ import React from "react";
 
 const Postcard = ({ Data }) => {
   return (
-    <div className="card card-compact shadow-xl bg-white rounded-md z-10">
+    <div className="card card-compact border border-gray-400 rounded-md z-10">
       {/* Display post content */}
       <div className="card-body p-4">
         <div className="flex  md:flex-row items-center mb-1">
