@@ -246,12 +246,12 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                     )
                                   }
                                 >
-                                  Reserve
+                                  Reserve Item
                                 </button>
                               )}
                               {item.quantity <= 0 && (
                                 <div className="bg-red-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:scale-90 transition duration-500">
-                                  Out of Stock
+                                  Item Out of Stock
                                 </div>
                               )}
                             </div>
