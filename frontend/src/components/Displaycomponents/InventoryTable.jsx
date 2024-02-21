@@ -298,7 +298,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                         <td className="py-2 px-4 border-b">
                                           {copy.is_borrowed ? (
                                             <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">
-                                              Out of Stock
+                                              Borrowed
                                             </div>
                                           ) : (
                                             <div className="border-2 border-emerald-500 rounded-lg text-sm text-emerald-500 w-30 text-center px-4 py-1">
