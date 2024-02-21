@@ -195,13 +195,13 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                             "flex space-x-24"
                           }
                         >
-                          <div>
+                          <div className="max-w-[25vw]">
                             <h3 className="font-bold text-lg text-center">
                               Item Details
                             </h3>
                             <table className="w-full">
                               <tbody>
-                                <tr className="border-none max-h-fit">
+                                <tr className="border-none max-h-fit whitespace-normal">
                                   <td className="w-40 text-gray-500">Name:</td>
                                   <td>{item.item.name}</td>
                                 </tr>
@@ -227,12 +227,14 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                 </tr>
                               </tbody>
                             </table>
-                            <p className="m-3 text-sm text-gray-500">
-                              Description:
-                            </p>
-                            <p className="m-3 font-normal text-sm">
-                              {item.item.description}
-                            </p>
+                            <article className="whitespace-normal">
+                              <p className="m-3 text-sm text-gray-500">
+                                Description:
+                              </p>
+                              <p className="m-3 font-normal text-sm">
+                                {item.item.description}
+                              </p>
+                            </article>
                             <div className="flex flex-col place-items-center">
                               {!item.item.returnable && item.quantity > 0 && (
                                 <button
