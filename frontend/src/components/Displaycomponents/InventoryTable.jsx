@@ -255,6 +255,9 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                 </div>
                               )}
                             </div>
+                            <p className="text-gray-400 text-center text-xs font-normal mt-2">
+                              ---- tap outside to close ----
+                            </p>
                           </div>
                           {item.item.returnable && item.quantity > 0 && (
                             <div>
