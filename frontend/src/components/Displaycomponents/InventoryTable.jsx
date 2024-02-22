@@ -185,7 +185,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                         className={
                           item.item.returnable && item.quantity > 0
                             ? "modal-box min-w-fit"
-                            : "modal-box"
+                            : "modal-box max-w-fit"
                         }
                       >
                         <div
