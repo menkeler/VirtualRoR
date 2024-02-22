@@ -110,7 +110,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                 <th className="py-3 px-4 border-b w-48">Email</th>
                 <th className="py-3 px-4 border-b w-32">Department</th>
                 <th className="py-3 px-4 border-b w-24">Role</th>
-                <th className="py-3 px-4 border-b w-24 text-center">Trust Score</th>
+            
                 </tr>
               </thead>
              {/* Body */}
@@ -136,11 +136,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                     <td className="py-2 px-4 border-b">
                       <span className="badge badge-info badge-lg">{user.staff && user.staff.position !== null ? user.staff.position : 'Client'}</span>
                     </td>
-                    <td className="py-2 px-4 border-b">
-                      <div className="w-32 mx-auto">
-                        <SemiCircleGauge value={650} type={"Table"}/>
-                      </div>
-                    </td>
+                 
                   </tr>
                 </React.Fragment>
               ))}
@@ -176,7 +172,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                 <span className="font-bold">Contact:</span> {user.contact}
               </p>
            
-                <span className="font-bold">Trust Score:</span> <SemiCircleGauge value={650}/>
+          
                
            
              
