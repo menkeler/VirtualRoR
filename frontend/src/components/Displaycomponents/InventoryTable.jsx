@@ -133,7 +133,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     if (type === 1) {
       return (
         <td className="py-2 px-4 border-b">
-          {!copy.is_borrowed && (
+          {!copy.is_borrowed && !copy.is_reserved &&  (
             <button
               className="bg-emerald-500 rounded-md text-sm text-white w-20 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
               onClick={() =>
@@ -263,7 +263,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                   )}
                 </td>
                 <td className="py-2">{item.quantity}</td>
-                <td className="py-2">{item.quantity}</td>
+                <td className="py-2">{item.reserved_quantity}</td>
                 <td className="py-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
                   {item.item.category.name}
                   {/*Item Panel ----------------------------------------------------------------------------- */}
@@ -310,7 +310,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                               </tr>
                               <tr className="border-none">
                                 <td className="text-gray-500">Reserved:</td>
-                                <td>{item.quantity}</td>
+                                <td>{item.reserved_quantity}</td>
                               </tr>
                             </tbody>
                           </table>
@@ -345,7 +345,6 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  
                                   {item.item_copies.map((copy, index) => (
                                     <tr
                                       key={index}
@@ -360,7 +359,11 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                         {copy.condition}
                                       </td>
                                       <td className="py-2 px-4 border-b">
-                                        {copy.is_borrowed ? (
+                                        {copy.is_reserved ? (
+                                          <div className="border-2 border-blue-500 rounded-lg text-sm text-blue-500 w-30 text-center px-4 py-1">
+                                            Reserved
+                                          </div>
+                                        ) : copy.is_borrowed ? (
                                           <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">
                                             Borrowed
                                           </div>

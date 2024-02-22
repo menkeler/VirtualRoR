@@ -84,6 +84,13 @@ def update_inventory_quantity_on_save(sender, instance, created, **kwargs):
         elif instance.is_borrowed and instance.is_borrowed != instance.previous_is_borrowed:
             # Decrement quantity if is_borrowed is True and condition changed
             instance.inventory.quantity -= 1
+        elif instance.is_reserved:
+            # Increment reserved quantity when item is marked as reserved
+            instance.inventory.reserved_quantity += 1
+        elif not instance.is_reserved:
+            # Increment reserved quantity when item is marked as reserved
+            instance.inventory.reserved_quantity -= 1
+        
         instance.inventory.save()
 
         

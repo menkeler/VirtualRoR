@@ -173,6 +173,7 @@ const TransactionDetails = ({transaction,fetchTransactions}) => {
                                     <>
                                           
                                             <button className="btn  btn-accent" onClick={()=> document.getElementById(`Update${item.item.id}`).showModal()}>Update</button>
+                                            
                                             <dialog id={`Update${item.item.id}`} className="modal">
                                         <div className="modal-box">
                                         <h3 className="font-bold text-lg">Return</h3>

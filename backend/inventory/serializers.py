@@ -57,6 +57,10 @@ class InventorySerializer(serializers.ModelSerializer):
         
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        sorted_copies = sorted(representation['item_copies'], key=lambda x: x['is_borrowed'])
+        item_copies = representation.get('item_copies', [])
+        
+        # Sort item_copies based on whether they are borrowed or reserved
+        sorted_copies = sorted(item_copies, key=lambda x: ( x['is_borrowed'],  x.get('is_reserved', False)))
+
         representation['item_copies'] = sorted_copies
         return representation

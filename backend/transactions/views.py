@@ -234,7 +234,13 @@ def confirm_reservation(request, inquiry_id, purpose):
             if inquiry.inquiry_type == 'Donation':
                 inquiry.save()
             else:
-                process_reserved_items(inquiry)
+                try:
+                    process_reserved_items(inquiry)
+                except ValidationError as e:
+                    inquiry.status = 'Rejected'
+                    inquiry.save()
+                    return Response({'detail': str(e)}, status=status.HTTP_200_OK)
+                
                 inquiry.save()
             return Response(InquirySerializer(inquiry).data, status=status.HTTP_200_OK)
         
@@ -254,29 +260,48 @@ def confirm_reservation(request, inquiry_id, purpose):
 def process_reserved_items(inquiry):
     for reserved_item in inquiry.reserved_items.all():
         if hasattr(reserved_item, 'item') and reserved_item.item:
-            if reserved_item.item.is_borrowed:
-                print("Error: Item is already borrowed.")
+            if reserved_item.item.is_reserved or reserved_item.item.is_borrowed:
+                raise ValidationError("Error: Item is already borrowed.")
             else:
-                reserved_item.item.previous_is_borrowed = reserved_item.item.is_borrowed
-                reserved_item.item.is_borrowed = True
+                reserved_item.item.is_reserved = True
                 reserved_item.item.save()
 
         elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
             available_quantity = min(reserved_item.inventory.quantity, reserved_item.quantity)
-            reserved_item.inventory.quantity -= available_quantity
+            reserved_item.inventory.reserved_quantity += available_quantity
             reserved_item.inventory.save()
 
-def cancel_reserved_items(inquiry):
+
+#if Resereved item is borrowable which is item is the same as itemCopy status for borrwed
+def process_reserved_items(inquiry):
     for reserved_item in inquiry.reserved_items.all():
         if hasattr(reserved_item, 'item') and reserved_item.item:
-            reserved_item.item.previous_is_borrowed = reserved_item.item.is_borrowed
-            reserved_item.item.is_borrowed = False
-            reserved_item.item.save()
+            if reserved_item.item.is_reserved or reserved_item.item.is_borrowed:
+                raise ValidationError("Error: Item is already borrowed.")
+            else:
+                reserved_item.item.is_reserved = True
+                reserved_item.item.save()
 
         elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
-            reserved_item.inventory.quantity += reserved_item.quantity
+            available_quantity = min(reserved_item.inventory.quantity, reserved_item.quantity)
+            reserved_item.inventory.reserved_quantity += available_quantity
+            reserved_item.inventory.save()
+            
+# @api_view(['POST'])
+def cancel_reserved_items(inquiry_id):
+    # Retrieve the inquiry object using the inquiry_id
+    inquiry = get_object_or_404(Inquiry, pk=inquiry_id)
+
+    for reserved_item in inquiry.reserved_items.all():
+        if hasattr(reserved_item, 'item') and reserved_item.item:
+            reserved_item.item.is_reserved = False
+            reserved_item.item.save()
+        elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
+            reserved_item.inventory.reserved_quantity -= reserved_item.quantity
+            reserved_item.inventory.reserved_quantity = max(0, reserved_item.inventory.reserved_quantity)
             reserved_item.inventory.save()
         reserved_item.delete()
+
         
 
 @api_view(['POST'])
@@ -306,8 +331,8 @@ def process_transaction(request):
         # Begin transaction
         with transaction.atomic():
             # Create a Transaction without associating it with any specific inquiry
-            if inquiry is not None:
-                cancel_reserved_items(inquiry)  # deletes reserved items
+            if inquiry_id is not None:
+                cancel_reserved_items(inquiry_id)  # deletes reserved items
                 is_active = False
 
                 transaction_instance = Transaction.objects.create(
