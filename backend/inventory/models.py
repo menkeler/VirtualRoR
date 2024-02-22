@@ -32,6 +32,7 @@ class ItemProfiling(models.Model):
 class Inventory(models.Model):
     item = models.ForeignKey(ItemProfiling, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
+    reserved_quantity = models.PositiveIntegerField(default=0)
     is_hidden = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.item.name} - Quantity: {self.quantity}"
@@ -47,6 +48,7 @@ class ItemCopy(models.Model):
 
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item_copies')
     condition = models.CharField(max_length=50, choices=CONDITION_CHOICES, default='Good')
+    is_reserved = models.BooleanField(default=False)
     is_borrowed = models.BooleanField(default=False)
     previous_is_borrowed = models.BooleanField(default=False)  # Change to BooleanField
     

@@ -345,6 +345,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  
                                   {item.item_copies.map((copy, index) => (
                                     <tr
                                       key={index}

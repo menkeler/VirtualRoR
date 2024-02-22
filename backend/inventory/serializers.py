@@ -54,3 +54,9 @@ class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = '__all__'
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        sorted_copies = sorted(representation['item_copies'], key=lambda x: x['is_borrowed'])
+        representation['item_copies'] = sorted_copies
+        return representation
