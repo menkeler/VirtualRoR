@@ -136,7 +136,7 @@ class InventoryViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset().order_by('-quantity')
         search_query = self.request.query_params.get('search', None)
         category_filter = self.request.query_params.get('search_category', None)
-
+        hidden_filter = self.request.query_params.get('hidden', None)
         if category_filter:
             # If category_filter is provided, filter items based on the category name
             queryset = queryset.filter(item__category__name__icontains=category_filter)
@@ -146,7 +146,12 @@ class InventoryViewSet(viewsets.ModelViewSet):
                 Q(item__name__icontains=search_query) |
                 Q(item__category__name__icontains=search_query)
             )
-
+            
+        # Apply hidden filter
+        if hidden_filter in ['true', 'True']:
+            queryset = queryset.filter(item__hidden=True)
+        elif hidden_filter in ['false', 'False']:
+            queryset = queryset.filter(item__hidden=False)
         return queryset
 
     #Different Serializer for Creation
