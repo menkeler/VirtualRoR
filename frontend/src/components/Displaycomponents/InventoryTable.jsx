@@ -92,7 +92,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         <div className="flex flex-col place-items-center">
           {!item.item.returnable && item.quantity > 0 && (
             <button
-              className="bg-emerald-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:scale-90 transition duration-500"
+              className="bg-emerald-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
               onClick={() =>
                 addToCart(item.id, item.item.name, null, item.quantity)
               }
