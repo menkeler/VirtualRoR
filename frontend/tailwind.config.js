@@ -25,11 +25,12 @@ export default {
     "warning": "#FFD700",
               
     "error": "#CD5C5C",
+  
               },
             },
+            
           ],
       },
   plugins: [require("daisyui")], 
-  
 }
 

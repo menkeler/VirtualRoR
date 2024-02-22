@@ -240,7 +240,7 @@ const TransactionRelease = () => {
         // Handle error
         console.error("Error:", error);
       }
-      handleReset()
+      handleReset();
       document.getElementById("CreateTransaction").close();
     }
   };
@@ -258,42 +258,42 @@ const TransactionRelease = () => {
       <dialog id="CreateTransaction" className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
           <h3 className="font-bold text-lg">Create Transaction</h3>
-          
 
           <div className="flex flex-col items-center">
-          <div className="flex items-center">
-  <ManualUserCreation onUserIdChange={handleUserIdChange} />
-  <button
-    className="btn btn-accent ml-2" // Use Tailwind spacing utility classes to add margin
-    onClick={() => document.getElementById("ChooseUser").showModal()}
-  >
-    Choose user
-  </button>
-  <button
-    className="btn ml-2"
-    onClick={() =>
-      document.getElementById("SelectTransaction").showModal()
-    }
-  >
-    Load Reservations
-  </button>
-</div>
-<div className="flex flex-row">
-  <button
-    className="btn mx-2 mt-2"
-    onClick={() =>
-      document.getElementById("SelectInventory").showModal()
-    }
-    disabled={!currentUser} 
-  >
-    Add Item
-  </button>
-  
-  <button className="btn mx-2 mt-2" onClick={handleReset}>
-    Remove All
-  </button>
-</div>
+            <div className="flex items-center">
+              <ManualUserCreation onUserIdChange={handleUserIdChange} />
+              <button
+                className="btn btn-accent ml-2" // Use Tailwind spacing utility classes to add margin
+                onClick={() =>
+                  document.getElementById("ChooseUser").showModal()
+                }
+              >
+                Choose user
+              </button>
+              <button
+                className="btn ml-2"
+                onClick={() =>
+                  document.getElementById("SelectTransaction").showModal()
+                }
+              >
+                Load Reservations
+              </button>
+            </div>
+            <div className="flex flex-row">
+              <button
+                className="btn mx-2 mt-2"
+                onClick={() =>
+                  document.getElementById("SelectInventory").showModal()
+                }
+                disabled={!currentUser}
+              >
+                Add Item
+              </button>
 
+              <button className="btn mx-2 mt-2" onClick={handleReset}>
+                Remove All
+              </button>
+            </div>
 
             <h3 className="font-bold mt-3 text-lg">Inquirer</h3>
             {selectedInquiry && (
@@ -497,16 +497,13 @@ const TransactionRelease = () => {
       {/* inventor ymodal */}
 
       <dialog id="SelectInventory" className="modal">
-        <div className="modal-box w-11/12 max-w-5xl">
-          <h3 className="font-bold text-lg">Select Items</h3>
-          <p className="py-4"></p>
-
-          <InventoryTable handleItemAdd={handleItemAdd} />
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn">Close</button>
-            </form>
+        <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md md:w-[84vw] lg:w-[64vw]">
+          <div>
+            <InventoryTable handleItemAdd={handleItemAdd} />
           </div>
+          <form method="dialog">
+            <button className="btn">Close</button>
+          </form>
         </div>
       </dialog>
       {/* User Modal Content */}
