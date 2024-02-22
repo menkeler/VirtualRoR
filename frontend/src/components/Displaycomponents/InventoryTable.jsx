@@ -258,7 +258,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                               )}
                             </div>
                             <p className="text-gray-400 text-center text-xs font-normal mt-2">
-                              ---- tap outside to close ----
+                              ---- click outside to close ----
                             </p>
                           </div>
                           {item.item.returnable && item.quantity > 0 && (
@@ -341,60 +341,6 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                       </form>
                     </dialog>
                   </td>
-
-                  {/*
-                  <td className="py-2 sm:w-10">
-                    {!item.item.returnable && item.quantity > 0 && (
-                      <button
-                        className="bg-emerald-500 rounded-md text-xs text-white w-full text-center px-4 py-1 whitespace-nowrap overflow-hidden overflow-ellipsis hover:scale-90 transition duration-500"
-                        onClick={() =>
-                          document
-                            .getElementById(`ItemPanel${item.id}`)
-                            .showModal()
-                        }
-                      >
-                        View Details
-                      </button>
-                    )}
-                    
-                    {!item.item.returnable && item.quantity > 0 && (
-                      <button
-                        className="bg-emerald-500 rounded-md text-xs text-white w-full text-center px-4 py-1 whitespace-nowrap overflow-hidden overflow-ellipsis hover:scale-90 transition duration-500"
-                        onClick={() =>
-                          addToCart(
-                            item.id,
-                            item.item.name,
-                            null,
-                            item.quantity
-                          )
-                        }
-                      >
-                        Reserve
-                      </button>
-                    )}
-                    
-                    {item.quantity <= 0 && (
-                      <div className="bg-red-500 rounded-md text-xs text-white w-full text-center px-4 py-1 whitespace-nowrap overflow-hidden overflow-ellipsis hover:scale-90 transition duration-500">
-                        Out of Stock
-                      </div>
-                    )}
-                    {item.item.returnable && item.quantity > 0 && (
-                      <button
-                        className="bg-sky-500 rounded-md text-xs text-white w-full text-center px-4 py-1 whitespace-nowrap overflow-hidden overflow-ellipsis hover:scale-90 transition duration-500"
-                        onClick={() =>
-                          document
-                            .getElementById(`Copiesof${item.id}`)
-                            .showModal()
-                        }
-                      >
-                        View Copies
-                      </button>
-                    )}
-                    
-                    
-                    
-                  </td>
-                */}
                 </tr>
               </React.Fragment>
             ))}
