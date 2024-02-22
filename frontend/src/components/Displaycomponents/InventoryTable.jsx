@@ -363,11 +363,15 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                           <div className="border-2 border-blue-500 rounded-lg text-sm text-blue-500 w-30 text-center px-4 py-1">
                                             Reserved
                                           </div>
+                                        ) : copy.condition === "Lost" ? (
+                                          <div className="border-2 border-red-900 rounded-lg text-sm text-red-900 w-30 text-center px-4 py-1">
+                                            Donot display this row  or Display as Lost just change later
+                                          </div>
                                         ) : copy.is_borrowed ? (
                                           <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">
                                             Borrowed
                                           </div>
-                                        ) : (
+                                        )  : (
                                           <div className="border-2 border-emerald-500 rounded-lg text-sm text-emerald-500 w-30 text-center px-4 py-1">
                                             Available
                                           </div>
