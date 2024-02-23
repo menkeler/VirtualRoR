@@ -8,8 +8,17 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
-
-
+import pandas as pd
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import HttpResponse
+from datetime import datetime
+from django.db.models import F
+import os
+from openpyxl import load_workbook
+from openpyxl.styles import PatternFill
+from django.http import JsonResponse
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name') 
     serializer_class = CategorySerializer
@@ -177,3 +186,97 @@ class InventoryViewSet(viewsets.ModelViewSet):
             response_data.append(InventorySerializer(inventory_instance).data)
 
         return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    
+    
+
+            
+            
+
+class ExportMultipleTablesView(APIView):
+   def get(self, request, *args, **kwargs):
+        # Construct filename with the current date and time
+        current_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        filename = f'VirtualRorData_{current_datetime}.xlsx'
+
+        # Specify desktop path
+        desktop_path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')
+
+        # Construct full file path with desktop path
+        full_file_path = os.path.join(desktop_path, filename)
+
+        # Create Excel writer object with the constructed full file path
+        output = pd.ExcelWriter(full_file_path, engine='xlsxwriter')
+
+        # Fetch data from the Inventory table with selected columns
+        inventory_queryset = Inventory.objects.all().annotate(
+            ItemID=F('id'),
+            ItemName=F('item__name'),
+            Type=F('item__returnable'),
+            Quantity=F('quantity'),
+            Reserved=F('reserved_quantity')
+        ).values('ItemID', 'ItemName', 'Type', 'Quantity', 'Reserved')
+        
+        # Apply default ascending order by id
+        inventory_queryset = inventory_queryset.order_by('ItemID')
+
+        # Replace True and False with Borrowable and Consumable
+        for item in inventory_queryset:
+            item['Type'] = 'Borrowable' if item['Type'] else 'Consumable'
+
+        # Convert inventory queryset to a DataFrame
+        inventory_df = pd.DataFrame(list(inventory_queryset))
+
+        # Write inventory DataFrame to the first sheet
+        inventory_df.to_excel(output, sheet_name='Inventory', index=False)
+
+        # Fetch data from the ItemCopy table with selected columns
+        item_copy_queryset = ItemCopy.objects.all().annotate(
+            ItemGroup=F('inventory__id'),
+            ItemName=F('inventory__item__name'),
+            ItemID=F('id'),
+            ItemCategory=F('inventory__item__category__name'),  # Annotate the item category
+            Condition=F('condition'),
+            Borrowed=F('is_borrowed'),
+            Reserved=F('is_reserved'),
+        ).order_by('ItemGroup').values('ItemGroup', 'ItemName', 'ItemID', 'ItemCategory', 'Condition', 'Borrowed', 'Reserved')
+
+        # Convert item copy queryset to a DataFrame
+        item_copy_df = pd.DataFrame(list(item_copy_queryset))
+
+        # Write item copy DataFrame to the second sheet
+        item_copy_df.to_excel(output, sheet_name='ItemCopies', index=False)
+
+        # Close the Excel writer object
+        output.close()
+
+        # Load the workbook using openpyxl
+        workbook = load_workbook(full_file_path)
+
+        # Get the 'ItemCopies' sheet
+        item_copies_sheet = workbook['ItemCopies']
+
+        # Define red fill
+        red_fill = PatternFill(start_color='FFFF0000', end_color='FFFF0000', fill_type='solid')
+
+        # Iterate over each row (excluding the header row)
+        for row in item_copies_sheet.iter_rows(min_row=2, max_row=item_copies_sheet.max_row, min_col=6, max_col=7):
+            for cell in row:
+                # Check if the cell value is True and apply red fill
+                if cell.value:
+                    cell.fill = red_fill
+
+        # Save the modified workbook
+        workbook.save(full_file_path)
+
+        # Open and read the generated Excel file
+        with open(full_file_path, 'rb') as f:
+            file_data = f.read()
+
+        # Delete the workbook file
+        os.remove(full_file_path)
+
+        # Return the Excel file as a response
+        response = HttpResponse(file_data, content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        return response

@@ -4,8 +4,6 @@ const ExportDataPage = () => {
   return (
     <>
     
-    
-    
     </>
   )
 }

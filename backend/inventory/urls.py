@@ -11,4 +11,6 @@ router.register('inventories',views.InventoryViewSet, basename='inventory')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('export', views.ExportMultipleTablesView.as_view(), name='export_multiple_tables'),
+
 ]
