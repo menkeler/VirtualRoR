@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+import ExportButton from '../../components/CustomButtons/Dashboard/ExportButton';
 
 const ExportDataPage = () => {
-  return (
-    <>
-    
-    </>
-  )
-}
 
-export default  ExportDataPage
+
+  return (
+   <>
+   <ExportButton/>
+   </>
+  );
+};
+
+export default ExportDataPage;

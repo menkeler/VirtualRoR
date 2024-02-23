@@ -17,6 +17,8 @@
     "axios": "^1.6.2",
     "babel-plugin-macros": "^3.1.0",
     "crypto-js": "^4.2.0",
+    "file-saver": "^2.0.5",
+    "handsontable": "^14.1.0",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "patch-package": "^8.0.0",
