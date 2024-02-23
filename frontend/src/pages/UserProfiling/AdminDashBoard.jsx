@@ -9,7 +9,7 @@ import Footer from "../../components/wholepage/Footer";
 import InventoryProfilingTable from "../../components/Displaycomponents/InventoryProfilingTable";
 import InventoryTable from "../../components/Displaycomponents/InventoryTable";
 import PostsTable from "../../components/Displaycomponents/PostsTable";
-
+import ExportDataPage from "./ExportDataPage";
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState("dashboard");
@@ -129,6 +129,22 @@ const AdminDashboard = () => {
                 <span className="text-xl"> Posts</span>
               </button>
             </li>
+  {/* Export */}
+  <li className="mb-2 flex justify-center ">
+              <button
+                onClick={() => handlePageChange("exports")}
+                className={`text-gray-300 hover:bg-gray-700 px-4 py-2 w-full block ${
+                  selectedPage === "exports" ? "bg-gray-700" : ""
+                }`}
+              >
+                <i className="fa-solid fa-file-export"></i>
+                <span className="text-xl"> Export</span>
+              </button>
+            </li>
+
+                  
+
+
             {/* Add more navigation items as needed */}
           </ul>
         </div>
@@ -210,6 +226,12 @@ const AdminDashboard = () => {
                 </section>
               )}
 
+              {selectedPage === "exports" && (
+                <section className="mb-8">
+                  <h2 className="text-xl font-semibold mb-4">ExportContent</h2>
+                 <ExportDataPage/>
+                </section>
+              )}
               {/* Add more conditional rendering for other pages */}
             </div>
           </main>
