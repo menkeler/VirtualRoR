@@ -228,7 +228,6 @@ const AdminDashboard = () => {
 
               {selectedPage === "exports" && (
                 <section className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4">ExportContent</h2>
                  <ExportDataPage/>
                 </section>
               )}

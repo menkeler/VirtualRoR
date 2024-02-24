@@ -300,7 +300,7 @@ def cancel_reserved_items(inquiry_id):
             reserved_item.inventory.reserved_quantity -= reserved_item.quantity
             reserved_item.inventory.reserved_quantity = max(0, reserved_item.inventory.reserved_quantity)
             reserved_item.inventory.save()
-        reserved_item.delete()
+      
 
         
 

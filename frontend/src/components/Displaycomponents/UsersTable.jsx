@@ -8,7 +8,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [totalPages, setTotalPages] = useState(1);
-  const {userData} = useAuth();
+  const { userData } = useAuth();
 
   const handleChangeRole = async (e, user_id, role) => {
     e.preventDefault();
@@ -27,22 +27,22 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
         const response = await client.delete(`users/users/${user_id}/remove_staff/`);
         fetchUsers(currentPage);
         document.getElementById(`change_role_user_${user_id}`).close()
-        
+
       } else {
         console.log('Changing role to staff for user ID:', user_id);
         const response = await client.post(`users/users/${user_id}/become_staff/`);
         fetchUsers(currentPage);
         document.getElementById(`change_role_user_${user_id}`).close()
       }
-  
+
 
 
     } catch (error) {
       console.error('Error:', error);
-   
+
     }
   };
-  
+
   const fetchUsers = async (page) => {
     try {
       const authToken = Cookies.get('authToken');
@@ -53,7 +53,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
         },
       });
 
-      
+
       const { results, count } = response.data;
 
       setUsers(results);
@@ -66,7 +66,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
     }
   };
   useEffect(() => {
- 
+
 
     fetchUsers(currentPage);
   }, [searchQuery, currentPage]);
@@ -77,44 +77,44 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
     }
   };
   const handleSelectUser = (userId) => {
-      // Pass the selected user to the parent component
-      onSelectUser(userId);
+    // Pass the selected user to the parent component
+    onSelectUser(userId);
   };
 
   const handleSelectType = (type) => {
     // Pass the selected user to the parent component
     onSelectType(type);
-};
+  };
 
   if (type === 1) {
-      return (
-        <>
-     
-          {/* Search bar */}
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search users..."
-            className="p-2 mb-4 border rounded-md"
-          />
-  
-          {/* Table */}
-          <div className="overflow-x-auto mx-16">
-            <table className="table min-w-full bg-white border border-gray-300">
-              {/* Head */}
-              <thead className="bg-green-500 text-white">
-                <tr>
+    return (
+      <>
+
+        {/* Search bar */}
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search users..."
+          className="p-2 mb-4 border rounded-md"
+        />
+
+        {/* Table */}
+        <div className="overflow-x-auto mx-16">
+          <table className="table min-w-full bg-white border border-gray-300">
+            {/* Head */}
+            <thead className="bg-green-500 text-white">
+              <tr>
                 <th className="py-3 px-4 border-b w-20">User ID</th>
                 <th className="py-3 px-4 border-b w-40">Name</th>
                 <th className="py-3 px-4 border-b w-48">Email</th>
                 <th className="py-3 px-4 border-b w-32">Department</th>
                 <th className="py-3 px-4 border-b w-24">Role</th>
-            
-                </tr>
-              </thead>
-             {/* Body */}
-              <tbody>
+
+              </tr>
+            </thead>
+            {/* Body */}
+            <tbody>
               {users.map((user) => (
                 <React.Fragment key={user.user_id}>
                   <tr className="hover:bg-green-50" onClick={() => document.getElementById(`Detail${user.user_id}`).showModal()}>
@@ -136,131 +136,134 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                     <td className="py-2 px-4 border-b">
                       <span className="badge badge-info badge-lg">{user.staff && user.staff.position !== null ? user.staff.position : 'Client'}</span>
                     </td>
-                 
+
                   </tr>
                 </React.Fragment>
               ))}
-              </tbody>
-            </table>
+            </tbody>
+          </table>
 
-            {/* MOdal */}
-            {users.map((user) => (
-          <dialog key={`Detail${user.user_id}`} id={`Detail${user.user_id}`} className="modal">
-           <div className="modal-box w-11/12 max-w-2xl p-6 bg-white shadow-md rounded-md">
-            <div>
-              <h3 className="font-bold text-xl mb-4">{`${user.first_name} ${user.last_name}`}</h3>
-              <img  src={`https://randomuser.me/api/portraits/men/${user.user_id}.jpg`} alt="" className='mx-auto w-40 h-40  rounded-3xl mb-4' />
-              <p className="text-gray-600 mb-2">
-                <span className="font-bold">Department:</span> {user.department}
-              </p>
-              <p className="text-gray-600 mb-2">
-                <span className="font-bold">Role:</span> {user.staff && user.staff.position !== null ? user.staff.position : 'Client'}
+          {/* MOdal */}
+          {users.map((user) => (
+            <dialog key={`Detail${user.user_id}`} id={`Detail${user.user_id}`} className="modal">
+              <div className="modal-box w-11/12 max-w-2xl p-6 bg-white shadow-md rounded-md">
+                <div>
+                  <h3 className="font-bold text-xl mb-4">{`${user.first_name} ${user.last_name}`}</h3>
+                  <img src={`https://randomuser.me/api/portraits/men/${user.user_id}.jpg`} alt="" className='mx-auto w-40 h-40  rounded-3xl mb-4' />
+                  <p className="text-gray-600 mb-2">
+                    <span className="font-bold">Department:</span> {user.department}
+                  </p>
+                  <p className="text-gray-600 mb-2">
+                    <span className="font-bold">Role:</span> {user.staff && user.staff.position !== null ? user.staff.position : 'Client'}
 
-                {/* change role button*/}
-              
-                {(!user.staff || (user.staff?.position !== 'Director')) && userData.user.staff?.position === 'Director' && (
-                <button className="btn" onClick={() => document.getElementById(`change_role_user_${user.user_id}`).showModal()}>
-                  ChangeRole
+                    {/* change role button*/}
+
+                    {(!user.staff || (user.staff?.position !== 'Director')) && userData.user.staff?.position === 'Director' && (
+                      <button className="btn ml-2" onClick={() => document.getElementById(`change_role_user_${user.user_id}`).showModal()}>
+                        ChangeRole
+                      </button>
+                    )}
+
+                  </p>
+                  <p className="text-gray-600 mb-2">
+                    <span className="font-bold">Email:</span> {user.email}
+                  </p>
+                  <p className="text-gray-600 mb-2">
+                    <span className="font-bold">Contact:</span> {user.contact}
+                  </p>
+
+
+
+
+
+                </div>
+                <div className="border-t border-gray-200 mt-6 pt-6">
+                  <h4 className="font-bold text-xl mb-2">Additional Actions</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <button className="btn btn-info text-white py-2 px-6 rounded-full" onClick={() => {
+                      handleSelectUser(user);
+                      onSelectType("transactions");
+                    }}>
+                      View Transactions
+                    </button>
+                    <button className="btn btn-info text-white py-2 px-6 rounded-full" onClick={() => {
+                      handleSelectUser(user);
+                      onSelectType("inquiries");
+                    }}>
+                      View Inquiries
+                    </button>
+                    <button className="btn btn-info text-white py-2 px-6 rounded-full" onClick={() => {
+                      handleSelectUser(user);
+                      onSelectType("posts");
+                    }}>
+                      View Posts
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <form method="dialog" className="modal-backdrop">
+                <button  >
+                  Close
                 </button>
-              )}
-           
-              </p>
-              <p className="text-gray-600 mb-2">
-                <span className="font-bold">Email:</span> {user.email}
-              </p>
-              <p className="text-gray-600 mb-2">
-                <span className="font-bold">Contact:</span> {user.contact}
-              </p>
-           
-          
-               
-           
-             
+              </form>
+            </dialog>
+          ))}
+        </div>
+
+        {/* Pagination controls */}
+        <div className="join mt-4">
+          <button className="join-item btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+            «
+          </button>
+          <button className="join-item btn" onClick={() => handlePageChange(currentPage)}>
+            Page {currentPage} of {totalPages}
+          </button>
+          <button className="join-item btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+            »
+          </button>
+        </div>
+
+        {/* Modals  */}
+        {/* change role modal  */}
+        {users.map((user) => (
+
+          <dialog key={user.user_id} id={`change_role_user_${user.user_id}`} className="modal">
+            <div className="modal-box">
+              <h3 className="font-bold text-lg">Change User Role!</h3>
+              <button
+                className="btn bg-blue-500 mr-2"
+                onClick={(e) => handleChangeRole(e, user.user_id, "student")}
+                disabled={!user.staff}
+
+              >Student</button>
+              <button
+                className="btn bg-green-500"
+                onClick={(e) => handleChangeRole(e, user.user_id, "staff")}
+                disabled={user.staff}
+              >Staff</button>
+              <div className="modal-action">
+                <form method="dialog">
+                  {/* if there is a button in form, it will close the modal */}
+                  <button className="btn">Close</button>
+                </form>
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-4 mt-8">
-              <button className="btn btn-info text-white p-2 rounded-full"    onClick={() => {
-                  handleSelectUser(user);
-                  onSelectType("transactions");
-                }}>
-                  View Transactions
-              </button>
-              <button className="btn btn-info text-white p-2 rounded-full"    onClick={() => {
-                  handleSelectUser(user);
-                  onSelectType("inquiries");
-                }}>
-                  View Inquiries
-              </button>
-              <button className="btn btn-info text-white p-2 rounded-full"    onClick={() => {
-                  handleSelectUser(user);
-                  onSelectType("posts");
-                }}>
-                  View Posts
-              </button>
-            </div>
-          </div>
-            <form method="dialog" className="modal-backdrop">
-                  <button  >
-                    Close
-                  </button>
-            </form>
           </dialog>
         ))}
-      </div>
-  
-          {/* Pagination controls */}
-          <div className="join mt-4">
-            <button className="join-item btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-              «
-            </button>
-            <button className="join-item btn" onClick={() => handlePageChange(currentPage)}>
-              Page {currentPage} of {totalPages}
-            </button>
-            <button className="join-item btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-              »
-            </button>
-          </div>
+      </>
+    );
+  } else if (type === 2) {
+    return (
+      <>
+        {/* Search bar */}
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search users..."
+        />
 
-            {/* Modals  */}
-            {/* change role modal  */}
-            {users.map((user) => (
-        
-            <dialog key={user.user_id} id={`change_role_user_${user.user_id}`} className="modal">
-                  <div className="modal-box">
-                    <h3 className="font-bold text-lg">Change User Role!</h3>
-                    <button 
-                    className="btn bg-blue-500 mr-2" 
-                    onClick={(e) => handleChangeRole(e,user.user_id,"student")}
-                    disabled={!user.staff}
-                    
-                    >Student</button>
-                    <button 
-                    className="btn bg-green-500" 
-                    onClick={(e) => handleChangeRole(e,user.user_id,"staff")}
-                    disabled={user.staff}
-                    >Staff</button>
-                    <div className="modal-action">
-                      <form method="dialog">
-                        {/* if there is a button in form, it will close the modal */}
-                        <button className="btn">Close</button>
-                      </form>
-                    </div>
-                  </div>
-                </dialog>
-           ))}
-        </>
-      );
-    } else if (type === 2) {
-      return (
-          <>
-          {/* Search bar */}
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search users..."
-          />
-
-         {/* List of names */}
+        {/* List of names */}
         {/* <div className="mt-4 grid gap-4 grid-cols-3">
           {users.map((user) => (
             <div key={user.user_id} className="p-5 bg-white rounded-lg shadow-md">
@@ -284,55 +287,55 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
             </div>
           ))}
         </div> */}
-    <div class="overflow-x-auto">
-  <table class="table w-full">
-    <thead class="text-slate-800 bg-slate-100">
-      <tr>
-        <th class="px-4 py-2">Name</th>
-        <th class="px-4 py-2">Email</th>
-        <th class="px-4 py-2">Action</th>
-      </tr>
-    </thead>
+        <div class="overflow-x-auto">
+          <table class="table w-full">
+            <thead class="text-slate-800 bg-slate-100">
+              <tr>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Email</th>
+                <th class="px-4 py-2">Action</th>
+              </tr>
+            </thead>
 
-    <tbody class="text-slate-700">
-      {users.map((user) => (
-        <tr key={user.user_id} class="hover:bg-slate-200">
-          <td class="px-4 py-2">{user.first_name} {user.last_name}</td>
-          <td class="px-4 py-2">{user.email}</td>
-          <td class="px-4 py-2">
-            <button
-              onClick={() => handleSelectUser(user)}
-              class="px-3 py-1 bg-lime-500 text-white rounded hover:bg-lime-600 focus:outline-none focus:shadow-outline-lime active:bg-lime-700"
-            >
-              Select
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+            <tbody class="text-slate-700">
+              {users.map((user) => (
+                <tr key={user.user_id} class="hover:bg-slate-200">
+                  <td class="px-4 py-2">{user.first_name} {user.last_name}</td>
+                  <td class="px-4 py-2">{user.email}</td>
+                  <td class="px-4 py-2">
+                    <button
+                      onClick={() => handleSelectUser(user)}
+                      class="px-3 py-1 bg-lime-500 text-white rounded hover:bg-lime-600 focus:outline-none focus:shadow-outline-lime active:bg-lime-700"
+                    >
+                      Select
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
 
 
-          {/* Pagination controls */}
-          <div className="join mt-4">
-            <button className="join-item btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-              «
-            </button>
-            <button className="join-item btn" onClick={() => handlePageChange(currentPage)}>
-              Page {currentPage} of {totalPages}
-            </button>
-            <button className="join-item btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-              »
-            </button>
-          </div>
-        </>
-      )
+        {/* Pagination controls */}
+        <div className="join mt-4">
+          <button className="join-item btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+            «
+          </button>
+          <button className="join-item btn" onClick={() => handlePageChange(currentPage)}>
+            Page {currentPage} of {totalPages}
+          </button>
+          <button className="join-item btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+            »
+          </button>
+        </div>
+      </>
+    )
 
-    } else {
-      return null;
-    }
+  } else {
+    return null;
+  }
 }
 
 export default UsersTable
