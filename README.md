@@ -1,62 +1,58 @@
 # Virtual Room of Requirements - React/DjangoRF Authentication App
 
-Welcome to the Virtual Room of Requirements, an authentication app built using React for the frontend, DjangoRF for the backend, and Postgres DB for the databases. The primary goal is to gradually improve code readability through patching. Please follow the instructions below to set up the project and run it on your local machine.
+Welcome to the Virtual Room of Requirements! This is an authentication app built using React for the frontend, DjangoRF for the backend, and Postgres DB for the databases. The primary goal is to gradually improve code readability through patching.
 
 ## Requirements
 
-- [Python](https://www.python.org/)
-- [Node.js](https://nodejs.org/)
-- [PostgreSQL](https://www.postgresql.org/)
+- Python
+- Node.js
+- PostgreSQL
 
-## Installations
-* On Root Folder Create a new Virtual Environment
+## Installation
 
-python -m venv env
+1. Create a Virtual Environment
 
-```
-env\scripts\activate
+    python -m venv env
 
-pip install -r requirements.txt
+2. Activate the Virtual Environment
 
-```
-## What Libraries i Used
-* backend
-```
-pip install django 
-pip install djangorestframework django-cors-headers
-pip install pylance
-pip install Pillow
-pip install psycopg2
-pip install factory-boy
-pip install -U Celery
-```
+    For Windows:
+    env\scripts\activate
 
-* frontend
-```
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-npm i -D daisyui@latest
-npm install axios
-npm install react-router-dom
-npm install @react-oauth/google
-npm i js-cookie
-npm i jwt-decode
-npm install react-select react-window
-npm i react-select-virtualized
-npm install react@latest react-virtualized@latest
-npm i patch-package 
-npm install crypto-js
-npm install babel-plugin-macros
-npm i @fortawesome/fontawesome-free
-npm install --save @fortawesome/fontawesome-free
-npm install --save @fortawesome/free-solid-svg-icons
-npm i apexcharts
-npm i react-apexcharts
-```
+    For Unix/MacOS:
+    source env/bin/activate
+
+3. Install Python Dependencies
+
+    pip install -r requirements.txt
+
+4. Install Node.js Dependencies
+
+    Navigate to the frontend directory and run:
+
+    npm install
+
+## Usage
+
+1. Run the DjangoRF Server
+
+    python manage.py runserver
+
+    The Django server will start running at http://localhost:8000/.
+
+2. Run the React Development Server
+
+    Navigate to the frontend directory and run:
+
+    npm run dev
+
+    The React development server will start running at http://localhost:5173/.
+
+3. Access the Application
+
+    Open your web browser and navigate to http://localhost:5173/ to access the application.
 
 
-## Future Updates
+## License
 
-A `requirements.txt` file will be added in the future for easier dependency management. Feel free to contribute and gradually improve code readability through patching.
-for now that is the list of modules i used in backend front end
-
+This project is licensed under the MIT License.
