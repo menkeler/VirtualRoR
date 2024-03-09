@@ -1,6 +1,10 @@
 import React from "react";
+import InquiryDonation from "../Forms/InquiryDonation";
 
-const Postcard = ({ Data }) => {
+const Postcard = ({ Data, onPostClick }) => {
+  const handleClick = () => {
+    onPostClick(Data.id);
+  };
   return (
     <div className="card card-compact border border-gray-400 rounded-md z-10">
       {/* Display post content */}
@@ -40,7 +44,12 @@ const Postcard = ({ Data }) => {
             alt="Post Image"
             className="w-full object-cover rounded-lg"
           />
-        </div>
+        </div>  
+        
+        {Data.category === "Regular" && (
+          <button className = "btn btn-cube p-2 " onClick={handleClick}>Donate This Post</button>
+        )}
+        
 
         {/* Views icon */}
         <div className="flex items-center text-gray-500">

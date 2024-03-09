@@ -4,7 +4,6 @@ import Footer from "../components/wholepage/Footer";
 import InquiryDonation from "./../components/Forms/InquiryDonation";
 import { Link } from "react-router-dom";
 import Postcard from "../components/Posts/Postcard";
-import PostCardAnnouncement from "../components/Posts/PostCardAnnouncement";
 import client from "../api/client";
 
 function Home() {
@@ -14,7 +13,12 @@ function Home() {
   const [donorsTopTen, setDonorsTopTen] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [selectedPostID, setSelectedPostID] = useState(null);
 
+  const handlePostClick = (postID) => {
+    setSelectedPostID(postID);
+    document.getElementById("InquiryDonation").showModal();
+  };
   //for anti duplication rendering on mounted post
   //cant think of another solution optimize for later
   const uniquePostIds = new Set();
@@ -147,16 +151,13 @@ function Home() {
 
                   return (
                     <div key={post.id} className="mb-5">
-                      {post.category === "Announcements" ? (
-                        <PostCardAnnouncement Data={post} />
-                      ) : (
-                        <Postcard Data={post} />
-                      )}
+                      <Postcard Data={post} onPostClick={handlePostClick} />
                     </div>
                   );
                 }
                 return null;
               })}
+              <InquiryDonation postID={selectedPostID} />
             </div>
           </div>{" "}
           {/* left side */}
@@ -181,7 +182,14 @@ function Home() {
             <div className="card w-80 bg-base-100 shadow-xl my-5">
               <span className="text-xl font-bold text-left mb-2">Tools</span>
               <div className="grid grid-cols-3 gap-1">
-                <InquiryDonation />
+                <button
+                  className="btn btn-accent"
+                  onClick={() => handlePostClick(null)}
+                >
+                  <i className="fa-solid fa-hand-holding-hand"></i>
+                  Donate
+                </button>
+
                 <Link to="/Inventory" className="btn btn-accent  btn-cube p-2">
                   <i className="fa-solid fa-book"></i>
                   Reserve

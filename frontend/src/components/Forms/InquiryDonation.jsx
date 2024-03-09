@@ -3,7 +3,7 @@ import client from '../../api/client';
 import Cookies from 'js-cookie';
 import { useAuth } from '../../contexts/AuthContext';
 
-const InquiryDonation = () => {
+const InquiryDonation = ({postID}) => {
   const [message, setMessage] = useState('');
   const [datePreferred, setDatePreferred] = useState('');
 
@@ -13,7 +13,7 @@ const InquiryDonation = () => {
 
 
   const authToken = Cookies.get('authToken');
-
+  
   const handleDonationSubmit = async (e) => {
     e.preventDefault();
     if (message && datePreferred) {
@@ -26,12 +26,13 @@ const InquiryDonation = () => {
           status: 'Pending',
           date_preferred: datePreferred,
           inquirer: userData.user.user_id,
+          post:postID !== null ? postID : null
         });
-        setMessage('');
-        setDatePreferred('');
+        reset()
         setInputError(false);
         document.getElementById('InquiryDonation').close();
         console.log('Submission successful:', response.data);
+
       } catch (error) {
         console.error('Error submitting donation:', error);
       }finally {
@@ -41,7 +42,15 @@ const InquiryDonation = () => {
       setInputError(true);
     }
   };
-
+  const handleCloseModal = () => {
+    reset();
+    document.getElementById('InquiryDonation').close()
+  };
+  const reset = () => {
+    setDatePreferred('');
+    setMessage('');
+  };
+  
   return (
     <>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
@@ -52,7 +61,12 @@ const InquiryDonation = () => {
 
       <dialog id="InquiryDonation" className="modal">
         <div className="modal-box p-6 bg-white rounded-md shadow-md">
-          <h3 className="font-bold text-2xl mb-4">Inquiry Donation</h3>
+        {postID ? (
+  <h3 className="font-bold text-2xl mb-4">Inquiry Donation - {postID}</h3>
+) : (
+  <h3 className="font-bold text-2xl mb-4">Inquiry Donation</h3>
+)}
+
           <div className="border-t border-gray-200 my-4"></div>
           <p className="text-gray-600 mb-4">Please Complete the Form</p>
           <form>
@@ -94,7 +108,7 @@ const InquiryDonation = () => {
               <button
                 type="button"
                 className="btn bg-gray-400 text-white ml-2"
-                onClick={() => document.getElementById('InquiryDonation').close()}
+                onClick={handleCloseModal}
               >
                 Close
               </button>

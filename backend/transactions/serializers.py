@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Inquiry, Transaction, TransactionItem, ReservedItem
 from users.serializers import UserSerializer  # Import UserSerializer from your users.serializers
 from inventory.serializers import InventorySerializer, ItemCopySerializer  # Import serializers for Inventory and ItemCopy
-
+from posts.serializers import PostSerializer
 
 class ReservedItemSerializer(serializers.ModelSerializer):
     inventory= InventorySerializer()
@@ -21,6 +21,7 @@ class ReservedItemCreateSerializer(serializers.ModelSerializer):
 class InquirySerializer(serializers.ModelSerializer):
     inquirer = UserSerializer( read_only=True)  # Assuming you have a UserSerializer
     reserved_items = ReservedItemSerializer(many=True, read_only=True)
+    post = PostSerializer(read_only=True)
     class Meta:
         model = Inquiry
         fields = '__all__'

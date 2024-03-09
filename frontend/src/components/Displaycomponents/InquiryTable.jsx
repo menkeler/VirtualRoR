@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import { useAuth } from '../../contexts/AuthContext';
 import InquiryDetails from './InquiryDetails';
+
 const InquiryTable = ({User,Admin}) => {
   const [inquiries, setInquiries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -172,6 +173,7 @@ const InquiryTable = ({User,Admin}) => {
             <th className="py-3 px-4 border-b">Message</th>
             <th className="py-3 px-4 border-b">Type</th>
             <th className="py-3 px-4 border-b">Preferred Date</th>
+            <th className="py-3 px-4 border-b">Post</th>
             <th className="py-3 px-4 border-b text-center">Status</th>
             
             {/* Add more columns as needed */}
@@ -202,6 +204,8 @@ const InquiryTable = ({User,Admin}) => {
               <td className="py-2 px-4 border-b">{inquiry.message.length > 50 ? `${inquiry.message.substring(0, 50)}...` : inquiry.message}</td>
               <td className="py-2 px-4 border-b">{inquiry.inquiry_type}</td>
               <td className="py-2 px-4 border-b">{inquiry.date_preferred}</td>
+              <td className="py-2 px-4 border-b">{inquiry.post !== null ? inquiry.post.id : 'None'}</td>
+
               <td className={`py-2 px-4 border-b text-center ${inquiry.status === 'Pending' ? 'bg-gray-200' : 
                               inquiry.status === 'Rejected' ? 'bg-red-200' : 
                               inquiry.status === 'Cancelled' ? 'bg-yellow-200' : 
@@ -222,6 +226,9 @@ const InquiryTable = ({User,Admin}) => {
       ))}
       
     </div>
+
+
+
 
     <div className="join mt-4">
             <button className="join-item btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
