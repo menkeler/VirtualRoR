@@ -11,7 +11,6 @@ class Post(models.Model):
 
     CATEGORY_CHOICES = [
         ('Regular', 'Regular'),
-        ('News', 'News'),
         ('Announcements', 'Announcements'),
     ]
 
@@ -33,4 +32,3 @@ class Post(models.Model):
         self.save()
         
    
-#NEXT TIME IF WANTED TO ADD LIKES AND COMMENTS AND SUM STUFF HERE 

@@ -3,7 +3,7 @@ from users.models import User
 from inventory.models import Inventory ,ItemCopy
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from posts.models import Post 
 
 # Inquiry Side
 class Inquiry(models.Model):
@@ -24,6 +24,8 @@ class Inquiry(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     date_preferred = models.DateField()
     date_created = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='inquiries', null=True, blank=True) 
+    
     
 class InquiryReply(models.Model):
     message = models.TextField()
