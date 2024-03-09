@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import client from "../../api/client";
-
+import PostCard from "../../components/Posts/Postcard";
 const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
   //to confirm inquiries donation and for reserving items
   const handleAccept = async (e, inquiryId, purpose) => {
@@ -31,7 +31,6 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
       document.getElementById(`DetailInquiry${inquiryId}`).close();
       console.log("Submission successful:", response.data);
     } catch (error) {
-
       console.error("Error Response:", error.response?.data?.detail);
     }
   };
@@ -146,7 +145,12 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
               {inquiry.message ? inquiry.message : "No Remarks"}
             </p>
           </div>
+          <h3 className="font-bold text-lg my-4">Post</h3>
+          {inquiry.post !== null ? (
+            <PostCard Data={inquiry.post} display={true} />
+          ) : null}
         </div>
+
         <div className="modal-action">
           <form method="dialog">
             {Admin ? (

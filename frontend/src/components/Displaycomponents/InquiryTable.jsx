@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import client from '../../api/client';
 import { useAuth } from '../../contexts/AuthContext';
-import InquiryDetails from './InquiryDetails';
+import InquiryDetails from './InquiryDetails'
+
+
 
 const InquiryTable = ({User,Admin}) => {
   const [inquiries, setInquiries] = useState([]);
@@ -224,7 +226,7 @@ const InquiryTable = ({User,Admin}) => {
       {inquiries.map((inquiry) => (
           <InquiryDetails fetchData={fetchInquiries} key={`DetailInquiry${inquiry.id}`} Admin={Admin} inquiry={inquiry}/>
       ))}
-      
+     
     </div>
 
 
