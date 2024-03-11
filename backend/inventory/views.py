@@ -196,9 +196,8 @@ class InventoryViewSet(viewsets.ModelViewSet):
 
             
             
-
 class ExportMultipleTablesView(APIView):
-   def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         # Construct filename with the current date and time
         current_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         filename = f'VirtualRorData_{current_datetime}.xlsx'
@@ -287,8 +286,7 @@ class ExportMultipleTablesView(APIView):
             item_copy_worksheet.set_column(column_index, column_index, width)
                 
 
-
-          # Fetch data from the Transaction model
+        # Fetch data from the Transaction model
         transaction_queryset = Transaction.objects.all().annotate(
             TransactionID=F('id'),
             Type=F('transaction_type'),
@@ -298,30 +296,28 @@ class ExportMultipleTablesView(APIView):
             Active=F('is_active'),
         ).values('TransactionID','Type','DateCreated','ParticipantName','Items','Active')
 
-        # Convert transaction queryset to a DataFrame
-        transaction_df = pd.DataFrame(list(transaction_queryset))
-        
-        transaction_df['DateCreated'] = transaction_df['DateCreated'].apply(lambda x: x.replace(tzinfo=None))
+        if transaction_queryset.exists():
+            # Convert transaction queryset to a DataFrame
+            transaction_df = pd.DataFrame(list(transaction_queryset))
+            
+            # Modify the DataFrame if necessary
+            transaction_df['DateCreated'] = transaction_df['DateCreated'].apply(lambda x: x.replace(tzinfo=None))
 
-        column_widths = {
-            'TransactionID': 15,
-            'DateCreated': 20,
-            'ParticipantName': 20,
+            # Set column widths and other formatting for the Transactions sheet
+            transaction_column_widths = {
+                'TransactionID': 15,
+                'DateCreated': 20,
+                'ParticipantName': 20,
+                # Add other column widths as needed
+            }
+            # Write transaction DataFrame to the third sheet
+            transaction_df.to_excel(output, sheet_name='Transactions', index=False)
+            worksheet = output.sheets['Transactions']
+            for col_name, width in transaction_column_widths.items():
+                column_index = transaction_df.columns.get_loc(col_name)
+                worksheet.set_column(column_index, column_index, width)
 
-        }   
-        # Write transaction DataFrame to the third sheet
-        transaction_df.to_excel(output, sheet_name='Transactions', index=False)
-        
-        
-
-
-        worksheet = output.sheets['Transactions']
-
-        # Set the width for each column
-        for col_name, width in column_widths.items():
-            column_index = transaction_df.columns.get_loc(col_name)
-            worksheet.set_column(column_index, column_index, width)
-
+        # Fetch data from the Inquiry model
         inquiry_queryset = Inquiry.objects.all().annotate(
             InquiryID=F('id'),
             InquirerName=Concat(F('inquirer__first_name'), V(' '), F('inquirer__last_name')),  
@@ -330,26 +326,29 @@ class ExportMultipleTablesView(APIView):
             DateCreated=F('date_created'),
             ReservedItems=Count('reserved_items'),
         ).values('InquiryID', 'InquirerName', 'InquiryType', 'Status', 'DateCreated', 'ReservedItems')
-         # Convert transaction queryset to a DataFrame
-        inquiry_df = pd.DataFrame(list(inquiry_queryset))
-        inquiry_df['DateCreated'] = inquiry_df['DateCreated'].apply(lambda x: x.replace(tzinfo=None))
-         # Write transaction DataFrame to the third sheet
-        inquiry_df.to_excel(output, sheet_name='Inquiry', index=False)
-        inquiry_column_widths = {
-            'InquiryID': 15,
-            'InquirerName': 30,
-            'InquiryType': 20,
-            'Status': 15,
-            'DateCreated': 20,
-            'ReservedItems': 15,
-        }
-        # Access the worksheet for inquiries
-        inquiry_worksheet = output.sheets['Inquiry']
-
-        # Set the width for each column in inquiry DataFrame
-        for col_name, width in inquiry_column_widths.items():
-            column_index = inquiry_df.columns.get_loc(col_name)
-            inquiry_worksheet.set_column(column_index, column_index, width)
+        
+        if inquiry_queryset.exists():
+            # Convert inquiry queryset to a DataFrame
+            inquiry_df = pd.DataFrame(list(inquiry_queryset))
+            
+            # Modify the DataFrame if necessary
+            inquiry_df['DateCreated'] = inquiry_df['DateCreated'].apply(lambda x: x.replace(tzinfo=None))
+            
+            # Set column widths and other formatting for the Inquiry sheet
+            inquiry_column_widths = {
+                'InquiryID': 15,
+                'InquirerName': 30,
+                'InquiryType': 20,
+                'Status': 15,
+                'DateCreated': 20,
+                'ReservedItems': 15,
+            }
+            # Write inquiry DataFrame to the fourth sheet
+            inquiry_df.to_excel(output, sheet_name='Inquiry', index=False)
+            inquiry_worksheet = output.sheets['Inquiry']
+            for col_name, width in inquiry_column_widths.items():
+                column_index = inquiry_df.columns.get_loc(col_name)
+                inquiry_worksheet.set_column(column_index, column_index, width)
                  
         # Close the Excel writer object
         output.close()
@@ -372,7 +371,6 @@ class ExportMultipleTablesView(APIView):
 
         # Save the modified workbook
         workbook.save(full_file_path)
-
 
         # Open and read the generated Excel file
         with open(full_file_path, 'rb') as f:
