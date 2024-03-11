@@ -84,7 +84,6 @@ const NewRegularPostPage = () => {
               className="input input-bordered w-full bg-white"
             >
               <option value="Regular">Regular</option>
-              <option value="News">News</option>
               {userData.user.staff && (
                 <option value="Announcements">Announcements</option>
               )}

@@ -157,7 +157,7 @@ function Home() {
                 }
                 return null;
               })}
-              <InquiryDonation postID={selectedPostID} />
+              
             </div>
           </div>{" "}
           {/* left side */}
@@ -190,10 +190,7 @@ function Home() {
                   Donate
                 </button>
 
-                <Link to="/Inventory" className="btn btn-accent  btn-cube p-2">
-                  <i className="fa-solid fa-book"></i>
-                  Reserve
-                </Link>
+                <InquiryDonation postID={selectedPostID} />
 
                 <button className="btn btn-cube p-2">
                   <i className="fa-solid fa-dice"></i>

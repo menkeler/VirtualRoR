@@ -90,23 +90,24 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     if (type === 1) {
       return (
         <div className="flex flex-col place-items-center">
-          {!item.item.returnable && item.quantity > 0 && (
+          {!item.item.returnable && item.quantity > 0 && item.quantity > item.reserved_quantity && (
             <button
               className="bg-emerald-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
               onClick={() =>
-                addToCart(item.id, item.item.name, null, item.quantity)
+                addToCart(item.id, item.item.name, null, item.quantity - item.reserved_quantity)
               }
             >
               Reserve Item
             </button>
           )}
-          {item.quantity <= 0 && (
+          {(item.quantity <= 0 || item.quantity <= item.reserved_quantity) && (
             <div className="bg-red-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:bg-red-800 transition duration-500">
-              Out of Stock
+              {item.quantity <= 0 ? "Out of Stock" : "Reserved"}
             </div>
           )}
         </div>
       );
+      
     } else if (type === 2) {
       return <div></div>;
     } else {

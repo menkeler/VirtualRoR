@@ -267,26 +267,15 @@ def process_reserved_items(inquiry):
                 reserved_item.item.save()
 
         elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
-            available_quantity = min(reserved_item.inventory.quantity, reserved_item.quantity)
-            reserved_item.inventory.reserved_quantity += available_quantity
-            reserved_item.inventory.save()
-
-
-#if Resereved item is borrowable which is item is the same as itemCopy status for borrwed
-def process_reserved_items(inquiry):
-    for reserved_item in inquiry.reserved_items.all():
-        if hasattr(reserved_item, 'item') and reserved_item.item:
-            if reserved_item.item.is_reserved or reserved_item.item.is_borrowed:
-                raise ValidationError("Error: Item is already borrowed.")
-            else:
-                reserved_item.item.is_reserved = True
-                reserved_item.item.save()
-
-        elif hasattr(reserved_item, 'inventory') and reserved_item.inventory:
-            available_quantity = min(reserved_item.inventory.quantity, reserved_item.quantity)
-            reserved_item.inventory.reserved_quantity += available_quantity
-            reserved_item.inventory.save()
+            available_quantity = reserved_item.inventory.quantity
+            if reserved_item.inventory.reserved_quantity + reserved_item.quantity > available_quantity:
+                raise ValidationError("Error: Reserved quantity exceeds available quantity.")
             
+            reserved_item.inventory.reserved_quantity += reserved_item.quantity
+            reserved_item.inventory.save()
+
+
+
 # @api_view(['POST'])
 def cancel_reserved_items(inquiry_id):
     # Retrieve the inquiry object using the inquiry_id
