@@ -11,7 +11,6 @@ const AdminDashBoardStats = () => {
     newestUsers: '',
     latestTransactions: '',
     latestInquiry: '', 
-    latestPost: '',
     lostAndBorrwedItems:'',
   });
 
@@ -21,45 +20,46 @@ const AdminDashBoardStats = () => {
     totalUsers: 'users/users/total_users_count',
     totalTransaction: 'transactions/transactions/total_transactions/',
     newestUsers: '/users/users/newest_user/',
+    lostAndBorrwedItems:'/inventory/item-copies/get_borrowed_and_lost_items_count/',
     latestTransactions: '/transactions/transactions/latest_transaction/',
     latestInquiry: '/transactions/inquiries/latest_inquiry/',
-    latestPost: '/posts/posts/latest_post/',
-    lostAndBorrwedItems:'/inventory/item-copies/get_borrowed_and_lost_items_count/',
   };
 
   const [loading, setLoading] = useState(true);
 
   //Map all endpounts and fetch data from each endpoints 
   const fetchData = async () => {
-    const authToken = Cookies.get('authToken');
-    try {
-      if (authToken) {
-        const dataPromises = Object.entries(endpoints).map(async ([key, endpoint]) => {
+  const authToken = Cookies.get('authToken');
+  try {
+    if (authToken) {
+      for (const [key, endpoint] of Object.entries(endpoints)) {
+        try {
           const response = await client.get(endpoint, {
             headers: {
               Authorization: `Token ${authToken}`,
             },
           });
-          return [key, response.data];
-        });
-  
-        const dataEntries = await Promise.all(dataPromises);
-        const newData = Object.fromEntries(dataEntries);
-  
-        setAlldata((prevData) => ({ ...prevData, ...newData }));
-        setLoading(false);
+          setAlldata((prevData) => ({
+            ...prevData,
+            [key]: response.data,
+          }));
+        } catch (error) {
+          // console.error(`Error fetching data for ${key}:`, error);
+        }
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
+      setLoading(false);
     }
-  };
-  
+  } catch (error) {
+    // console.error('Error fetching data:', error);
+  }
+};
+
   useEffect(() => {
     fetchData();
   }, []);
   
   useEffect(() => {
-    console.log(alldata);
+    // console.log(alldata);
   }, [alldata]);
 
 
