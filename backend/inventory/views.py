@@ -165,7 +165,7 @@ class InventoryViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(item__hidden=True)
         elif hidden_filter in ['false', 'False']:
             queryset = queryset.filter(item__hidden=False)
-        return queryset
+        return queryset.order_by("id")
 
     #Different Serializer for Creation
     def get_serializer_class(self):
