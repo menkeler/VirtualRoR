@@ -19,7 +19,7 @@ const TransactionRelease = () => {
     user_id: "",
     remarks: "",
     transaction_items: [],
-    inquiry: "",
+    inquiry: null,
   };
 
   const [payload, setPayload] = useState(initialPayload);
