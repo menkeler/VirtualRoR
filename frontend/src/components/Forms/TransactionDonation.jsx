@@ -5,6 +5,8 @@ import UsersTable from '../Displaycomponents/UsersTable';
 import CreateItemProfile from '../CustomButtons/Inventory/CreateItemProfile';
 import InventoryProfilingTable from '../Displaycomponents/InventoryProfilingTable';
 import ManualUserCreation from '../CustomButtons/Transactions/ManualUserCreation';
+import InquirySelect from '../Displaycomponents/InquirySelect';
+import InquiryDisplay from '../Displaycomponents/InquiryDisplay';
 
 const TransactionDonation = () => {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -14,6 +16,12 @@ const TransactionDonation = () => {
   const [selectedCondition, setSelectedCondition] = useState('Good');
   const [Remarks, setRemarks] = useState('');
   const [transactionItems , setTransactionItems] = useState([]);
+  const [selectedInquiry, setSelectedInquiry] = useState(null);
+
+  const handleSelectInquiry = (inquiry) => {
+    setSelectedInquiry(inquiry);
+    console.log('Selected Inquiry:', inquiry);
+  };
 
   const resetState = () => {
     setSelectedUser(null);
@@ -26,7 +34,7 @@ const TransactionDonation = () => {
   };
 
   useEffect(() => {
-
+    console.log(selectedUser)
     const addTransactionItems = async () => {
 
       try {
@@ -170,7 +178,8 @@ const TransactionDonation = () => {
           "transaction_type": "Donation",  
           "remarks":Remarks,  
           "is_active": false,
-          "participant": selectedUser.user_id  
+          "participant": selectedUser.user_id  ,
+          "inquiry":selectedInquiry.id
         };
 
         const itemsData = items.map(item => ({
@@ -335,12 +344,20 @@ const TransactionDonation = () => {
               </div>
             </dialog>
           </div>
+          <h3 className="font-bold text-lg">Inquiry</h3>
+          <InquirySelect user={selectedUser} onSelectInquiry={handleSelectInquiry}/>
+          {selectedInquiry ? <InquiryDisplay inquiry={selectedInquiry} /> : 
+          
+          <h3>Empty</h3>
+          }
+
+         
           <h3 className="font-bold text-lg">Item</h3>
 
 
             <h1 className="mb-4">
               <CreateItemProfile />
-            <button className="btn btn-accent" onClick={() => document.getElementById('ChooseItems').showModal()}>Choose Items</button>
+            <button className="btn btn-accent" onClick={() => document.getElementById('ChooseItems').showModal()}>Select Items</button>
             <div className="overflow-x-auto w-full max-h-screen">
             <table className="table w-full">
               {/* head */}
@@ -348,6 +365,7 @@ const TransactionDonation = () => {
                 <tr>
                   <th>Name</th>
                   <th>Quantity</th>
+                  <th>Type</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -368,6 +386,11 @@ const TransactionDonation = () => {
                           />
                         </td>
                       )}
+                       <td>
+               
+                       {item.returnable ? "Borrowable" : "Consumable"}
+
+                      </td>
                       <td>
                         <button onClick={() => handleRemoveItem(index)} className="bg-red-500 mr-5 text-white px-2 py-1 rounded">
                           Remove
@@ -450,6 +473,8 @@ const TransactionDonation = () => {
                 </div>
             </dialog>
 
+            
+
                             
             {/* Item Copy Input */}
             <dialog id="AddCopy" className="modal fixed inset-0 z-50 overflow-y-auto">
@@ -503,7 +528,7 @@ const TransactionDonation = () => {
             <form method="dialog">
               <button className="btn btn-accent mr-2" type='button' 
               onClick={handleDonationSubmit}
-              disabled={!Remarks||!selectedUser||!items}
+
               >Submit</button>
               <button className="btn btn-error">Close</button>
             </form>

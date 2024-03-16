@@ -49,6 +49,7 @@ class CreateTransactionItemSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     participant = UserSerializer()  
     transaction_items = TransactionItemSerializer(many=True, read_only=True)
+    inquiry =InquirySerializer( read_only=True)
 
     class Meta:
         model = Transaction

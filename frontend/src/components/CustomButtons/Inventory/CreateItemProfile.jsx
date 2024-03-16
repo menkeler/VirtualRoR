@@ -71,7 +71,7 @@ const CreateItemProfile = ({onFormSubmit}) => {
   return (
     <>
       <button className="btn btn-accent mr-3" onClick={() => document.getElementById('ItemProfileModal').showModal()}>
-        Create Item Profile
+        New Item Profile
       </button>
       <dialog id="ItemProfileModal" className="modal">
         <div className="modal-box w-11/12 max-w-1xl h-full p-6">

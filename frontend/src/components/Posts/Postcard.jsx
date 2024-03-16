@@ -1,7 +1,7 @@
 import React from "react";
 import InquiryDonation from "../Forms/InquiryDonation";
 
-const Postcard = ({ Data, onPostClick ,display}) => {
+const Postcard = ({ Data, onPostClick ,display ,admin}) => {
   const handleClick = () => {
     onPostClick(Data.id);
   };
@@ -46,9 +46,10 @@ const Postcard = ({ Data, onPostClick ,display}) => {
           />
         </div>  
         
-        {!display && Data.category === "Regular" && (
-          <button className = "btn btn-cube p-2 " onClick={handleClick}>Donate This Post</button>
-        )}
+        {!display && !admin && Data.category === "Regular" && (
+  <button className="btn btn-cube p-2" onClick={handleClick}>Donate This Post</button>
+)}
+
         
 
         {/* Views icon */}

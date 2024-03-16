@@ -7,6 +7,7 @@ class Post(models.Model):
         ('Pending', 'Pending'),
         ('Accepted', 'Accepted'),
         ('Rejected', 'Rejected'),
+        ('Completed', 'Completed'),
     ]
 
     CATEGORY_CHOICES = [
