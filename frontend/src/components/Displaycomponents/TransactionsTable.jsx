@@ -5,7 +5,7 @@
   import TransactionDetails from './TransactionDetails';
 
   import TransactionsHook from '../../hooks/TransactionsHook';
-  const TransactionsTable = ({User}) => {
+  const TransactionsTable = ({User,rerenderFlag }) => {
     const [selectedUserId, setSelectedUserId] = useState(User || '');
     
     const {
@@ -22,7 +22,10 @@
       setSearchQuery, 
     } = TransactionsHook(selectedUserId);
 
-
+    useEffect(() => {
+      fetchTransactions()
+    }, [rerenderFlag]);
+  
     return (
       <>
       <div role="tablist" className="tabs tabs-bordered mt-5 mb-1 bg-gray-200">

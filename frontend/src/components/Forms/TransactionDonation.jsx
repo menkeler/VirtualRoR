@@ -8,7 +8,7 @@ import ManualUserCreation from '../CustomButtons/Transactions/ManualUserCreation
 import InquirySelect from '../Displaycomponents/InquirySelect';
 import InquiryDisplay from '../Displaycomponents/InquiryDisplay';
 
-const TransactionDonation = () => {
+const TransactionDonation = ({refresh}) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [items, setItems] = useState([]);
   const [itemCopies , setItemCopies] = useState([]);
@@ -179,7 +179,7 @@ const TransactionDonation = () => {
           "remarks":Remarks,  
           "is_active": false,
           "participant": selectedUser.user_id  ,
-          "inquiry": selectedInquiry.id ? selectedInquiry.id : null
+          "inquiry": selectedInquiry ? selectedInquiry.id : null
         };
 
         const itemsData = items.map(item => ({
@@ -284,6 +284,7 @@ const TransactionDonation = () => {
               console.error('Error:', error);
             }
           }
+          refresh()
           document.getElementById('TransactionDonation').close();
           //Step 4 is at the use effect
               ///ADD fetch table here

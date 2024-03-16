@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TransactionDonation from "../../components/Forms/TransactionDonation";
 import TransactionsTable from "../../components/Displaycomponents/TransactionsTable";
 import TransactionRelease from "../../components/Forms/TransactionRelease";
@@ -6,6 +6,7 @@ import TransactionRelease from "../../components/Forms/TransactionRelease";
 const DashboardTransactionPage = ({ User }) => {
   const [activeComponent, setActiveComponent] = useState("release");
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [rerenderFlag, setRerenderFlag] = useState(false); // State variable to trigger rerender
 
   const toggleComponent = (direction) => {
     if (!isTransitioning) {
@@ -25,6 +26,11 @@ const DashboardTransactionPage = ({ User }) => {
     }
   };
 
+  // Function to trigger rerender
+  const forceRerender = () => {
+    setRerenderFlag(prevFlag => !prevFlag);
+  };
+
   return (
     <>
       <div className="flex items-center justify-center">
@@ -35,8 +41,8 @@ const DashboardTransactionPage = ({ User }) => {
         >
           <i className="fa-solid fa-arrow-left fa-3x"></i>
         </button>
-        {activeComponent === "release" && <TransactionRelease />}
-        {activeComponent === "donation" && <TransactionDonation />}
+        {activeComponent === "release" && <TransactionRelease refresh={forceRerender}/>}
+        {activeComponent === "donation" && <TransactionDonation refresh={forceRerender} />}
 
         <button
           disabled={isTransitioning}
@@ -46,7 +52,7 @@ const DashboardTransactionPage = ({ User }) => {
           <i className="fa-solid fa-arrow-right fa-3x"></i>
         </button>
       </div>
-      <TransactionsTable User={User} />
+      <TransactionsTable User={User} rerenderFlag={rerenderFlag} />
     </>
   );
 };

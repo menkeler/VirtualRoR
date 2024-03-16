@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import InventoryTable from "../Displaycomponents/InventoryTable";
 import UsersTable from "../Displaycomponents/UsersTable";
 import ManualUserCreation from "../CustomButtons/Transactions/ManualUserCreation";
-const TransactionRelease = () => {
+const TransactionRelease = ({refresh}) => {
   const [inquiries, setInquiries] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
 
@@ -241,6 +241,7 @@ const TransactionRelease = () => {
         console.error("Error:", error);
       }
       handleReset();
+      refresh()
       document.getElementById("CreateTransaction").close();
     }
   };
