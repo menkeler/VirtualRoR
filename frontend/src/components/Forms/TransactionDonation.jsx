@@ -179,7 +179,7 @@ const TransactionDonation = () => {
           "remarks":Remarks,  
           "is_active": false,
           "participant": selectedUser.user_id  ,
-          "inquiry":selectedInquiry.id
+          "inquiry": selectedInquiry.id ? selectedInquiry.id : null
         };
 
         const itemsData = items.map(item => ({

@@ -28,7 +28,11 @@ class ItemCopySerializer(serializers.ModelSerializer):
 
     def get_inventory(self, obj):
         inventory_data = {
-            'id': obj.inventory.id, 
+            'id': obj.inventory.id,
+            'category': {
+                'id': obj.inventory.item.category.id,
+                'name': obj.inventory.item.category.name,
+            },
             'itemprofiling': {
                 'id': obj.inventory.item.id,
                 'item_name': obj.inventory.item.name,
@@ -36,7 +40,7 @@ class ItemCopySerializer(serializers.ModelSerializer):
             }
         }
         return inventory_data
-    
+
 class ItemCopyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemCopy
