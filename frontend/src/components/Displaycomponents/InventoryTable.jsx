@@ -4,13 +4,14 @@ import Cookies from "js-cookie";
 import Select from "react-select";
 import { useCart } from "../../contexts/CartContext";
 import CategoryHook from "../../hooks/CategoryHook";
+import ViewItemLog from "./ViewItemLog";
 
 const InventoryTable = ({ type, handleItemAdd }) => {
   const [inventory, setInventory] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [totalPages, setTotalPages] = useState(1);
-  const { categoryData, loading, error, refetchCategory } = CategoryHook();
+  const {categoryData, loading, error, refetchCategory } = CategoryHook();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const { state, dispatch } = useCart();
@@ -148,7 +149,10 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         </td>
       );
     } else if (type === 2) {
-      return <div></div>;
+      return <td className="py-2 px-4 border-b">
+
+        <ViewItemLog item ={copy}/>
+      </td>;
     } else {
       return (
         <td className="py-2 px-4 border-b">
@@ -399,6 +403,17 @@ const InventoryTable = ({ type, handleItemAdd }) => {
           ))}
         </tbody>
       </table>
+
+
+
+
+
+
+
+
+
+
+      
       {/* Pagination controls */}
       <div className="flex justify-between items-center mt-4">
         <button

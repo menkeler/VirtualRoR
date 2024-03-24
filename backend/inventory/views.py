@@ -2,8 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,viewsets, filters
 from .models import Category, ItemProfiling, ItemCopy, Inventory
-from transactions.models import Transaction,Inquiry
+from transactions.models import Transaction,Inquiry,TransactionItem
 from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer,ItemCopyCreateSerializer, InventorySerializer,InventoryCreateSerializer,ItemProfilingCreateSerializer
+from transactions.serializers import TransactionSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework import viewsets
@@ -22,6 +23,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 from django.http import JsonResponse
 from django.db.models import Count
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name') 
@@ -383,3 +385,18 @@ class ExportMultipleTablesView(APIView):
         response = HttpResponse(file_data, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = f'attachment; filename={filename}'
         return response
+    
+
+
+# Assuming item_copy_id is the ID of the ItemCopy you want to find transactions for
+def get_transactions_for_item_copy(item_copy_id):
+    # Query TransactionItem model to filter transactions based on the item copy ID
+    transactions = TransactionItem.objects.filter(item__id=item_copy_id).values_list('transaction__id', flat=True).distinct()
+    return transactions
+class ItemCopyTransactionsView(APIView):
+    def get(self, request, item_copy_id):
+        transactions = get_transactions_for_item_copy(item_copy_id)
+        # Ensure transactions is a queryset of Transaction objects, not just IDs
+        transactions = Transaction.objects.filter(id__in=transactions)
+        serializer = TransactionSerializer(transactions, many=True)
+        return Response(serializer.data)
