@@ -253,7 +253,7 @@ class ExportMultipleTablesView(APIView):
         item_copy_queryset = ItemCopy.objects.all().annotate(
             ItemGroup=F('inventory__id'),
             ItemName=F('inventory__item__name'),
-            ItemID=F('id'),
+            ItemID=F('display_id'),
             ItemCategory=F('inventory__item__category__name'),  # Annotate the item category
             Condition=F('condition'),
             Borrowed=F('is_borrowed'),
