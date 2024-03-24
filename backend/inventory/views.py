@@ -396,7 +396,7 @@ def get_transactions_for_item_copy(item_copy_id):
 class ItemCopyTransactionsView(APIView):
     def get(self, request, item_copy_id):
         transactions = get_transactions_for_item_copy(item_copy_id)
-        # Ensure transactions is a queryset of Transaction objects, not just IDs
         transactions = Transaction.objects.filter(id__in=transactions)
+        transactions = transactions.order_by('-date_created')
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
