@@ -200,7 +200,7 @@ const TransactionRelease = ({refresh}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (Remarks) {
+    if (payload.transaction_items.length > 0) {
       console.log("submit");
 
       try {
@@ -331,9 +331,12 @@ const TransactionRelease = ({refresh}) => {
               <table className="table w-full">
                 <thead>
                   <tr>
-                    <th></th>
+                    <th>No.</th>
+                    <th className="text-center">ID</th>
                     <th className="text-center">Name</th>
-                    <th className="text-center">Quantity/Condition</th>
+                    <th className="text-center">Category</th>
+                    <th className="text-center">Quantity/Condition</th>               
+                    <th className="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -344,8 +347,14 @@ const TransactionRelease = ({refresh}) => {
                         {result.item ? ( // If the item exists
                           <>
                             <td className="truncate text-center">
-                              {result.item.inventory.itemprofiling.item_name}{" "}
-                              ID: {result.item.id}
+                            
+                              ID: {result.item.display_id}
+                            </td>
+                            <td className="text-center">
+                            {result.item.inventory.itemprofiling.item_name}{" "}
+                            </td>
+                            <td className="text-center">
+                            {result.item.inventory.category.name}{" "}
                             </td>
                             <td className="text-center">
                               {result.item.condition}
@@ -375,7 +384,7 @@ const TransactionRelease = ({refresh}) => {
                             </td>
                           </>
                         )}
-                        <td>
+                        <td className="text-center">
                           <button
                             className="btn btn-danger"
                             onClick={() => handleRemoveItem(result)} // Call handleRemoveItem function when the button is clicked
@@ -393,7 +402,7 @@ const TransactionRelease = ({refresh}) => {
             <h3 className="mt-5 font-bold text-lg">Remarks</h3>
             <textarea
               className="resize-none border rounded-md p-2 mt-2 w-full"
-              placeholder="Enter your remarks here..."
+              placeholder="Enter your remarks here... (optional)"
               value={Remarks}
               onChange={handleRemarksChange}
             />

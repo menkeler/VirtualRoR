@@ -105,6 +105,7 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
                 {/* Head */}
                 <thead className="bg-gray-200">
                   <tr>
+                    <th className="py-2 px-4 border-b">ID</th>
                     <th className="py-2 px-4 border-b">Name</th>
                     <th className="py-2 px-4 border-b">Type</th>
                     <th className="py-2 px-4 border-b">Quantity/Condition</th>
@@ -118,12 +119,17 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
                       key={index}
                       className={index % 2 === 0 ? "bg-gray-100" : ""}
                     >
+                       <td className="py-2 px-4 border-b">
+                       {item.inventory && item.inventory.item
+                          ? item.inventory.item.id
+                          : item.item.display_id
+                        }
+                      </td>
                       <td className="py-2 px-4 border-b">
                         {item.inventory && item.inventory.item
                           ? item.inventory.item.name
-                          : item.item.inventory.itemprofiling.item_name +
-                            " ID:" +
-                            item.item.id}
+                          : item.item.inventory.itemprofiling.item_name
+                        }
                       </td>
                       <td className="py-2 px-4 border-b">
                         {item.item ? "Borrowable" : "Consumable"}

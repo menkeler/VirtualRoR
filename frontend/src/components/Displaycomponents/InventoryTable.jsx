@@ -20,7 +20,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     handleItemAdd(item);
   };
 
-  const addToCart = (inventoryId, itemName, itemId, maxquantity) => {
+  const addToCart = (inventoryId, itemName, displayid,itemId, maxquantity) => {
     // Check if the item with the same id already exists in the cart
     const itemExists = state.cartItems.some(
       (item) => item.inventory !== null && item.inventory === inventoryId
@@ -35,6 +35,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         item: itemId,
         name: itemName,
         quantity: 1,
+        displayid:displayid,
         maxquantity: maxquantity,
         // nextime add image here
       };
@@ -94,7 +95,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
             <button
               className="bg-emerald-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
               onClick={() =>
-                addToCart(item.id, item.item.name, null, item.quantity - item.reserved_quantity)
+                addToCart(item.id, item.item.name, null,null, item.quantity - item.reserved_quantity)
               }
             >
               Reserve Item
@@ -138,7 +139,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
             <button
               className="bg-emerald-500 rounded-md text-sm text-white w-20 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
               onClick={() =>
-                addToCart(null, item.item.name + " ID: " + copy.id, copy.id, 1)
+                addToCart(null,item.item.name,copy.display_id, copy.id, 1)
               }
             >
               Reserve
@@ -354,7 +355,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                       }
                                     >
                                       <td className="py-2 px-4 border-b">
-                                        {copy.id}
+                                        {copy.display_id}
                                       </td>
                                       <td className="py-2 px-4 border-b">
                                         {copy.condition}

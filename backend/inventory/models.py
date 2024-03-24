@@ -51,12 +51,21 @@ class ItemCopy(models.Model):
     is_reserved = models.BooleanField(default=False)
     is_borrowed = models.BooleanField(default=False)
     previous_is_borrowed = models.BooleanField(default=False)  # Change to BooleanField
-    
+    display_id = models.CharField(max_length=50, editable=False)  # Add a field for display ID
+
     def save(self, *args, **kwargs):
         print(f"Before save - Current is_borrowed: {self.is_borrowed}, Previous is_borrowed: {self.previous_is_borrowed}")
 
         # Save the current value of is_borrowed before it gets updated by the super().save()
         current_is_borrowed = self.is_borrowed
+
+        if not self.display_id:
+        
+            total_copies = ItemCopy.objects.filter(inventory=self.inventory).count()
+   
+            total_copies += 1
+
+            self.display_id = f"{self.inventory.id}-{total_copies}"
 
         super().save(*args, **kwargs)
 

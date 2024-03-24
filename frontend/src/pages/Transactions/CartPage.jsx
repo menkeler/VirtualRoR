@@ -170,7 +170,10 @@ const CartPage = () => {
                 className="bg-white p-4 mb-4 rounded-md shadow-md flex flex-col md:flex-row items-center justify-between"
               >
                 <div className="mb-2 md:mb-0 md:mr-4">
-                  <p className="text-lg font-semibold">{cartItem.name}</p>
+                {cartItem.displayid && (
+                  <p className="text-lg font-semibold text-left">ID: {cartItem.displayid}</p>
+                )}
+                  <p className="text-lg font-semibold text-left">Name: {cartItem.name}</p>
                   {!cartItem.item && (
                     <>
                       <p className="text-gray-600">Quantity:</p>
