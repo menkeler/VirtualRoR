@@ -4,7 +4,8 @@ from inventory.models import Inventory ,ItemCopy
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from posts.models import Post 
-
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 # Inquiry Side
 class Inquiry(models.Model):
     INQUIRY_TYPES = [
@@ -91,3 +92,19 @@ def update_transaction_status(sender, instance, created, **kwargs):
             # All items are returned, update the Transaction status to 'Completed'
             transaction.is_active = False
             transaction.save()
+            
+            
+
+@receiver(post_save, sender=Inquiry)
+def send_email_on_inquiry_status_change(sender, instance, created, **kwargs):
+    if not created and instance.status != 'Pending':
+        subject = 'Inquiry Status Change'
+        recipient = instance.inquirer.email
+        
+        # Render the HTML content using the template
+        html_content = render_to_string('email/inquiry_status_change.html', {'inquiry': instance})
+        
+        # Send the email using send_mail
+        send_mail(subject, '', None, [recipient], html_message=html_content)
+            
+        

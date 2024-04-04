@@ -3,7 +3,7 @@ import TransactionDonation from "../../components/Forms/TransactionDonation";
 import TransactionsTable from "../../components/Displaycomponents/TransactionsTable";
 import TransactionRelease from "../../components/Forms/TransactionRelease";
 
-const DashboardTransactionPage = ({ User }) => {
+const DashboardTransactionPage = ({ User ,userBack}) => {
   const [activeComponent, setActiveComponent] = useState("release");
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [rerenderFlag, setRerenderFlag] = useState(false); // State variable to trigger rerender
@@ -30,10 +30,19 @@ const DashboardTransactionPage = ({ User }) => {
   const forceRerender = () => {
     setRerenderFlag(prevFlag => !prevFlag);
   };
+  const backUsers = () => {
+    userBack(User)
+  };
 
+  
   return (
     <>
+   
       <div className="flex items-center justify-center">
+      {User ? (
+                <button className="btn btn-primary" onClick={backUsers}>Back</button>
+            ) : null}
+      
         <button
           disabled={isTransitioning}
           onClick={() => toggleComponent("prev")}

@@ -36,7 +36,15 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
-  
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  
+EMAIL_HOST_USER = 'email'
+EMAIL_HOST_PASSWORD = 'pass'
+EMAIL_USE_TLS = True  
+
 
 # Application definition
 

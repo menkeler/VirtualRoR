@@ -1,8 +1,8 @@
 import React from 'react'
 import Navbar from '../../components/wholepage/Navbar';
-import InquiryTable from '../../components/Displaycomponents/InquiryTable';
+import PostsTable from '../../components/Displaycomponents/PostsTable';
 
-const DashboardInquiryPage = ({User,Admin,userBack}) => {
+const DashboardPostPage = ({User,userBack}) => {
   const backUsers = () => {
     userBack(User)
   };
@@ -11,15 +11,13 @@ const DashboardInquiryPage = ({User,Admin,userBack}) => {
     {User ? (
                 <button className="btn btn-primary" onClick={backUsers}>Back</button>
             ) : null}
+
+                <PostsTable User={User} />
+    
       
-    {!Admin ? (
-      <InquiryTable User={User} />
-    ) : (
-      <InquiryTable User={User} Admin={Admin} />
-    )}
   </>
     
   )
 }
 
-export default DashboardInquiryPage
+export default DashboardPostPage

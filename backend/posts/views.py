@@ -42,7 +42,7 @@ class PostViewSet(viewsets.ModelViewSet):
         if search_param:
             queryset = queryset.filter(title__icontains=search_param)
         if user_param:
-            queryset = queryset.filter(user_id=user_param)
+            queryset = queryset.filter(author=user_param)
 
         return queryset.all().order_by('-id')
         # if want random use below

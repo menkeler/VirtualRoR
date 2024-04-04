@@ -10,6 +10,7 @@ import InventoryProfilingTable from "../../components/Displaycomponents/Inventor
 import InventoryTable from "../../components/Displaycomponents/InventoryTable";
 import PostsTable from "../../components/Displaycomponents/PostsTable";
 import ExportDataPage from "./ExportDataPage";
+import DashboardPostPage from "../Dashboard/DashboardPostPage";
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState("dashboard");
@@ -30,6 +31,19 @@ const AdminDashboard = () => {
     console.log("Selected type in parent component:", selectedType);
     setSelectedPage(selectedType);
   };
+  const showUser = (user) => {
+    console.log(user)
+    setSelectedPage("users");
+    setSelectedUser(null)
+  };
+
+
+  // const showUser = (user) => {
+  //   console.log(user)
+  //   setSelectedPage("users");
+  //   setSelectedUser(null)
+    
+  // };
 
   return (
     <>
@@ -207,6 +221,7 @@ const AdminDashboard = () => {
                   <DashboardInquiryPage
                     User={selectedUser ? selectedUser.user_id : null}
                     Admin={true}
+                    userBack={showUser}
                   />
                 </section>
               )}
@@ -215,6 +230,7 @@ const AdminDashboard = () => {
                 <section className="mb-8">
                   <DashboardTransactionPage
                     User={selectedUser ? selectedUser.user_id : null}
+                    userBack={showUser}
                   />
                 </section>
               )}
@@ -222,7 +238,10 @@ const AdminDashboard = () => {
               {selectedPage === "posts" && (
                 <section className="mb-8">
                   <h2 className="text-xl font-semibold mb-4">PostsContent</h2>
-                  <PostsTable />
+                  <DashboardPostPage 
+                  User={selectedUser ? selectedUser.user_id : null}
+                  userBack={showUser}
+                  />
                 </section>
               )}
 

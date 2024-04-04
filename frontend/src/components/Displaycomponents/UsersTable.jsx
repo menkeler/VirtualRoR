@@ -10,6 +10,9 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   const [totalPages, setTotalPages] = useState(1);
   const { userData } = useAuth();
 
+
+
+
   const handleChangeRole = async (e, user_id, role) => {
     e.preventDefault();
 

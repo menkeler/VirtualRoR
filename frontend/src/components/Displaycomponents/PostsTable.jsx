@@ -2,7 +2,7 @@ import React,{useState, useEffect } from 'react';
 import Navbar from '../wholepage/Navbar';
 
 import client from '../../api/client';
-const PostsTable = () => {
+const PostsTable = (User) => {
     const [typeQuery, setTypeQuery] = useState('');
     const [statusQuery, setStatusQuery] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -10,14 +10,17 @@ const PostsTable = () => {
     const [posts, setPosts] = useState([])
     const [totalPages, setTotalPages] = useState(1);
 
+    const UserId = User ? User : '';
+
     useEffect(() => {
       fetchPosts(currentPage,statusQuery,typeQuery);
+      console.log(User)
     }, [currentPage,searchQuery,statusQuery,typeQuery]);
 
     const fetchPosts = async (page,status,type) => {
       try {
         const encodedSearchQuery = encodeURIComponent(searchQuery);
-        const response = await client.get(`posts/posts/?page=${page}&status=${status}&category=${type}`);
+        const response = await client.get(`posts/posts/?page=${page}&status=${status}&category=${type}&user=${UserId.User}`);
         setPosts(response.data.results);
         setTotalPages(Math.ceil(response.data.count / 30));
         console.log(response.data);

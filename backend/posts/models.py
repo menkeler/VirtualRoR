@@ -1,5 +1,9 @@
 from django.db import models
 from users.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 
 class Post(models.Model):
 
@@ -33,3 +37,14 @@ class Post(models.Model):
         self.save()
         
    
+@receiver(post_save, sender=Post)
+def send_email_on_post_status_change(sender, instance, created, **kwargs):
+    if not created:
+        subject = 'Post Status Change'
+        recipient = instance.author.email
+        
+        # Render the HTML content using the template
+        html_content = render_to_string('email/post_status_change.html', {'post': instance})
+        
+        # Send the email using send_mail
+        send_mail(subject, '', None, [recipient], html_message=html_content)

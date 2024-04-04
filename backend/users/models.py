@@ -36,7 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', default='public/default.png')
     date_joined = models.DateTimeField(default=timezone.now)
-
+    enable_notifications = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
