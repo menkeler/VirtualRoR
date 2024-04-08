@@ -33,6 +33,7 @@ class Inventory(models.Model):
     item = models.ForeignKey(ItemProfiling, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
     reserved_quantity = models.PositiveIntegerField(default=0)
+    borrowed_quantity = models.PositiveIntegerField(default=0)
     is_hidden = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.item.name} - Quantity: {self.quantity}"
@@ -90,9 +91,11 @@ def update_inventory_quantity_on_save(sender, instance, created, **kwargs):
         if created or (not instance.is_borrowed and instance.is_borrowed != instance.previous_is_borrowed):
             # Increment quantity if it's a new ItemCopy or is_borrowed changed to False and condition changed
             instance.inventory.quantity += 1
+            instance.inventory.borrowed_quantity -=1
         elif instance.is_borrowed and instance.is_borrowed != instance.previous_is_borrowed:
             # Decrement quantity if is_borrowed is True and condition changed
             instance.inventory.quantity -= 1
+            instance.inventory.borrowed_quantity += 1
         elif instance.is_reserved:
             # Increment reserved quantity when item is marked as reserved
             instance.inventory.reserved_quantity += 1

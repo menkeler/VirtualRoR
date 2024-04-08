@@ -318,6 +318,10 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                 <td className="text-gray-500">Reserved:</td>
                                 <td>{item.reserved_quantity}</td>
                               </tr>
+                              <tr className="border-none">
+                                <td className="text-gray-500">Borrowed:</td>
+                                <td>{item.borrowed_quantity}</td>
+                              </tr>
                             </tbody>
                           </table>
                           <article className="whitespace-normal">

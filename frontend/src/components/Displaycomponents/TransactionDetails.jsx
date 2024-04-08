@@ -186,8 +186,8 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                 <tr>
                 <th className="py-2 px-4 border-b">ID</th>
                   <th className="py-2 px-4 border-b">Name</th>
-                  <th className="py-2 px-4 border-b">Type</th>
                   <th className="py-2 px-4 border-b">Category</th>
+                  <th className="py-2 px-4 border-b">Type</th>
                   <th className="py-2 px-4 border-b">Quantity/Condition</th>
                   <th className="py-2 px-4 border-b">Return Date</th>
                   <th className="py-2 px-4 border-b">Actions</th>
@@ -211,12 +211,12 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                         : item.item.inventory.itemprofiling.item_name}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {item.item ? "Borrowable" : "Consumable"}
-                    </td>
-                    <td className="py-2 px-4 border-b">
                     {item.inventory && item.inventory.item
                         ? item.inventory.item.category.name
                         : item.item.inventory.category.name}
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      {item.item ? "Borrowable" : "Consumable"}
                     </td>
                     <td
                       className={`py-2 px-4 border-b ${
