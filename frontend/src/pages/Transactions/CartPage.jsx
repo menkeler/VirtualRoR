@@ -151,7 +151,7 @@ const CartPage = () => {
 
   return (
     <>
-      <Navbar />
+  
       <div className="md:container mx-auto md:px-4">
         <div className="bg-gray-100 p-4 rounded-md mt-5 shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>

@@ -3,7 +3,7 @@ import LoginButton from "./LoginButton";
 import { Link, NavLink as RouterNavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
-
+import CartPage from "../../pages/Transactions/CartPage";
 const Navbar = () => {
   const { isLoggedIn, userData } = useAuth();
   const { getTotalQuantity } = useCart();
@@ -109,12 +109,13 @@ const Navbar = () => {
             {/* Cart Button ---------------------------------------------------------------------- */}
             {isLoggedIn ? (
               <div className="lg:flex-none gap-2 lg:flex items-center">
-                <NavLink to="/Cart">
+                
+                <label htmlFor="my-drawer" className="btn-glass drawer-button">
                   <div
                     tabIndex={0}
-                    role="button"
-                    className="btn btn-ghost btn-circle"
-                  >
+                      role="button"
+                      className="btn btn-ghost btn-circle"
+                  > 
                     <div className="indicator">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +137,28 @@ const Navbar = () => {
                     </div>
                     <span className="text-sm font-semibold">Reserve</span>
                   </div>
-                </NavLink>
+                  </label>
+         <div className="drawer">
+  <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+  <div className="drawer-content">
+    {/* Page content here */}
+   
+  </div> 
+  <div className="drawer-side">
+    <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+    <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+     <CartPage/>
+      
+    </ul>
+  </div>
+</div>
+
+
+
+       
+
+
+
                 {/* User Info ---------------------------------------------------------------------- */}
                 <div className="dropdown dropdown-end">
                   {/* User info  */}
