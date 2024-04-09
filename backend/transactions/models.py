@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from posts.models import Post 
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from django.utils import timezone
 # Inquiry Side
 class Inquiry(models.Model):
     INQUIRY_TYPES = [
@@ -26,7 +27,11 @@ class Inquiry(models.Model):
     date_preferred = models.DateField()
     date_created = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='inquiries', null=True, blank=True) 
-    
+    status_updated_at = models.DateTimeField(default=timezone.now)  # Add a field to track the last update time of the status
+
+    def save(self, *args, **kwargs):
+        self.status_updated_at = timezone.now()  # Update the status_updated_at field whenever the model is saved
+        super().save(*args, **kwargs)
     
 class InquiryReply(models.Model):
     message = models.TextField()

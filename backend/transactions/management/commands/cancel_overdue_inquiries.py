@@ -1,5 +1,3 @@
-# management/commands/cancel_overdue_inquiries.py
-
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
@@ -17,13 +15,19 @@ class Command(BaseCommand):
         overdue_reservation_inquiries = Inquiry.objects.filter(
             inquiry_type='Reservation',
             status='Accepted',
-            date_created__lte=two_days_ago
+            status_updated_at__lte=two_days_ago
         )
+
         
-        # Cancel overdue inquiries
-        for inquiry in overdue_reservation_inquiries:
-            inquiry.status = 'Cancelled'
-            inquiry.save()
-            
-            # Call cancel_reserved_items for each inquiry
-            cancel_reserved_items(inquiry.id)
+        # Check if there are any overdue reservation inquiries
+        if overdue_reservation_inquiries.exists():
+            # Cancel overdue inquiries
+            for inquiry in overdue_reservation_inquiries:
+                inquiry.status = 'Cancelled'
+                inquiry.save()
+                
+                # Call cancel_reserved_items for each inquiry
+                cancel_reserved_items(inquiry.id)
+        else:
+            # If there are no overdue reservation inquiries, do nothing
+            self.stdout.write(self.style.SUCCESS('No overdue reservation inquiries found.'))
