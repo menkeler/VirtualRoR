@@ -455,6 +455,7 @@ const TransactionRelease = ({refresh}) => {
                     <thead>
                       <tr>
                         <th></th>
+                        
                         <th className="text-center">Name</th>
                         <th className="text-center">Quantity/Condition</th>
                       </tr>
@@ -466,8 +467,9 @@ const TransactionRelease = ({refresh}) => {
                           {result.item ? (
                             <>
                               <td className="truncate text-center">
-                                {result.item.inventory.itemprofiling.item_name}{" "}
-                                ID: {result.id}
+                                ID: {result.item.display_id}    
+                                  {' '}
+                                {result.item.inventory.itemprofiling.item_name}
                               </td>
                               <td className="text-center">
                                 {result.item.condition}

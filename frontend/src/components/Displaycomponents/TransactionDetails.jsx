@@ -6,7 +6,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
 
   //purpose for loadgin is to not send multiple transactions and spam
   const [loading, setLoading] = useState(false);
-  console.log(transaction);
+  // console.log(transaction);
   const handleConditionButtonClick = (condition) => {
     setSelectedCondition(condition);
   };
@@ -46,18 +46,18 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
             `transactions/transaction_items/${itemId.id}/`,
             payload
           );
-          console.log("Transaction Item Updated:", response);
+          // console.log("Transaction Item Updated:", response);
 
           const responseCopy = await client.patch(
             `/inventory/item-copies/${itemId.item.id}/`,
             Copypayload
           );
-          console.log("Item Copy Updated:", responseCopy);
+          // console.log("Item Copy Updated:", responseCopy);
 
           const updatedItemCopy = await client.get(
             `/inventory/item-copies/${itemId.item.id}/`
           );
-          console.log("Updated Item Copy:", updatedItemCopy);
+          // console.log("Updated Item Copy:", updatedItemCopy);
         } else {
           //if Item is Lost
           const payload = {
@@ -76,18 +76,18 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
             `transactions/transaction_items/${itemId.id}/`,
             payload
           );
-          console.log("Transaction Item Updated:", response);
+          // console.log("Transaction Item Updated:", response);
 
           const responseCopy = await client.patch(
             `/inventory/item-copies/${itemId.item.id}/`,
             Copypayload
           );
-          console.log("Item Copy Updated:", responseCopy);
+          // console.log("Item Copy Updated:", responseCopy);
 
           const updatedItemCopy = await client.get(
             `/inventory/item-copies/${itemId.item.id}/`
           );
-          console.log("Updated Item Copy:", updatedItemCopy);
+          // console.log("Updated Item Copy:", updatedItemCopy);
         }
       } catch (error) {
         console.error("Error Accept:", error);
