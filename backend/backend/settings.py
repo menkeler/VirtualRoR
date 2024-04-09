@@ -41,8 +41,8 @@ CSRF_COOKIE_SAMESITE = 'None'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  
-EMAIL_HOST_USER = 'email'
-EMAIL_HOST_PASSWORD = 'pass'
+EMAIL_HOST_USER = 'amltan@addu.edu.ph'
+EMAIL_HOST_PASSWORD = 'AdDU2201901295481'
 EMAIL_USE_TLS = True  
 
 

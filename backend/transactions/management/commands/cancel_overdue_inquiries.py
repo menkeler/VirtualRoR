@@ -14,10 +14,14 @@ class Command(BaseCommand):
         two_days_ago = timezone.now() - timedelta(seconds=10)
         
         # Retrieve inquiries that are still pending and were created more than ten seconds ago
-        overdue_inquiries = Inquiry.objects.filter(status='Accepted', date_created__lte=two_days_ago)
+        overdue_reservation_inquiries = Inquiry.objects.filter(
+            inquiry_type='Reservation',
+            status='Accepted',
+            date_created__lte=two_days_ago
+        )
         
         # Cancel overdue inquiries
-        for inquiry in overdue_inquiries:
+        for inquiry in overdue_reservation_inquiries:
             inquiry.status = 'Cancelled'
             inquiry.save()
             

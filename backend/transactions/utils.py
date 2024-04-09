@@ -2,7 +2,7 @@
 def cancel_reserved_items(inquiry_id):
     from .models import Inquiry  # Import within function to avoid circular import
     from django.shortcuts import get_object_or_404
-    
+    print("cancel Reserved Items Runned")
     # Retrieve the inquiry object using the inquiry_id
     inquiry = get_object_or_404(Inquiry, pk=inquiry_id)
 

@@ -309,13 +309,15 @@ def process_transaction(request):
             if inquiry_id is not None:
                 cancel_reserved_items(inquiry_id)  # deletes reserved items
                 is_active = False
-
+                inquiry.status = 'Processed'  # Mark inquiry as processed
+                inquiry.save()
                 transaction_instance = Transaction.objects.create(
                     inquiry=inquiry,
                     participant=inquiry.inquirer,
                     transaction_type='Release',
                     remarks=remarks
                 )
+                
             else:
                 transaction_instance = Transaction.objects.create(
                     inquiry=None,
