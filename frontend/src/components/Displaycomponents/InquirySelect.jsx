@@ -10,7 +10,7 @@ const InquirySelect = ({ user, onSelectInquiry }) => {
       try {
         const userParam = user && user.user_id ? user.user_id : "";
         const response = await client.get(
-          `transactions/inquiries/?ordering=status&user=${userParam}`
+          `transactions/inquiries/?ordering=status&status=Accepted&type=Donation&user=${userParam}`
         );
         setInquiryData(response.data.results);
       } catch (error) {
