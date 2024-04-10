@@ -55,6 +55,7 @@ class Transaction(models.Model):
     is_active = models.BooleanField(default=True)
     participant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE, null=True, blank=True)
+    return_date = models.DateField(null=True, blank=True)
 
 class TransactionItem(models.Model):
     TRANSACTION_ITEM_STATUS = [

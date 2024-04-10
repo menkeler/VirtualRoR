@@ -286,6 +286,7 @@ def process_transaction(request):
     remarks = request.data.get('remarks', '')
     user_id = request.data.get('user_id')  # Change variable name to user_id for clarity
     inquiry_id = request.data.get('inquiry') 
+    returnDate = request.data.get('return_date') 
     try:
         # Retrieve the User object based on the user_id
         user = User.objects.get(pk=user_id)
@@ -315,7 +316,8 @@ def process_transaction(request):
                     inquiry=inquiry,
                     participant=inquiry.inquirer,
                     transaction_type='Release',
-                    remarks=remarks
+                    remarks=remarks,
+                    return_date=returnDate
                 )
                 
             else:
@@ -323,8 +325,11 @@ def process_transaction(request):
                     inquiry=None,
                     participant=user,
                     transaction_type='Release',
-                    remarks=remarks
+                    remarks=remarks,
+                    return_date=returnDate
                 )
+                
+                
 
                 is_active = False
     

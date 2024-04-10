@@ -176,7 +176,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
             </table>
           </>
         )}
-
+       
         <div className="flex flex-col w-full">
           <h3 className="font-bold text-lg mb-4">Transaction Items</h3>
           <div className="overflow-x-auto">
@@ -231,7 +231,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                       className='py-2 px-4 border-b '
                       
                     >
-                      returndate idk yet talk later
+                     {transaction.return_date}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {/* Modal for item udpates */}

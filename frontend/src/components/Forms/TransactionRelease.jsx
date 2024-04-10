@@ -7,7 +7,7 @@ import ManualUserCreation from "../CustomButtons/Transactions/ManualUserCreation
 const TransactionRelease = ({refresh}) => {
   const [inquiries, setInquiries] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
-
+  const [returnDate, setReturnDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [totalPages, setTotalPages] = useState(1);
@@ -20,6 +20,7 @@ const TransactionRelease = ({refresh}) => {
     remarks: "",
     transaction_items: [],
     inquiry: null,
+    return_date:null,
   };
 
   const [payload, setPayload] = useState(initialPayload);
@@ -28,6 +29,7 @@ const TransactionRelease = ({refresh}) => {
     handleSelectUser(userData);
     // You can perform additional actions or set state in the parent component if needed
   };
+
   const handleSelectUser = (selectedUser) => {
     handleReset();
     // console.log(`Selected user in TransactionDonation:`, selectedUser);
@@ -42,11 +44,13 @@ const TransactionRelease = ({refresh}) => {
     document.getElementById("ChooseUser").close();
   };
 
+
   const handleReset = () => {
     setCurrentUser("");
     setSelectedInquiry(null); //
     setPayload(initialPayload);
     setRemarks("");
+    setReturnDate(null); 
   };
 
   const addItemToPayload = (item) => {
@@ -181,6 +185,7 @@ const TransactionRelease = ({refresh}) => {
         ...newTransactionItems,
         ...prevState.transaction_items,
       ],
+    
     }));
     console.log("Updated payload of all", payload);
 
@@ -192,6 +197,9 @@ const TransactionRelease = ({refresh}) => {
   const handleRemarksChange = (e) => {
     setRemarks(e.target.value);
   };
+  const handleDateSelected = (e) => {
+    setReturnDate(e.target.value);
+};
 
   //user token ehre for now
 
@@ -200,14 +208,15 @@ const TransactionRelease = ({refresh}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (payload.transaction_items.length > 0) {
+    if (payload.transaction_items.length > 0 && returnDate) {
       console.log("submit");
 
       try {
         // Assuming payload is an object containing transaction-related data
         const updatedPayload = {
           ...payload, // Copy existing payload data
-          remarks: Remarks, // Update remarks with the new value
+          remarks: Remarks,// Update remarks with the new value
+          return_date: returnDate, 
         };
 
         // Now you can use the updatedPayload in your application
@@ -304,6 +313,7 @@ const TransactionRelease = ({refresh}) => {
                 </h3>
               </>
             )}
+             
             <h1 className="mb-4">
               <div className="flex items-center space-x-4 mt-3">
                 {currentUser && (
@@ -326,6 +336,31 @@ const TransactionRelease = ({refresh}) => {
                 )}
               </div>
             </h1>
+
+           
+            {currentUser && (
+              <>
+        
+         
+      <h3 className="font-bold mt-3 text-lg">Return Date</h3>
+      <div className="date-selector-container">
+        <label htmlFor="datePicker">Select a date:</label>
+        <input 
+          type="date" 
+          id="datePicker" 
+          value={returnDate} 
+          onChange={handleDateSelected} 
+          className="input input-bordered w-full max-w-xs"
+          min={new Date().toISOString().split('T')[0]}
+          max={(new Date(new Date().getTime() + 100 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0]}
+           
+        />
+      </div>
+   
+  
+              </>
+            )}
+
             <h3 className="font-bold mt-3 text-lg">Items</h3>
             <div className="overflow-x-auto w-full max-h-screen">
               <table className="table w-full">
@@ -364,10 +399,19 @@ const TransactionRelease = ({refresh}) => {
                           // If the item does not exist (i.e., inventory item)
                           <>
                             <td className="text-center">
-                              {result.inventory.item.name}
+                              ID: {result.inventory.id}
                             </td>
                             <td className="text-center">
+                            {result.inventory.item.name}
+                            </td>
+                            <td className="text-center">
+                              
+                              {result.inventory.item.category.name}
+                            </td>
+
+                            <td className="text-center">
                               <input
+                              className="input input-bordered w-full max-w-xs"
                                 type="number"
                                 min="1"
                                 max={
