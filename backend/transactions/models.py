@@ -113,4 +113,3 @@ def send_email_on_inquiry_status_change(sender, instance, created, **kwargs):
         # Send the email using send_mail
         send_mail(subject, '', None, [recipient], html_message=html_content)
             
-        
