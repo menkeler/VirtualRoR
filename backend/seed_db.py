@@ -15,12 +15,12 @@ def seed_database():
     print(f"Created {len(users)} users")
 
     # Create instances of Category, ItemProfiling, Inventory, and ItemCopy
-    categories = CategoryFactory.create_batch(10)
+    categories = CategoryFactory.create_batch(6)
     for category in categories:
-        items = ItemProfilingFactory.create_batch_with_category(category, 10)
+        items = ItemProfilingFactory.create_batch_with_category(category, 5)
         for item in items:
             inventory = InventoryFactory(item=item)
-            ItemCopyFactory.create_batch(inventory=inventory, size=20)
+            ItemCopyFactory.create_batch(inventory=inventory, size=10)
 
 if __name__ == "__main__":
     seed_database()
