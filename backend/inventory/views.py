@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,viewsets, filters
-from .models import Category, ItemProfiling, ItemCopy, Inventory
+from .models import Category, ItemProfiling, ItemCopy, Inventory, ExportHistory
 from transactions.models import Transaction,Inquiry,TransactionItem
 from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer,ItemCopyCreateSerializer, InventorySerializer,InventoryCreateSerializer,ItemProfilingCreateSerializer
 from transactions.serializers import TransactionSerializer
@@ -355,6 +355,9 @@ class ExportMultipleTablesView(APIView):
         # Close the Excel writer object
         output.close()
 
+         # Record export history
+        export_history = ExportHistory.objects.create(filename=filename)
+        
         # Load the workbook using openpyxl
         workbook = load_workbook(full_file_path)
 

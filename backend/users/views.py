@@ -91,6 +91,8 @@ class UserViewSet(viewsets.ModelViewSet):
             except Token.DoesNotExist:
                 pass
             logout(request)
+            # Clear the user's session
+            request.session.flush()
             return Response({'detail': 'Logout successful'}, status=status.HTTP_200_OK)
         else:
             return Response({'detail': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)

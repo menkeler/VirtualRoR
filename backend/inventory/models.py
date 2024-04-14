@@ -78,7 +78,10 @@ class ItemCopy(models.Model):
 
     def __str__(self):
         return f"{self.inventory.item.name} - Condition: {self.condition}, Borrowed: {self.is_borrowed}"
-
+    
+class ExportHistory(models.Model):
+    filename = models.CharField(max_length=255)
+    export_date = models.DateTimeField(auto_now_add=True)
 
         
 @receiver(post_save, sender=ItemCopy)
