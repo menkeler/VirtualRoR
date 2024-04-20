@@ -176,7 +176,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
             </table>
           </>
         )}
-       
+
         <div className="flex flex-col w-full">
           <h3 className="font-bold text-lg mb-4">Transaction Items</h3>
           <div className="overflow-x-auto">
@@ -184,7 +184,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
               {/* Head */}
               <thead className="bg-gray-200">
                 <tr>
-                <th className="py-2 px-4 border-b">ID</th>
+                  <th className="py-2 px-4 border-b">ID</th>
                   <th className="py-2 px-4 border-b">Name</th>
                   <th className="py-2 px-4 border-b">Category</th>
                   <th className="py-2 px-4 border-b">Type</th>
@@ -202,8 +202,9 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                     className={index % 2 === 0 ? "bg-gray-100" : ""}
                   >
                     <td className="py-2 px-4 border-b">
-                    {item.inventory ? item.inventory.id : item.item.display_id}
-                      
+                      {item.inventory
+                        ? item.inventory.id
+                        : item.item.display_id}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {item.inventory && item.inventory.item
@@ -211,7 +212,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                         : item.item.inventory.itemprofiling.item_name}
                     </td>
                     <td className="py-2 px-4 border-b">
-                    {item.inventory && item.inventory.item
+                      {item.inventory && item.inventory.item
                         ? item.inventory.item.category.name
                         : item.item.inventory.category.name}
                     </td>
@@ -227,11 +228,8 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                     >
                       {item.item ? item.item.condition : item.quantity}
                     </td>
-                      <td
-                      className='py-2 px-4 border-b '
-                      
-                    >
-                     {transaction.return_date}
+                    <td className="py-2 px-4 border-b ">
+                      {transaction.return_date}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {/* Modal for item udpates */}

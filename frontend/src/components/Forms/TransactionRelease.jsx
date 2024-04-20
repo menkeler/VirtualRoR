@@ -14,7 +14,7 @@ const TransactionRelease = ({refresh}) => {
   const [Remarks, setRemarks] = useState("");
   const [currentUser, setCurrentUser] = useState("");
   const [items, setItems] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const initialPayload = {
     user_id: "",
     remarks: "",
@@ -207,7 +207,7 @@ const TransactionRelease = ({refresh}) => {
   //SUbmit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     if (payload.transaction_items.length > 0 && returnDate) {
       console.log("submit");
 
@@ -248,6 +248,9 @@ const TransactionRelease = ({refresh}) => {
       } catch (error) {
         // Handle error
         console.error("Error:", error);
+      }finally {
+        // Set loading state back to false to re-enable buttons
+        setIsLoading(false);
       }
       handleReset();
       refresh()
@@ -458,6 +461,7 @@ const TransactionRelease = ({refresh}) => {
                 type="button"
                 className="btn btn-accent mr-2 text-white"
                 onClick={handleSubmit}
+                disabled={isLoading}
               >
                 Submit
               </button>

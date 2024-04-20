@@ -14,7 +14,7 @@ function Home() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [selectedPostID, setSelectedPostID] = useState(null);
-
+  const showInquiryDonation = false;
   const handlePostClick = (postID) => {
     setSelectedPostID(postID);
     document.getElementById("InquiryDonation").showModal();
@@ -157,7 +157,6 @@ function Home() {
                 }
                 return null;
               })}
-              
             </div>
           </div>{" "}
           {/* left side */}
@@ -181,7 +180,7 @@ function Home() {
             {/* Tools */}
             <div className="card w-80 bg-base-100 shadow-xl my-5">
               <span className="text-xl font-bold text-left mb-2">Tools</span>
-              <div className="grid grid-cols-3 gap-1">
+              <div className="grid grid-cols-2 gap-1">
                 <button
                   className="btn btn-accent"
                   onClick={() => handlePostClick(null)}
@@ -192,13 +191,10 @@ function Home() {
 
                 <InquiryDonation postID={selectedPostID} />
 
-                <button className="btn btn-cube p-2">
-                  <i className="fa-solid fa-dice"></i>
-                  RandomPost
-                </button>
-                <button className="btn btn-cube p-2">---</button>
-                <button className="btn btn-cube p-2">---</button>
-                <button className="btn btn-cube p-2">---</button>
+                <Link to="/Inventory" className="btn btn-accent">
+                  <i className="fa-solid fa-hand-holding-hand"></i>
+                  Reserve
+                </Link>
               </div>
             </div>
 

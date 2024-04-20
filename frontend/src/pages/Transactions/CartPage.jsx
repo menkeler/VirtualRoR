@@ -10,6 +10,7 @@ const CartPage = () => {
 
   //REservation
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [datePreferred, setDatePreferred] = useState("");
   const { userData } = useAuth();
 
@@ -54,6 +55,7 @@ const CartPage = () => {
   //Reservation Functions----------------------------------------------------------------
 
   const handleSubmit = async (e) => {
+    setIsLoading(true)
     e.preventDefault();
     const authToken = Cookies.get("authToken");
     if (message && datePreferred) {
@@ -106,7 +108,7 @@ const CartPage = () => {
             },
           }
         );
-
+     
         // if (responseinquiryItems.status === 201) {
         //   // Successful response
         //   console.log('Request was successful:', responseinquiryItems.data);
@@ -116,6 +118,9 @@ const CartPage = () => {
         // }
       } catch (error) {
         console.error("Error:", error);
+      }finally {
+        // Set loading state back to false to re-enable buttons
+        setIsLoading(false);
       }
 
       // console.log('API Request Data:', requestData);
@@ -286,6 +291,7 @@ const CartPage = () => {
                     type="button"
                     className="btn btn-accent mr-2"
                     onClick={handleSubmit}
+                    disabled={isLoading}
                   >
                     Submit
                   </button>

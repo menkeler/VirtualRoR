@@ -11,7 +11,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [totalPages, setTotalPages] = useState(1);
-  const {categoryData, loading, error, refetchCategory } = CategoryHook();
+  const { categoryData, loading, error, refetchCategory } = CategoryHook();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const { state, dispatch } = useCart();
@@ -21,7 +21,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     handleItemAdd(item);
   };
 
-  const addToCart = (inventoryId, itemName, displayid,itemId, maxquantity) => {
+  const addToCart = (inventoryId, itemName, displayid, itemId, maxquantity) => {
     // Check if the item with the same id already exists in the cart
     const itemExists = state.cartItems.some(
       (item) => item.inventory !== null && item.inventory === inventoryId
@@ -36,7 +36,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         item: itemId,
         name: itemName,
         quantity: 1,
-        displayid:displayid,
+        displayid: displayid,
         maxquantity: maxquantity,
         // nextime add image here
       };
@@ -92,16 +92,24 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     if (type === 1) {
       return (
         <div className="flex flex-col place-items-center">
-          {!item.item.returnable && item.quantity > 0 && item.quantity > item.reserved_quantity && (
-            <button
-              className="bg-emerald-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
-              onClick={() =>
-                addToCart(item.id, item.item.name, null,null, item.quantity - item.reserved_quantity)
-              }
-            >
-              Reserve Item
-            </button>
-          )}
+          {!item.item.returnable &&
+            item.quantity > 0 &&
+            item.quantity > item.reserved_quantity && (
+              <button
+                className="bg-emerald-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
+                onClick={() =>
+                  addToCart(
+                    item.id,
+                    item.item.name,
+                    null,
+                    null,
+                    item.quantity - item.reserved_quantity
+                  )
+                }
+              >
+                Reserve Item
+              </button>
+            )}
           {(item.quantity <= 0 || item.quantity <= item.reserved_quantity) && (
             <div className="bg-red-500 rounded-md text-sm text-white w-40 text-center px-4 py-1 hover:bg-red-800 transition duration-500">
               {item.quantity <= 0 ? "Out of Stock" : "Reserved"}
@@ -109,7 +117,6 @@ const InventoryTable = ({ type, handleItemAdd }) => {
           )}
         </div>
       );
-      
     } else if (type === 2) {
       return <div></div>;
     } else {
@@ -136,11 +143,11 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     if (type === 1) {
       return (
         <td className="py-2 px-4 border-b">
-          {!copy.is_borrowed && !copy.is_reserved &&  (
+          {!copy.is_borrowed && !copy.is_reserved && (
             <button
               className="bg-emerald-500 rounded-md text-sm text-white w-20 text-center px-4 py-1 hover:scale-105 hover:bg-emerald-300 transition duration-500"
               onClick={() =>
-                addToCart(null,item.item.name,copy.display_id, copy.id, 1)
+                addToCart(null, item.item.name, copy.display_id, copy.id, 1)
               }
             >
               Reserve
@@ -149,10 +156,11 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         </td>
       );
     } else if (type === 2) {
-      return <td className="py-2 px-4 border-b">
-
-        <ViewItemLog item ={copy}/>
-      </td>;
+      return (
+        <td className="py-2 px-4 border-b">
+          <ViewItemLog item={copy} />
+        </td>
+      );
     } else {
       return (
         <td className="py-2 px-4 border-b">
@@ -375,13 +383,14 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                           </div>
                                         ) : copy.condition === "Lost" ? (
                                           <div className="border-2 border-red-900 rounded-lg text-sm text-red-900 w-30 text-center px-4 py-1">
-                                            Donot display this row  or Display as Lost just change later
+                                            Donot display this row or Display as
+                                            Lost just change later
                                           </div>
                                         ) : copy.is_borrowed ? (
                                           <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">
                                             Borrowed
                                           </div>
-                                        )  : (
+                                        ) : (
                                           <div className="border-2 border-emerald-500 rounded-lg text-sm text-emerald-500 w-30 text-center px-4 py-1">
                                             Available
                                           </div>
@@ -408,16 +417,6 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         </tbody>
       </table>
 
-
-
-
-
-
-
-
-
-
-      
       {/* Pagination controls */}
       <div className="flex justify-between items-center mt-4">
         <button

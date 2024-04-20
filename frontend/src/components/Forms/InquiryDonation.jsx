@@ -53,12 +53,6 @@ const InquiryDonation = ({postID}) => {
   
   return (
     <>
-      {/* Open the modal using document.getElementById('ID').showModal() method */}
-      <button className="btn btn-cube p-2" onClick={() => document.getElementById('InquiryDonation').showModal()}>
-      <i className="fa-solid fa-hand-holding-hand"></i>
-        Donate
-      </button>
-
       <dialog id="InquiryDonation" className="modal">
         <div className="modal-box p-6 bg-white rounded-md shadow-md">
         {postID ? (

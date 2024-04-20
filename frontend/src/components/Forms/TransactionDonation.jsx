@@ -17,6 +17,7 @@ const TransactionDonation = ({ refresh }) => {
   const [Remarks, setRemarks] = useState("");
   const [transactionItems, setTransactionItems] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSelectInquiry = (inquiry) => {
     setSelectedInquiry(inquiry);
@@ -178,7 +179,7 @@ const TransactionDonation = ({ refresh }) => {
 
   const handleDonationSubmit = async (e) => {
     e.preventDefault();
-
+   setIsLoading(true);
     if (selectedUser && items.length > 0) {
       //Variables
       const createTransaction = {
@@ -320,6 +321,9 @@ const TransactionDonation = ({ refresh }) => {
         ///ADD fetch table here
       } catch (error) {
         console.error("Error:", error);
+      } finally {
+        // Set loading state back to false to re-enable buttons
+        setIsLoading(false);
       }
     }
   };
@@ -580,6 +584,7 @@ const TransactionDonation = ({ refresh }) => {
                       type="submit"
                       className="bg-green-500 text-white px-4 py-2 rounded-md mr-2"
                       onClick={handleAddCopySubmit}
+                      disabled={isLoading}
                     >
                       Submit
                     </button>

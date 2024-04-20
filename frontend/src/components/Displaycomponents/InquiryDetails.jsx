@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import client from "../../api/client";
 import PostCard from "../../components/Posts/Postcard";
 const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   //to confirm inquiries donation and for reserving items
   const handleAccept = async (e, inquiryId, purpose) => {
+    setIsLoading(true);
     e.preventDefault();
     console.log("clicked");
     try {
@@ -16,10 +19,14 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
     } catch (error) {
       console.error("Error Accept:", error);
       console.error("Error Response:", error.response?.data?.detail);
+    } finally {
+      // Set loading state back to false to re-enable buttons
+      setIsLoading(false);
     }
   };
 
   const handleCancelInquiry = async (e, inquiryId) => {
+    setIsLoading(true);
     e.preventDefault();
     console.log("clicked");
     try {
@@ -32,6 +39,9 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
       console.log("Submission successful:", response.data);
     } catch (error) {
       console.error("Error Response:", error.response?.data?.detail);
+    } finally {
+      // Set loading state back to false to re-enable buttons
+      setIsLoading(false);
     }
   };
   return (
@@ -119,17 +129,15 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
                       key={index}
                       className={index % 2 === 0 ? "bg-gray-100" : ""}
                     >
-                       <td className="py-2 px-4 border-b">
-                       {item.inventory && item.inventory.item
+                      <td className="py-2 px-4 border-b">
+                        {item.inventory && item.inventory.item
                           ? item.inventory.item.id
-                          : item.item.display_id
-                        }
+                          : item.item.display_id}
                       </td>
                       <td className="py-2 px-4 border-b">
                         {item.inventory && item.inventory.item
                           ? item.inventory.item.name
-                          : item.item.inventory.itemprofiling.item_name
-                        }
+                          : item.item.inventory.itemprofiling.item_name}
                       </td>
                       <td className="py-2 px-4 border-b">
                         {item.item ? "Borrowable" : "Consumable"}
@@ -166,6 +174,7 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
                     className="btn btn-accent mr-2 text-white"
                     type="button"
                     onClick={(e) => handleAccept(e, inquiry.id, "Accept")}
+                    disabled={isLoading}
                   >
                     Accept
                   </button>
@@ -174,6 +183,7 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
                     className="btn btn-error mr-2 text-white"
                     type="button"
                     onClick={(e) => handleAccept(e, inquiry.id, "Rejected")}
+                    disabled={isLoading}
                   >
                     Reject
                   </button>
