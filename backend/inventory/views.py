@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status,viewsets, filters
 from .models import Category, ItemProfiling, ItemCopy, Inventory, ExportHistory
 from transactions.models import Transaction,Inquiry,TransactionItem
-from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer,ItemCopyCreateSerializer, InventorySerializer,InventoryCreateSerializer,ItemProfilingCreateSerializer
+from .serializers import CategorySerializer, ItemProfilingSerializer, ItemCopySerializer,ItemCopyCreateSerializer, InventorySerializer,InventoryCreateSerializer,ItemProfilingCreateSerializer,ExportHistorySerializer
 from transactions.serializers import TransactionSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
@@ -383,7 +383,7 @@ class ExportMultipleTablesView(APIView):
 
         # Delete the workbook file
         os.remove(full_file_path)
-
+        
         # Return the Excel file as a response
         response = HttpResponse(file_data, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = f'attachment; filename={filename}'
@@ -403,3 +403,7 @@ class ItemCopyTransactionsView(APIView):
         transactions = transactions.order_by('-date_created')
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
+    
+class ExportHistoryViewSet(viewsets.ModelViewSet):
+    queryset = ExportHistory.objects.all()
+    serializer_class = ExportHistorySerializer

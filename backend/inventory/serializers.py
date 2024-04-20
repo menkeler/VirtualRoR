@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ItemProfiling, Category, Inventory, ItemCopy
+from .models import ItemProfiling, Category, Inventory, ItemCopy,ExportHistory
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -68,3 +68,9 @@ class InventorySerializer(serializers.ModelSerializer):
 
         representation['item_copies'] = sorted_copies
         return representation
+    
+   
+class ExportHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExportHistory
+        fields = '__all__'
