@@ -38,13 +38,30 @@ const Postcard = ({ Data, onPostClick, display, admin }) => {
         <p className="text-left mb-1 mt-2 break-all">{Data.message}</p>
 
         {/* Post image */}
-        <div className="image-container w-full max-h-100 mb-4 md:mb-6 overflow-hidden">
-          <img
-            src="https://placekitten.com/800/400"
-            alt="Post Image"
-            className="w-full object-cover rounded-lg"
-          />
-        </div>
+        {Data.images && Data.images.length > 0 && (
+          <div className="py-2">
+            <div className="flex">
+              {Array.isArray(Data.images) ? (
+                Data.images
+                  .slice(0, 3)
+                  .map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Image ${index + 1}`}
+                      className="mr-2 max-w-1/3"
+                    />
+                  ))
+              ) : (
+                <img
+                  src={Data.images}
+                  alt="Post Image"
+                  className="mr-2 max-w-1/3"
+                />
+              )}
+            </div>
+          </div>
+        )}
 
         {!display && !admin && Data.category === "Regular" && (
           <button className="btn btn-cube p-2" onClick={handleClick}>

@@ -219,19 +219,28 @@ const PostsTable = (User) => {
                 </div>
               )}
 
-              {/* Display the first three images */}
-              {post.images && post.images.length > 0 && (
+              {post.images && (
                 <div className="py-2">
                   <strong className="text-blue-500">Images:</strong>
                   <div className="flex">
-                    {post.images.slice(0, 3).map((image, index) => (
+                    {Array.isArray(post.images) ? (
+                      post.images
+                        .slice(0, 3)
+                        .map((image, index) => (
+                          <img
+                            key={index}
+                            src={image}
+                            alt={`Image ${index + 1}`}
+                            className="mr-2 max-w-1/3"
+                          />
+                        ))
+                    ) : (
                       <img
-                        key={index}
-                        src={image}
-                        alt={`Image ${index + 1}`}
+                        src={post.images}
+                        alt="Image 1"
                         className="mr-2 max-w-1/3"
                       />
-                    ))}
+                    )}
                   </div>
                 </div>
               )}

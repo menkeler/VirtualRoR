@@ -126,7 +126,7 @@ def update_post_status_and_send_email(sender, instance, created, **kwargs):
             instance.inquiry.save()
 
             # Send email notification
-            subject = 'Post Status Change'
+            subject = 'Your Post has been Filled'
             recipient = instance.inquiry.post.author.email
             html_content = render_to_string('email/requested_item_available.html', {'post': instance.inquiry.post})
             send_mail(subject, '', None, [recipient], html_message=html_content)

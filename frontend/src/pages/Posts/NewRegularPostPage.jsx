@@ -1,41 +1,58 @@
-import React, { useState } from 'react';
-import Navbar from '../../components/wholepage/Navbar';
-import Footer from '../../components/wholepage/Footer';
-import { useAuth } from '../../contexts/AuthContext';
-import client from '../../api/client';
+import React, { useState } from "react";
+import Navbar from "../../components/wholepage/Navbar";
+import Footer from "../../components/wholepage/Footer";
+import { useAuth } from "../../contexts/AuthContext";
+import client from "../../api/client";
 const NewRegularPostPage = () => {
   const { userData } = useAuth();
-  const [message, setMessage] = useState('');
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Regular');
-  const [status, setStatus] = useState('Pending')
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Regular");
+  const [status, setStatus] = useState("Pending");
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const currentDate = new Date();
+    const timestamp = currentDate.getTime(); 
+    const fileName = `${timestamp}_${file.name}`; 
+    const renamedFile = new File([file], fileName, { type: file.type }); 
+    setImage(renamedFile); 
+    setImagePreview(URL.createObjectURL(renamedFile)); 
+  };
+  
+
   const handleSubmitPost = async (e) => {
     e.preventDefault();
 
     if (message && title && category) {
-      //for admins
-        if (category ===`Announcements`) {
-          setStatus('Accepted');
-        }
+      const formData = new FormData();
+      formData.append("category", category);
+      formData.append("message", message);
+      formData.append("status", status);
+      formData.append("author", userData.user.user_id);
+      formData.append("title", title);
+      if (image) {
+        formData.append("images", image);
+      }
 
       try {
-        console.log(userData.user.user_id);
-        const response = await client.post('posts/posts/', {
-          category:category,
-          message: message,
-          images: null,
-          status: status,
-          author: userData.user.user_id,
-          title:title
-        });
-        setMessage('');
-        setTitle('');
-        setCategory('Regular');
-        setStatus('Pending');
+        console.log(formData);
+        const response = await client.post("posts/posts/", formData);
+        setMessage("");
+        setTitle("");
+        setCategory("Regular");
+        setStatus("Pending");
+        setImage(null);
+        setImagePreview(null);
 
-        console.log('Submission successful',message,title,category)
+        document.getElementById("imageInput").value = "";
+
+        console.log("Submission successful", message, title, category);
+        console.log(response);
       } catch (error) {
-        console.error('Error submitting post:', error);
+        console.error("Error submitting post:", error);
       }
     }
   };
@@ -61,7 +78,9 @@ const NewRegularPostPage = () => {
             </div>
 
             <div className="mb-5">
-              <h2 className="text-base font-bold mb-2 text-left">Description</h2>
+              <h2 className="text-base font-bold mb-2 text-left">
+                Description
+              </h2>
               <textarea
                 placeholder="Type here"
                 className="resize-y border rounded-md p-2 w-full h-32"
@@ -71,24 +90,42 @@ const NewRegularPostPage = () => {
             </div>
 
             <div className="mb-5">
-              <h2 className="text-base font-bold mb-2 text-left">Upload an Image</h2>
-              <i className="fa-solid fa-image"> Now image Like This</i>
-              <p className="text-gray-600">Image</p>
+              <h2 className="text-base font-bold mb-2 text-left">
+                Upload an Image
+              </h2>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                name="image"
+                id="imageInput"
+                className="w-full"
+              />
+
+              {imagePreview && (
+                <div className="mt-2 w-32 h-32 rounded-md overflow-hidden">
+                  <img
+                    src={imagePreview}
+                    alt="Selected Image"
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="mb-5">
-            <h2 className="text-base font-bold mb-2 text-left">Type</h2>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="input input-bordered w-full bg-white"
-            >
-              <option value="Regular">Regular</option>
-              {userData.user.staff && (
-                <option value="Announcements">Announcements</option>
-              )}
-            </select>
-          </div>
+              <h2 className="text-base font-bold mb-2 text-left">Type</h2>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="input input-bordered w-full bg-white"
+              >
+                <option value="Regular">Regular</option>
+                {userData.user.staff && (
+                  <option value="Announcements">Announcements</option>
+                )}
+              </select>
+            </div>
           </div>
           <button type="submit" className="btn btn-accent mb-32">
             Publish
@@ -100,10 +137,4 @@ const NewRegularPostPage = () => {
   );
 };
 
-export default NewRegularPostPage
-
-
-
-
-
-
+export default NewRegularPostPage;
