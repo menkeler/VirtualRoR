@@ -179,7 +179,7 @@ const TransactionDonation = ({ refresh }) => {
 
   const handleDonationSubmit = async (e) => {
     e.preventDefault();
-   setIsLoading(true);
+    setIsLoading(true);
     if (selectedUser && items.length > 0) {
       //Variables
       const createTransaction = {
@@ -608,6 +608,7 @@ const TransactionDonation = ({ refresh }) => {
                 className="btn btn-accent mr-2"
                 type="button"
                 onClick={handleDonationSubmit}
+                disabled={isLoading}
               >
                 Submit
               </button>

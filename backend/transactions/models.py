@@ -113,3 +113,20 @@ def send_email_on_inquiry_status_change(sender, instance, created, **kwargs):
         # Send the email using send_mail
         send_mail(subject, '', None, [recipient], html_message=html_content)
             
+@receiver(post_save, sender=Transaction)
+def update_post_status_and_send_email(sender, instance, created, **kwargs):
+    if created and instance.transaction_type == 'Donation' and instance.inquiry:
+        # Change the status of the related post to 'Completed' if it exists
+        if instance.inquiry.post:
+            instance.inquiry.post.status = 'Completed'
+            instance.inquiry.post.save()
+
+            # Mark the related inquiry as 'Processed'
+            instance.inquiry.status = 'Processed'
+            instance.inquiry.save()
+
+            # Send email notification
+            subject = 'Post Status Change'
+            recipient = instance.inquiry.post.author.email
+            html_content = render_to_string('email/requested_item_available.html', {'post': instance.inquiry.post})
+            send_mail(subject, '', None, [recipient], html_message=html_content)

@@ -140,7 +140,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
             }
             for entry in user_donation_data_list
         ]
-
+    
         return Response({'user_donation_data': user_donation_data}, status=status.HTTP_200_OK)
 
     
