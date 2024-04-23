@@ -20,30 +20,48 @@ const ManualUserCreation = ({ onUserIdChange }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-         setForm({
-                ...form,
-                [name]: value.trim(),
-         });
-
+    
+        setForm({
+            ...form,
+            [name]: value.trim(),
+        });
     };
+    
 
 
     const handleUserRegistration = async (e) => {
         e.preventDefault();
 
+
+        //validations
         if (!form.first_name || !form.last_name || !form.email || !form.contact || !form.department) {
             alert('All fields are required. Please complete the form.');
             return;
         }
+        // Regular expression to validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Check if the entered email matches the regex pattern
+        if (!emailRegex.test(form.email)) {
+            alert('Please enter a valid email address.');
+            return;
+        }
+        // Check if the entered email ends with "@addu.edu.ph"
+        if (!form.email.endsWith('@addu.edu.ph')) {
+            alert('Please enter a valid AdDU email ending with "@addu.edu.ph"');
+            return;
+        }
+
+         // Check if the contact number contains exactly 11 digits
+        if (form.contact.length !== 11 || isNaN(form.contact)) {
+            alert('Please enter a valid 11-digit contact number.');
+            return;
+        }
+
         try {
            
-            //Append Addu.edu.ph email here
-            const updatedForm = {
-                ...form,
-                email: form.email.endsWith('@addu.edu.ph') ? form.email : form.email + '@addu.edu.ph',
-            };
             //check if already registered if not it will not proceed a
-           const res = await client.post('users/users/checkregister/', updatedForm);
+           const res = await client.post('users/users/checkregister/', form);
 
            if (res.status === 200) {
             // User already registered
@@ -51,9 +69,9 @@ const ManualUserCreation = ({ onUserIdChange }) => {
             
             }
             else{
-              console.log('form sent',updatedForm)
+              console.log('form sent',form)
 
-              const registrationResponse = await client.post('users/users/register/', updatedForm);
+              const registrationResponse = await client.post('users/users/register/', form);
 
               onUserIdChange(registrationResponse.data);
 
@@ -64,7 +82,7 @@ const ManualUserCreation = ({ onUserIdChange }) => {
         } catch (error) {
       
             console.error('Error:', error);
-            
+            alert('Please enter aE valid AdDU email ending with "@addu.edu.ph"');
         }
     }
  
@@ -108,26 +126,28 @@ const ManualUserCreation = ({ onUserIdChange }) => {
                  <div className="flex items-start">
                     <input
                         type="text"
-                        placeholder="Please Enter email (required)"
+                        placeholder="Please Enter AdDU email (required)"
                         className="input input-bordered flex-grow bg-white"
                         name="email"
                         value={form.email}
                         onChange={handleInputChange}
                     />
-                    <span className="ml-2 text-3xl font-bold">@addu.edu.ph</span>
+            
                 </div>
                 </div>
 
                 <div className="mb-5">
                  <h2 className="text-base font-bold mb-2 text-left">Contact</h2>
-                    <input
-                        type="text"
-                        placeholder="Please Enter contact (required)"
-                        className="input input-bordered w-full bg-white"
-                        name="contact"
-                        value={form.contact}
-                        onChange={handleInputChange}
-                    />
+                 <input
+        type="text"
+        placeholder="Please Enter contact (required)"
+        className="input input-bordered w-full bg-white"
+        name="contact"
+        value={form.contact}
+        onChange={handleInputChange}
+        maxLength={11}
+        pattern="[0-9]*" 
+    />
                 </div>
 
                 <div className="mb-5">

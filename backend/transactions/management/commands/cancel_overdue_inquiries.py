@@ -9,13 +9,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Calculate the date three days ago
-        two_days_ago = timezone.now() - timedelta(seconds=10)
+        three_days_ago = timezone.now() - timedelta(days=3)
         
         # Retrieve inquiries that are still pending and were created more than ten seconds ago
         overdue_reservation_inquiries = Inquiry.objects.filter(
             inquiry_type='Reservation',
             status='Accepted',
-            status_updated_at__lte=two_days_ago
+            status_updated_at__lte=three_days_ago
         )
 
         

@@ -15,6 +15,8 @@ const InventoryTable = ({ type, handleItemAdd }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const { state, dispatch } = useCart();
+  const [showAlert, setShowAlert] = useState(false);
+
 
   const handleItemClick = () => {
     // Call the handleItemAdd function passed from the parent with the item
@@ -22,6 +24,12 @@ const InventoryTable = ({ type, handleItemAdd }) => {
   };
 
   const addToCart = (inventoryId, itemName, displayid, itemId, maxquantity) => {
+
+    setShowAlert(true);
+
+    setTimeout(() => {
+      setShowAlert(false);
+  }, 1000); 
     // Check if the item with the same id already exists in the cart
     const itemExists = state.cartItems.some(
       (item) => item.inventory !== null && item.inventory === inventoryId
@@ -92,6 +100,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     if (type === 1) {
       return (
         <div className="flex flex-col place-items-center">
+        
           {!item.item.returnable &&
             item.quantity > 0 &&
             item.quantity > item.reserved_quantity && (
@@ -289,6 +298,17 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                           : "modal-box max-w-fit"
                       }
                     >
+                      
+                      {showAlert && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="bg-green-500 text-white rounded-lg p-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Item Added!</span>
+                        </div>
+                    </div>
+                )}
                       <div
                         className={
                           item.item.returnable &&
