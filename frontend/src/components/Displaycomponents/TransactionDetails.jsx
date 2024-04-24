@@ -139,7 +139,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
               {transaction.participant.last_name}
             </div>
             <div className="mb-2">
-              Department: {transaction.participant.department}
+              Department: {transaction.participant.department? transaction.participant.department.name: "None"}
             </div>
             <div className="mb-2">
               Position:{" "}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Navbar from '../../components/wholepage/Navbar';
 import { useAuth } from '../../contexts/AuthContext';
 import client from '../../api/client';
@@ -10,25 +10,41 @@ function UserProfilePage() {
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     first_name: userData.user.first_name,
-    department: userData.user.department,
+    department: userData.user.department ? userData.user.department.id : "none",
+    // Store department ID
     contact: userData.user.contact,
   });
+  
+  const [departments, setDepartments] = useState([]);
   //show success message
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const handleEditClick = () => {
     setEditing(true);
   };
-
+  const getDepartments = async () => {
+    try {
+      const response = await client.get("users/departments/");
+      console.log(response.data);
+      setDepartments(response.data);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+  useEffect(() => {
+    getDepartments();
+  }, []);
   // put date udpate user info
   const handleSaveClick = async () => {
     try {
-      const res = await client.put(`users/users/${userData.user.user_id}/edit_user/`, formData);
+      console.log("form",formData)
+      const res = await client.patch(`users/users/${userData.user.user_id}/`, formData);
       setFormData({
         first_name: res.data.first_name,
-        department: res.data.department,
+        department: res.data.department.id, 
         contact: res.data.contact,
       });
+     
       setEditing(false);
       await fetchData();
       setShowSuccessMessage(true);
@@ -38,17 +54,19 @@ function UserProfilePage() {
       }, 3000);
 
     } catch (error) {
-      console.error('Error submitting form data:', error);
+      console.error('Error submitting form data:', error.response); 
     }
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+  
   };
-
+  
 
 
   return (
@@ -82,16 +100,25 @@ function UserProfilePage() {
                 <label>
                   Department:
                   <select
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                  >
-                    <option value="CS">CS</option>
-                    <option value="Nursing">Nursing</option>
-                  </select>
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                >
+            
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+
                 </label>
               ) : (
-                <>Department: {userData.user.department}</>
+                <> 
+                  Department: {userData.user.department ? userData.user.department.name : 'None'}
+                </>
+ 
+   
               )}
             </h2>
             <h2 className="card-title">

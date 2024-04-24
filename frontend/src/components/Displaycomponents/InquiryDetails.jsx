@@ -111,7 +111,8 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
               Name: {inquiry.inquirer.first_name} {inquiry.inquirer.last_name}
             </div>
             <div className="mb-2">
-              Department: {inquiry.inquirer.department}
+              Department: {inquiry.inquirer.department? inquiry.inquirer.department.name: "None"}
+              
             </div>
             <div className="mb-2">
               Position:{" "}

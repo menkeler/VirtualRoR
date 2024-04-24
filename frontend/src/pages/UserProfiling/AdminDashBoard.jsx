@@ -12,6 +12,7 @@ import PostsTable from "../../components/Displaycomponents/PostsTable";
 import ExportDataPage from "./ExportDataPage";
 import DashboardPostPage from "../Dashboard/DashboardPostPage";
 import CreateItemProfile from "../../components/CustomButtons/Inventory/CreateItemProfile";
+import Departments from "../../components/CustomButtons/Users/Departments";
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState("dashboard");
@@ -195,6 +196,7 @@ const AdminDashboard = () => {
               {/* Users */}
               {selectedPage === "users" && (
                 <section className="mb-8">
+                  <Departments/>
                   <AllUsersPage
                     User={handleUserSelection}
                     Type={handleTypeSelection}

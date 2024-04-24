@@ -26,19 +26,23 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(email, password, **extra_fields)
     
+class Department(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+  
+      
 class User(AbstractBaseUser, PermissionsMixin):
     user_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.CharField(max_length=200, unique=True)
     contact = models.CharField(max_length=50, default='', blank=True)
-    department = models.CharField(max_length=255, default='', blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', default='public/default.png')
     date_joined = models.DateTimeField(default=timezone.now)
     enable_notifications = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+    
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'

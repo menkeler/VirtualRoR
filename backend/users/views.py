@@ -10,8 +10,10 @@ from .serializers import (
     UserLoginSerializer,
     UserSerializer,
     StaffSerializer,
+    DepartmentSerializer,
+    CreateUserSerializer
 )
-from .models import User, Staff
+from .models import User, Staff,Department
 from rest_framework.pagination import PageNumberPagination
 
 
@@ -19,19 +21,26 @@ class UserPagination(PageNumberPagination):
     page_size = 30
     page_size_query_param = 'page_size'
     max_page_size = 1000
-
+    
+class DepartmentViewSet(viewsets.ModelViewSet):
+    serializer_class = DepartmentSerializer
+    queryset = Department.objects.all()
+    
 class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
     # permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all().order_by('user_id')
     pagination_class = UserPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['first_name', 'last_name']
     
+    def get_serializer_class(self):
+        if self.action == 'partial_update':
+            return CreateUserSerializer
+        return UserSerializer
+
+    
     def get_queryset(self):
         queryset = super().get_queryset()
-        # Additional filtering based on your requirements
-        # You can customize this further based on your needs
         return queryset
     
     @action(detail=False, methods=['GET'])
@@ -97,14 +106,6 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response({'detail': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    @action(detail=True, methods=['put'])
-    def edit_user(self, request, pk=None):
-        user = self.get_object()
-        serializer = UserSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
          
     @action(detail=True, methods=['post'])
     def become_staff(self, request, pk=None):

@@ -28,8 +28,6 @@ class UserFactory(factory.django.DjangoModelFactory):
         if create:
             max_length = 15
             self.contact = truncatechars(self.contact, max_length)
-
-    department = factory.Faker('word')
     bio = factory.Faker('paragraph')
     date_joined = factory.Faker('date_time_this_decade', tzinfo=timezone.utc)
     is_staff = False

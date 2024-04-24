@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
             Authorization: `Token ${authToken}`,
           },
         });
-
+        console.log(res)
         setIsLoggedIn(true);
         setUserData(res.data);
       }

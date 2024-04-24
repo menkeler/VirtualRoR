@@ -141,7 +141,8 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                       </div>
                     </td>
                     <td className="py-2 px-4 border-b">{user.email}</td>
-                    <td className="py-2 px-4 border-b">{user.department}</td>
+                    <td className="py-2 px-4 border-b">{user.department ? user.department.name : "None"}</td>
+
                     <td className="py-2 px-4 border-b">
                       <span className="badge badge-info badge-lg">
                         {user.staff && user.staff.position !== null
@@ -172,7 +173,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                   />
                   <p className="text-gray-600 mb-2">
                     <span className="font-bold">Department:</span>{" "}
-                    {user.department}
+                    {user.department ? user.department.name : "None"}
                   </p>
                   <p className="text-gray-600 mb-2">
                     <span className="font-bold">Role:</span>{" "}

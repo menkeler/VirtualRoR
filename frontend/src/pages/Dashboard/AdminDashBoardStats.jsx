@@ -172,7 +172,8 @@ const AdminDashBoardStats = () => {
           <p className="text-sm mb-2">Name: {alldata.newestUsers.first_name} {alldata.newestUsers.last_name}</p>
           <p className="text-sm mb-2">Email: {alldata.newestUsers.email}</p>
           <p className="text-sm mb-2">Contact: {alldata.newestUsers.contact}</p>
-          <p className="text-sm mb-2">Department: {alldata.newestUsers.department}</p>
+          <p className="text-sm mb-2">Department: {alldata.newestUsers.departmentt ? alldata.newestUsers.department.name : 'None'}</p>
+
         </div>
       </div>
     </div>
@@ -189,7 +190,8 @@ const AdminDashBoardStats = () => {
           <p className="text-sm mb-2">User: {alldata.latestTransactions.participant.first_name} {alldata.latestTransactions.participant.last_name}</p>
           <p className="text-sm mb-2">Email: {alldata.latestTransactions.participant.email}</p>
           <p className="text-sm mb-2">Contact: {alldata.latestTransactions.participant.contact}</p>
-          <p className="text-sm mb-2">Department: {alldata.latestTransactions.participant.department}</p>
+          <p className="text-sm mb-2">Department: {alldata.latestTransactions.participant.department ? alldata.latestTransactions.participant.department.name : 'None'}</p>
+
         </div>
 
         <div className="text-right">
@@ -219,7 +221,8 @@ const AdminDashBoardStats = () => {
                     <p className="text-sm mb-2">User: {alldata.latestInquiry.inquirer.first_name} {alldata.latestInquiry.inquirer.last_name}</p>
                     <p className="text-sm mb-2">Email: {alldata.latestInquiry.inquirer.email}</p>
                     <p className="text-sm mb-2">Contact: {alldata.latestInquiry.inquirer.contact}</p>
-                    <p className="text-sm mb-2">Department: {alldata.latestInquiry.inquirer.department}</p>
+                    <p className="text-sm mb-2">Department: {alldata.latestInquiry.inquirer.department ? alldata.latestInquiry.inquirer.department.name : 'None'}</p>
+
                   </div>
 
                   <div className="text-right">
