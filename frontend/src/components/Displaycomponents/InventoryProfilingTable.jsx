@@ -76,7 +76,7 @@ const InventoryProfilingTable = ({ onSelectItem, Admin, type }) => {
       <>
         <div className="flex">
           <CreateItemProfile onFormSubmit={handleFormSubmitSuccess} />
-
+          <button className="btn btn-accent mr-2" type='button' onClick={()=>document.getElementById('CategoryList').showModal()}>Categories</button>
           {/* Search bar */}
           <div className="flex ml-2">
             <input

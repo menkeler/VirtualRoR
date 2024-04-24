@@ -11,6 +11,7 @@ import InventoryTable from "../../components/Displaycomponents/InventoryTable";
 import PostsTable from "../../components/Displaycomponents/PostsTable";
 import ExportDataPage from "./ExportDataPage";
 import DashboardPostPage from "../Dashboard/DashboardPostPage";
+import CreateItemProfile from "../../components/CustomButtons/Inventory/CreateItemProfile";
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState("dashboard");
@@ -204,6 +205,7 @@ const AdminDashboard = () => {
               {selectedPage === "inventory" && (
                 <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md md:w-[84vw] lg:w-[64vw]">
                   <div>
+                    
                     <InventoryTable type={2} />
                   </div>
                 </div>

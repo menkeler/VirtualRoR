@@ -6,7 +6,7 @@ import CategoryAdd from './CategoryAdd';
 import EditCategoryForm from '../../Forms/EditCategoryForm';
 import CategoryHook from '../../../hooks/CategoryHook';
 
-const CreateItemProfile = ({onFormSubmit}) => {
+const CreateItemProfile = ({onFormSubmit,type}) => {
   // Instead of single form use state i decided to use it like this more readable
   const {categoryData, loading, error, refetchCategory } = CategoryHook();
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -68,6 +68,8 @@ const CreateItemProfile = ({onFormSubmit}) => {
     setSelectedCategory(null);
   };
 
+ 
+if (type !== null) {
   return (
     <>
       <button className="btn btn-accent mr-3" onClick={() => document.getElementById('ItemProfileModal').showModal()}>
@@ -160,9 +162,44 @@ const CreateItemProfile = ({onFormSubmit}) => {
     </dialog>
       
     </>
+);
+} else {
+  return (
+    <>
+       <button className="btn btn-accent mr-2" type='button' onClick={()=>document.getElementById('CategoryList').showModal()}>Categories</button>
+           {/* Categories Modal */}
+       <dialog id="CategoryList" className="modal">
+        <div className="modal-box w-11/12 max-w-5xl bg-white rounded-lg p-8">
+        
+        
+          <h3 className="font-bold text-2xl mb-4">Categories</h3>
+          <CategoryAdd onFormSubmit={handleFormSubmit} />
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 
-    
+            {/* edit Category FOrm */}
+            {categoryData.map((category) => (
+              <div key={category.id} className="card bg-base-100 p-4 rounded-md shadow-lg">
+                <h2 className="card-title text-xl font-semibold overflow-hidden whitespace-nowrap">
+                  {category.name}
+                </h2>
+                   <EditCategoryForm key={category.id} category={category} onFormSubmit={handleFormSubmit} />
+              </div>
+            ))}
+          </div>
+
+        <div className="modal-action mt-8">
+          <form method="dialog">
+            <button className="btn btn-secondary" onClick={() => document.getElementById('CategoryList').close()}>
+              Close
+            </button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+    </>
   );
+}
+  
 };
 
 export default CreateItemProfile;

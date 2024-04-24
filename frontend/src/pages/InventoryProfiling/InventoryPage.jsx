@@ -14,6 +14,7 @@ const InventoryPage = () => {
 
       <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md md:w-[84vw] lg:w-[64vw]">
         <div>
+
           <InventoryTable type={1} />
         </div>
       </div>
