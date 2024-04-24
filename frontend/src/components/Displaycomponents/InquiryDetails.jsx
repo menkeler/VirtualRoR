@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
 import client from "../../api/client";
 import PostCard from "../../components/Posts/Postcard";
+
 const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [replyMessage, setReplyMessage] = useState("");
+
+
+
+  const handleReplyChange = (e) => {
+    setReplyMessage(e.target.value);
+  };
+
 
   //to confirm inquiries donation and for reserving items
   const handleAccept = async (e, inquiryId, purpose) => {
@@ -10,9 +19,13 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
     e.preventDefault();
     console.log("clicked");
     try {
+      const responseReply = await client.patch(`transactions/inquiries/${inquiryId}/`, {
+        reply: replyMessage
+      });
       const response = await client.post(
         `transactions/confirm_reservation/${inquiryId}/${purpose}/`
       );
+      setReplyMessage("")
       fetchData();
       document.getElementById(`DetailInquiry${inquiryId}`).close();
       console.log("Submission successful:", response.data);
@@ -30,10 +43,13 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
     e.preventDefault();
     console.log("clicked");
     try {
+      const responseReply = await client.patch(`transactions/inquiries/${inquiryId}/`, {
+        reply: replyMessage
+      });
       const response = await client.post(
         `transactions/cancel_reserved_items/${inquiryId}/`
       );
-
+      setReplyMessage("")
       fetchData();
       document.getElementById(`DetailInquiry${inquiryId}`).close();
       console.log("Submission successful:", response.data);
@@ -87,7 +103,7 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
 
           {/* DVIDIER */}
           <div className="flex items-center mx-4 text-gray-500"></div>
-
+              
           {/* User Details */}
           <div className="flex-grow card rounded-box place-items-center p-6">
             <h3 className="font-bold text-lg mb-4">Client Details</h3>
@@ -107,6 +123,16 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
             <div className="mb-2">Contact: {inquiry.inquirer.contact}</div>
           </div>
         </div>
+        <label htmlFor="replyMessage" className="font-bold text-lg mb-2">Reply to Inquiry:</label>
+            <textarea
+              id="replyMessage"
+              value={inquiry.status !== "Pending" ? inquiry.reply : replyMessage}
+              onChange={handleReplyChange}
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              rows={4}
+              required
+              disabled={inquiry.status !== "Pending"}
+            />
         {inquiry.inquiry_type === "Reservation" && (
           <div className="flex flex-col w-full">
             <h3 className="font-bold text-lg mb-4">Inquiry Items</h3>

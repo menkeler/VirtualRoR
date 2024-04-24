@@ -39,7 +39,7 @@
         <p>Hello {{ inquiry.inquirer.first_name }} {{ inquiry.inquirer.last_name }},</p>
         <p>Your inquiry regarding <strong>{{ inquiry.inquiry_type }}</strong> has been updated.</p>
         <p><strong>New Status:</strong> {{ inquiry.status }}</p>
-        <p><strong>Message:</strong> {{ inquiry.message }}</p>
+        <p><strong>Message by the officer:</strong> {{ inquiry.reply }}</p>
         <p>Thank you.</p>
     </div>
     <div class="footer">

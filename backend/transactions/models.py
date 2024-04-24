@@ -28,6 +28,7 @@ class Inquiry(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='inquiries', null=True, blank=True) 
     status_updated_at = models.DateTimeField(default=timezone.now)  # Add a field to track the last update time of the status
+    reply = models.TextField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.status_updated_at = timezone.now()  # Update the status_updated_at field whenever the model is saved
