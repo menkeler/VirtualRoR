@@ -12,16 +12,27 @@ const NewRegularPostPage = () => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
+    
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    const currentDate = new Date();
-    const timestamp = currentDate.getTime(); 
-    const fileName = `${timestamp}_${file.name}`; 
-    const renamedFile = new File([file], fileName, { type: file.type }); 
-    setImage(renamedFile); 
-    setImagePreview(URL.createObjectURL(renamedFile)); 
+    const maxFileSize = 10 * 1024 * 1024; 
+
+    if (file) {
+      if (file.size <= maxFileSize) {
+        const currentDate = new Date();
+        const timestamp = currentDate.getTime(); 
+        const fileName = `${timestamp}_${file.name}`; 
+        const renamedFile = new File([file], fileName, { type: file.type }); 
+        setImage(renamedFile); 
+        setImagePreview(URL.createObjectURL(renamedFile)); 
+      } else {
+   
+        alert("File size exceeds the limit (10 MB). Please select a smaller file.");
+       
+        e.target.value = "";
+      }
+    }
   };
-  
 
   const handleSubmitPost = async (e) => {
     e.preventDefault();

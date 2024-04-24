@@ -37,26 +37,24 @@ const Postcard = ({ Data, onPostClick, display, admin }) => {
         {/* Post Message*/}
         <p className="text-left mb-1 mt-2 break-all">{Data.message}</p>
 
-        {/* Post image */}
-        {Data.images && Data.images.length > 0 && (
+         {/* Post image */}
+         {Data.images && Data.images.length > 0 && (
           <div className="py-2">
-            <div className="flex">
+            <div className="py-2 flex justify-center">
               {Array.isArray(Data.images) ? (
-                Data.images
-                  .slice(0, 3)
-                  .map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Image ${index + 1}`}
-                      className="mr-2 max-w-1/3"
-                    />
-                  ))
+                Data.images.slice(0, 3).map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Image ${index + 1}`}
+                    className="mr-2  w-80 h-80 object-cover"
+                  />
+                ))
               ) : (
                 <img
                   src={Data.images}
                   alt="Post Image"
-                  className="mr-2 max-w-1/3"
+                  className="mr-2  w-80 h-80 object-cover"
                 />
               )}
             </div>

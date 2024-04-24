@@ -189,40 +189,30 @@ const PostsTable = (User) => {
         {posts.map((post, index) => (
           <dialog key={post.id} id={`Detail${post.id}`} className="modal">
             <div className="modal-box w-11/12 max-w-5xl bg-white p-6 rounded-lg shadow-md">
-              <h3 className="font-bold text-2xl mb-4">Post {post.id}</h3>
-              <p className="py-2 font-bold">
-                <strong className="text-blue-500">Title:</strong> {post.title}
-              </p>
-              <p className="py-2">
-                <strong className="text-blue-500">Category:</strong>{" "}
-                {post.category}
-              </p>
-              <p className="py-2 font-bold">
-                <strong className="text-blue-500">Author:</strong>{" "}
-                {post.author.first_name} {post.author.last_name}
-              </p>
-              <p className="py-2">
-                <strong className="text-blue-500">Status:</strong> {post.status}
-              </p>
-
-              {/* Display text area for message */}
-              {post.message && (
-                <div className="py-2">
-                  <strong className="text-blue-500">Message:</strong>
-                  <textarea
-                    value={post.message}
-                    readOnly
-                    disabled // Add this line to make the textarea disabled
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                    rows={4}
-                  />
-                </div>
-              )}
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="font-bold text-2xl mb-4">Post {post.id}</h3>
+                <p className="py-2 font-bold">
+                  <strong className="text-blue-500">Title:</strong> {post.title}
+                </p>
+                <p className="py-2">
+                  <strong className="text-blue-500">Category:</strong>{" "}
+                  {post.category}
+                </p>
+                <p className="py-2 font-bold">
+                  <strong className="text-blue-500">Author:</strong>{" "}
+                  {post.author.first_name} {post.author.last_name}
+                </p>
+                <p className="py-2">
+                  <strong className="text-blue-500">Status:</strong>{" "}
+                  {post.status}
+                </p>
+              </div>
+              <div className="py-1"></div>
 
               {post.images && (
                 <div className="py-2">
-                  <strong className="text-blue-500">Images:</strong>
-                  <div className="flex">
+                  <strong className="text-blue-500">Image:</strong>
+                  <div className="flex justify-center">
                     {Array.isArray(post.images) ? (
                       post.images
                         .slice(0, 3)
@@ -231,19 +221,33 @@ const PostsTable = (User) => {
                             key={index}
                             src={image}
                             alt={`Image ${index + 1}`}
-                            className="mr-2 max-w-1/3"
+                            className="mr-2  w-80 h-80 object-cover"
                           />
                         ))
                     ) : (
                       <img
                         src={post.images}
                         alt="Image 1"
-                        className="mr-2 max-w-1/3"
+                        className="mr-2  w-80 h-80 object-cover"
                       />
                     )}
                   </div>
                 </div>
               )}
+              {post.message && (
+                <div className="py-2 px-2 bg-white rounded-lg shadow-md">
+                  <strong className="text-blue-500">Post Content:</strong>
+                  <textarea
+                    value={post.message}
+                    readOnly
+                    disabled 
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    rows={4}
+                  />
+                </div>
+              )}
+
+              
 
               <p className="py-2 font-bold">
                 <strong className="text-blue-500">Created At:</strong>{" "}
