@@ -13,16 +13,37 @@ UserModel = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name', 'email', 'contact', 'department']
+
 
     def create(self, data):
+        # Check if contact and department are provided in the data
+        contact = data.get('contact')
+        department = data.get('department')
+        
+        # Create the user with required fields
         user = UserModel.objects.create_user(
-            email = data['email'],
-            first_name = data['first_name'],
-            last_name = data['last_name'],
+            email=data['email'],
+            first_name=data['first_name'],
+            last_name=data['last_name'],
             is_staff=False  # Set the is_staff field
         )
+        
+        # Assign optional fields if provided
+        if contact is not None:
+            user.contact = contact
+        if department is not None:
+            try:
+                department = Department.objects.get(id=department)
+                user.department = department
+            except Department.DoesNotExist:
+                # Handle case where department with the provided ID doesn't exist
+                pass
+            
+        user.save()  
+        
         return user
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

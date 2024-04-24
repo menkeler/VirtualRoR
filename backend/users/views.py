@@ -68,6 +68,11 @@ class UserViewSet(viewsets.ModelViewSet):
             'department': user.department,
             'date_joined': user.date_joined,
         }
+        if user.department:
+            department_data = DepartmentSerializer(user.department).data
+            response_data['department'] = department_data
+        else:
+            response_data['department'] = None
 
         return Response(response_data, status=status.HTTP_201_CREATED)
     
