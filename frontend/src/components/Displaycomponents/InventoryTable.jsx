@@ -60,7 +60,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
       setIsFetching(true);
       const authToken = Cookies.get("authToken");
       const encodedSearchQuery = encodeURIComponent(searchQuery);
-
+        
       const response = await client.get(
         `inventory/inventories/?page=${page}&search_category=${category}&search=${encodedSearchQuery}`,
         {
@@ -259,6 +259,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         </thead>
         <tbody className="font-semibold">
           {inventory.map((item) => (
+           
             <React.Fragment key={item.id}>
               <tr
                 className={
