@@ -17,11 +17,35 @@ const InventoryTable = ({ type, handleItemAdd }) => {
   const { state, dispatch } = useCart();
   const [showAlert, setShowAlert] = useState(false);
 
-
+  const filteredInventory = type === 1 ? inventory.filter(item => !item.is_hidden) : inventory;
+  
   const handleItemClick = () => {
     // Call the handleItemAdd function passed from the parent with the item
     handleItemAdd(item);
   };
+
+
+
+
+
+  const changeHide  = async (e,invetory) => {
+    e.preventDefault();
+    const payload = {
+      is_hidden: !invetory.is_hidden
+    };
+    try {
+      const res = await client.patch(`inventory/inventories/${invetory.id}/`, payload);
+
+    } catch (error) {
+      console.error('Error submitting form data:', error.response); 
+    }
+    console.log("Form submitted with payload:", payload);
+    fetchItems(currentPage,"")
+  };
+
+
+
+
 
   const addToCart = (inventoryId, itemName, displayid, itemId, maxquantity) => {
 
@@ -255,10 +279,11 @@ const InventoryTable = ({ type, handleItemAdd }) => {
             <th className="py-3 border-b w-10">Quantity</th>
             <th className="py-3 border-b w-10">Reserved</th>
             <th className="py-3 border-b w-20">Category</th>
+            {type === 2 && <th className="py-3 border-b w-20">Hidden</th>}
           </tr>
         </thead>
         <tbody className="font-semibold">
-          {inventory.map((item) => (
+          {filteredInventory.map((item) => (
            
             <React.Fragment key={item.id}>
               <tr
@@ -288,6 +313,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                 </td>
                 <td className="py-2">{item.quantity}</td>
                 <td className="py-2">{item.reserved_quantity}</td>
+                
                 <td className="py-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
                   {item.item.category.name}
                   {/*Item Panel ----------------------------------------------------------------------------- */}
@@ -310,6 +336,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                         </div>
                     </div>
                 )}
+                
                       <div
                         className={
                           item.item.returnable &&
@@ -365,6 +392,14 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                           <p className="text-gray-400 text-center text-xs font-normal mt-2">
                             ---- click outside to close ----
                           </p>
+                          {type === 2 && ( 
+                           <button
+                           className="btn btn-primary mt-8"
+                           onClick={(e) => changeHide(e, item)}
+                         >
+                           {item.is_hidden ? "Unhide item" : "Hide item"}
+                         </button>
+                        )}
                         </div>
                         {item.item.returnable && item.quantity > 0 && (
                           <div>
@@ -404,8 +439,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                           </div>
                                         ) : copy.condition === "Lost" ? (
                                           <div className="border-2 border-red-900 rounded-lg text-sm text-red-900 w-30 text-center px-4 py-1">
-                                            Donot display this row or Display as
-                                            Lost just change later
+                                            Item Lost
                                           </div>
                                         ) : copy.is_borrowed ? (
                                           <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">
@@ -432,6 +466,11 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                     </form>
                   </dialog>
                 </td>
+                {type === 2 && ( // Render the cell if type is 2
+                <td style={{ color: item.is_hidden ? 'red' : 'green' }}>
+                  {!item.is_hidden ? 'Visible' : 'Hidden'}
+                </td>
+              )}
               </tr>
             </React.Fragment>
           ))}
