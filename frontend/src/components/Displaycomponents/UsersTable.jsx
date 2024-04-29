@@ -8,6 +8,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [totalPages, setTotalPages] = useState(1);
+  const [isEditing, setIsEditing] = useState(false);
   const { userData } = useAuth();
 
   const handleChangeRole = async (e, user_id, role) => {
