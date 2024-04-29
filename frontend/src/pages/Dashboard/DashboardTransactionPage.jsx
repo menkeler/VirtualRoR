@@ -3,65 +3,34 @@ import TransactionDonation from "../../components/Forms/TransactionDonation";
 import TransactionsTable from "../../components/Displaycomponents/TransactionsTable";
 import TransactionRelease from "../../components/Forms/TransactionRelease";
 
-const DashboardTransactionPage = ({ User ,userBack}) => {
-  const [activeComponent, setActiveComponent] = useState("release");
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [rerenderFlag, setRerenderFlag] = useState(false); // State variable to trigger rerender
+const DashboardTransactionPage = ({ User, userBack }) => {
 
-  const toggleComponent = (direction) => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setActiveComponent((prevComponent) =>
-          direction === "next"
-            ? prevComponent === "release"
-              ? "donation"
-              : "release"
-            : prevComponent === "release"
-            ? "donation"
-            : "release"
-        );
-        setIsTransitioning(false);
-      }, 500); // 500 milliseconds = 0.5 seconds
-    }
-  };
-
-  // Function to trigger rerender
-  const forceRerender = () => {
-    setRerenderFlag(prevFlag => !prevFlag);
-  };
+  const [flag, setFlag] = useState(false);
   const backUsers = () => {
-    userBack(User)
+    userBack(User);
   };
-
-  
+  const test = () => {
+    setFlag(!flag); 
+  };
   return (
     <>
-   
       <div className="flex items-center justify-center">
-      {User ? (
-                <button className="btn btn-primary" onClick={backUsers}>Back</button>
-            ) : null}
-      
-        <button
-          disabled={isTransitioning}
-          onClick={() => toggleComponent("prev")}
-          className="mr-4"
-        >
-          <i className="fa-solid fa-arrow-left fa-3x"></i>
-        </button>
-        {activeComponent === "release" && <TransactionRelease refresh={forceRerender}/>}
-        {activeComponent === "donation" && <TransactionDonation refresh={forceRerender} />}
+        {User ? (
+          <button className="btn btn-primary" onClick={backUsers}>
+            Back
+          </button>
+        ) : null}
 
-        <button
-          disabled={isTransitioning}
-          onClick={() => toggleComponent("next")}
-          className="ml-4"
-        >
-          <i className="fa-solid fa-arrow-right fa-3x"></i>
-        </button>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-2">
+            <TransactionRelease refresh={test}/>
+          </div>
+          <div className=" p-2">
+            <TransactionDonation refresh={test}/>
+          </div>
+        </div>
       </div>
-      <TransactionsTable User={User} rerenderFlag={rerenderFlag} />
+      <TransactionsTable User={User} rerenderFlag={flag ? test : null} />
     </>
   );
 };

@@ -16,8 +16,8 @@ const TransactionRelease = ({refresh}) => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const initialPayload = {
-    user_id: "",
-    remarks: "",
+    user_id: null,
+    remarks: null,
     transaction_items: [],
     inquiry: null,
     return_date:null,
@@ -252,6 +252,7 @@ const TransactionRelease = ({refresh}) => {
         // Set loading state back to false to re-enable buttons
         setIsLoading(false);
       }
+
       handleReset();
       refresh()
       document.getElementById("CreateTransaction").close();

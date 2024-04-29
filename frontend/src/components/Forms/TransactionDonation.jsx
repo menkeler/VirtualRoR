@@ -172,7 +172,7 @@ const TransactionDonation = ({ refresh }) => {
     const { user_id, first_name, last_name, email } = selectedUser;
 
     setSelectedUser({ user_id, first_name, last_name, email });
-    document.getElementById("ChooseUser").close();
+    document.getElementById("ChooseUserDonate").close();
   };
 
   const authToken = Cookies.get("authToken");
@@ -315,8 +315,11 @@ const TransactionDonation = ({ refresh }) => {
             console.error("Error:", error);
           }
         }
-        refresh();
+        console.log("TransactionDonation closed")
         document.getElementById("TransactionDonation").close();
+        refresh();
+       
+       
         //Step 4 is at the use effect
         ///ADD fetch table here
       } catch (error) {
@@ -371,7 +374,7 @@ const TransactionDonation = ({ refresh }) => {
                 <button
                   className="btn btn-accent"
                   onClick={() =>
-                    document.getElementById("ChooseUser").showModal()
+                    document.getElementById("ChooseUserDonate").showModal()
                   }
                 >
                   Choose user
@@ -379,7 +382,7 @@ const TransactionDonation = ({ refresh }) => {
               </div>
             </h1>
             {/* User Modal Content */}
-            <dialog id="ChooseUser" className="modal">
+            <dialog id="ChooseUserDonate" className="modal">
               <div className="modal-box w-11/12 max-w-5xl h-full">
                 <h3 className="font-bold text-lg">Users</h3>
                 <UsersTable type={2} onSelectUser={handleUserIdChange} />
@@ -408,7 +411,7 @@ const TransactionDonation = ({ refresh }) => {
             <CreateItemProfile />
             <button
               className="btn btn-accent"
-              onClick={() => document.getElementById("ChooseItems").showModal()}
+              onClick={() => document.getElementById("ChooseItemsDonate").showModal()}
             >
               Select Items
             </button>
@@ -455,7 +458,7 @@ const TransactionDonation = ({ refresh }) => {
                               className="bg-green-500 text-white px-2 py-1 rounded"
                               onClick={() => {
                                 handleAddCopy({ id: item.id, name: item.name });
-                                document.getElementById("AddCopy").showModal();
+                                document.getElementById("AddCopyDonate").showModal();
                               }}
                             >
                               Add Copy
@@ -535,7 +538,7 @@ const TransactionDonation = ({ refresh }) => {
           </div>
 
           {/* Item profile Content */}
-          <dialog id="ChooseItems" className="modal">
+          <dialog id="ChooseItemsDonate" className="modal">
             <div className="modal-box w-11/12 max-w-5xl h-full">
               <h3 className="font-bold text-lg">Items Here</h3>
 
@@ -551,7 +554,7 @@ const TransactionDonation = ({ refresh }) => {
 
           {/* Item Copy Input */}
           <dialog
-            id="AddCopy"
+            id="AddCopyDonate"
             className="modal fixed inset-0 z-50 overflow-y-auto"
           >
             <div className="modal-box mx-auto max-w-2xl p-6 bg-white rounded-lg shadow-lg">

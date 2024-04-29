@@ -27,6 +27,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
     e.preventDefault();
 
     if (selectStatus && selectedCondition) {
+      
       try {
         setLoading(true);
         if (selectStatus === "Returned") {
@@ -102,8 +103,8 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
 
   return (
     <dialog
-      key={`Detail${transaction.id}`}
-      id={`Detail${transaction.id}`}
+      key={`DetailTransaction${transaction.id}`}
+      id={`DetailTransaction${transaction.id}`}
       className="modal"
     >
       <div className="modal-box w-11/12 max-w-5xl">
@@ -384,7 +385,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
             <button
               className="btn"
               onClick={() =>
-                document.getElementById(`Detail${transaction.id}`).close()
+                document.getElementById(`DetailTransaction${transaction.id}`).close()
               }
             >
               Close
