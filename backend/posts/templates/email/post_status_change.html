@@ -82,7 +82,7 @@
             </div>
             <div class="content">
                 <p>Hello {{ post.author.first_name }} {{ post.author.last_name }},</p>
-                <p>Your post "{{ post.title }}" has been updated.</p>
+                <p>Your post "{{ post.title }}" (ID: {{ post.id }}) has been updated.</p>
                 <p><strong>New Status:</strong> {{ post.status }}</p>
                 <p><strong>Message:</strong> {{ post.message }}</p>
                 <p>Thank you.</p>

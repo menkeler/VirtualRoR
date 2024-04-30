@@ -35,6 +35,12 @@ const PostsTable = (User) => {
   };
 
   const handleChangePostStatus = async (e, post_id, status) => {
+    // Display a confirmation dialog
+    const confirmAction = window.confirm("Are you sure you want to change the post status?");
+    
+    // If the user cancels the action, exit the function
+    if (!confirmAction) return;
+  
     setIsLoading(true);
     try {
       const response = await client.patch(`posts/posts/${post_id}/`, {
@@ -51,6 +57,7 @@ const PostsTable = (User) => {
       setIsLoading(false);
     }
   };
+  
 
   const handleStatusQuery = function (e, status) {
     e.preventDefault();
@@ -158,7 +165,11 @@ const PostsTable = (User) => {
                   }
                 >
                   <td className="py-4 px-6 border-b ">{post.id}</td>
-                  <td className="py-4 px-6 border-b ">{post.title}</td>
+                  <td className="py-4 px-6 border-b ">
+                    {post.title.length > 20
+                      ? `${post.title.substring(0, 20)}...`
+                      : post.title}
+                  </td>
                   <td className="py-4 px-6 border-b ">{post.category}</td>
                   <td className="py-4 px-6 border-b ">
                     {post.message && post.message.length > 30
@@ -240,14 +251,12 @@ const PostsTable = (User) => {
                   <textarea
                     value={post.message}
                     readOnly
-                    disabled 
+                    disabled
                     className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                     rows={4}
                   />
                 </div>
               )}
-
-              
 
               <p className="py-2 font-bold">
                 <strong className="text-blue-500">Created At:</strong>{" "}

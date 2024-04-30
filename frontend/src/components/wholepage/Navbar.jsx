@@ -109,13 +109,12 @@ const Navbar = () => {
             {/* Cart Button ---------------------------------------------------------------------- */}
             {isLoggedIn ? (
               <div className="lg:flex-none gap-2 lg:flex items-center">
-                
                 <label htmlFor="my-drawer" className="btn-glass drawer-button">
                   <div
                     tabIndex={0}
-                      role="button"
-                      className="btn btn-ghost btn-circle"
-                  > 
+                    role="button"
+                    className="btn btn-ghost btn-circle"
+                  >
                     <div className="indicator">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -137,27 +136,27 @@ const Navbar = () => {
                     </div>
                     <span className="text-sm font-semibold">Reserve</span>
                   </div>
-                  </label>
-         <div className="drawer">
-  <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-  <div className="drawer-content">
-    {/* Page content here */}
-   
-  </div> 
-  <div className="drawer-side">
-    <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-    <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-     <CartPage/>
-      
-    </ul>
-  </div>
-</div>
-
-
-
-       
-
-
+                </label>
+                <div className="drawer">
+                  <input
+                    id="my-drawer"
+                    type="checkbox"
+                    className="drawer-toggle"
+                  />
+                  <div className="drawer-content">
+                    {/* Page content here */}
+                  </div>
+                  <div className="drawer-side">
+                    <label
+                      htmlFor="my-drawer"
+                      aria-label="close sidebar"
+                      className="drawer-overlay"
+                    ></label>
+                    <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+                      <CartPage />
+                    </ul>
+                  </div>
+                </div>
 
                 {/* User Info ---------------------------------------------------------------------- */}
                 <div className="dropdown dropdown-end">
@@ -181,10 +180,10 @@ const Navbar = () => {
                       className="btn btn-ghost btn-circle avatar"
                     >
                       <div className="w-12 rounded-full">
-                        <img
-                          src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                          alt="User Avatar"
-                        />
+                      <img
+                              src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"
+                              alt="Avatar"
+                            />
                       </div>
                     </label>
                   </div>

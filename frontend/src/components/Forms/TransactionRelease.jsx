@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import InventoryTable from "../Displaycomponents/InventoryTable";
 import UsersTable from "../Displaycomponents/UsersTable";
 import ManualUserCreation from "../CustomButtons/Transactions/ManualUserCreation";
-const TransactionRelease = ({refresh}) => {
+const TransactionRelease = ({ refresh }) => {
   const [inquiries, setInquiries] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
@@ -20,7 +20,7 @@ const TransactionRelease = ({refresh}) => {
     remarks: null,
     transaction_items: [],
     inquiry: null,
-    return_date:null,
+    return_date: null,
   };
 
   const [payload, setPayload] = useState(initialPayload);
@@ -41,16 +41,15 @@ const TransactionRelease = ({refresh}) => {
     }));
     setCurrentUser({ user_id, first_name, last_name, email });
     console.log(`Selected user in TransactionDonation:`, selectedUser);
-    document.getElementById("ChooseUser").close();
+    document.getElementById("ChooseUserRelease").close();
   };
-
 
   const handleReset = () => {
     setCurrentUser("");
     setSelectedInquiry(null); //
     setPayload(initialPayload);
     setRemarks("");
-    setReturnDate(null); 
+    setReturnDate(null);
   };
 
   const addItemToPayload = (item) => {
@@ -185,7 +184,6 @@ const TransactionRelease = ({refresh}) => {
         ...newTransactionItems,
         ...prevState.transaction_items,
       ],
-    
     }));
     console.log("Updated payload of all", payload);
 
@@ -199,7 +197,7 @@ const TransactionRelease = ({refresh}) => {
   };
   const handleDateSelected = (e) => {
     setReturnDate(e.target.value);
-};
+  };
 
   //user token ehre for now
 
@@ -208,15 +206,15 @@ const TransactionRelease = ({refresh}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    if (payload.transaction_items.length > 0 && returnDate) {
+    if (payload.transaction_items.length > 0) {
       console.log("submit");
 
       try {
         // Assuming payload is an object containing transaction-related data
         const updatedPayload = {
           ...payload, // Copy existing payload data
-          remarks: Remarks,// Update remarks with the new value
-          return_date: returnDate, 
+          remarks: Remarks, // Update remarks with the new value
+          return_date: returnDate,
         };
 
         // Now you can use the updatedPayload in your application
@@ -248,13 +246,13 @@ const TransactionRelease = ({refresh}) => {
       } catch (error) {
         // Handle error
         console.error("Error:", error);
-      }finally {
+      } finally {
         // Set loading state back to false to re-enable buttons
         setIsLoading(false);
       }
 
       handleReset();
-      refresh()
+      refresh();
       document.getElementById("CreateTransaction").close();
     }
   };
@@ -279,7 +277,7 @@ const TransactionRelease = ({refresh}) => {
               <button
                 className="btn btn-accent ml-2" // Use Tailwind spacing utility classes to add margin
                 onClick={() =>
-                  document.getElementById("ChooseUser").showModal()
+                  document.getElementById("ChooseUserRelease").showModal()
                 }
               >
                 Choose user
@@ -297,7 +295,7 @@ const TransactionRelease = ({refresh}) => {
               <button
                 className="btn mx-2 mt-2"
                 onClick={() =>
-                  document.getElementById("SelectInventory").showModal()
+                  document.getElementById("SelectInventoryRelease").showModal()
                 }
                 disabled={!currentUser}
               >
@@ -317,7 +315,7 @@ const TransactionRelease = ({refresh}) => {
                 </h3>
               </>
             )}
-             
+
             <h1 className="mb-4">
               <div className="flex items-center space-x-4 mt-3">
                 {currentUser && (
@@ -341,27 +339,31 @@ const TransactionRelease = ({refresh}) => {
               </div>
             </h1>
 
-           
             {currentUser && (
               <>
-        
-         
-      <h3 className="font-bold mt-3 text-lg">Return Date</h3>
-      <div className="date-selector-container">
-        <label htmlFor="datePicker">Select a date:</label>
-        <input 
-          type="date" 
-          id="datePicker" 
-          value={returnDate} 
-          onChange={handleDateSelected} 
-          className="input input-bordered w-full max-w-xs"
-          min={new Date().toISOString().split('T')[0]}
-          max={(new Date(new Date().getTime() + 100 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0]}
-           
-        />
-      </div>
-   
-  
+                {payload.transaction_items.some((item) => item.item) && (
+                  <>
+                    <h3 className="font-bold mt-3 text-lg">Return Date</h3>
+                    <div className="date-selector-container">
+                      <label htmlFor="datePicker">Select a date:</label>
+                      <input
+                        type="date"
+                        id="datePicker"
+                        value={returnDate}
+                        onChange={handleDateSelected}
+                        className="input input-bordered w-full max-w-xs"
+                        min={new Date().toISOString().split("T")[0]}
+                        max={
+                          new Date(
+                            new Date().getTime() + 100 * 24 * 60 * 60 * 1000
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        }
+                      />
+                    </div>
+                  </>
+                )}
               </>
             )}
 
@@ -374,7 +376,7 @@ const TransactionRelease = ({refresh}) => {
                     <th className="text-center">ID</th>
                     <th className="text-center">Name</th>
                     <th className="text-center">Category</th>
-                    <th className="text-center">Quantity/Condition</th>               
+                    <th className="text-center">Quantity/Condition</th>
                     <th className="text-center">Action</th>
                   </tr>
                 </thead>
@@ -386,14 +388,13 @@ const TransactionRelease = ({refresh}) => {
                         {result.item ? ( // If the item exists
                           <>
                             <td className="truncate text-center">
-                            
                               ID: {result.item.display_id}
                             </td>
                             <td className="text-center">
-                            {result.item.inventory.itemprofiling.item_name}{" "}
+                              {result.item.inventory.itemprofiling.item_name}{" "}
                             </td>
                             <td className="text-center">
-                            {result.item.inventory.category.name}{" "}
+                              {result.item.inventory.category.name}{" "}
                             </td>
                             <td className="text-center">
                               {result.item.condition}
@@ -406,16 +407,15 @@ const TransactionRelease = ({refresh}) => {
                               ID: {result.inventory.id}
                             </td>
                             <td className="text-center">
-                            {result.inventory.item.name}
+                              {result.inventory.item.name}
                             </td>
                             <td className="text-center">
-                              
                               {result.inventory.item.category.name}
                             </td>
 
                             <td className="text-center">
                               <input
-                              className="input input-bordered w-full max-w-xs"
+                                className="input input-bordered w-full max-w-xs"
                                 type="number"
                                 min="1"
                                 max={
@@ -467,7 +467,7 @@ const TransactionRelease = ({refresh}) => {
                 Submit
               </button>
 
-              <button className="btn">Close</button>
+              <button className="btn" onClick={handleReset}>Close</button>
             </form>
           </div>
         </div>
@@ -504,7 +504,7 @@ const TransactionRelease = ({refresh}) => {
                     <thead>
                       <tr>
                         <th></th>
-                        
+
                         <th className="text-center">Name</th>
                         <th className="text-center">Quantity/Condition</th>
                       </tr>
@@ -516,8 +516,7 @@ const TransactionRelease = ({refresh}) => {
                           {result.item ? (
                             <>
                               <td className="truncate text-center">
-                                ID: {result.item.display_id}    
-                                  {' '}
+                                ID: {result.item.display_id}{" "}
                                 {result.item.inventory.itemprofiling.item_name}
                               </td>
                               <td className="text-center">
@@ -557,7 +556,7 @@ const TransactionRelease = ({refresh}) => {
 
       {/* inventor ymodal */}
 
-      <dialog id="SelectInventory" className="modal">
+      <dialog id="SelectInventoryRelease" className="modal">
         <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md md:w-[84vw] lg:w-[64vw]">
           <div>
             <InventoryTable handleItemAdd={handleItemAdd} />
@@ -568,7 +567,7 @@ const TransactionRelease = ({refresh}) => {
         </div>
       </dialog>
       {/* User Modal Content */}
-      <dialog id="ChooseUser" className="modal">
+      <dialog id="ChooseUserRelease" className="modal">
         <div className="modal-box w-11/12 max-w-5xl h-full">
           <h3 className="font-bold text-lg">Users</h3>
           <UsersTable type={2} onSelectUser={handleSelectUser} />

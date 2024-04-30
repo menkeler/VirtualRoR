@@ -17,43 +17,37 @@ const InventoryTable = ({ type, handleItemAdd }) => {
   const { state, dispatch } = useCart();
   const [showAlert, setShowAlert] = useState(false);
 
-  const filteredInventory = type === 1 ? inventory.filter(item => !item.is_hidden) : inventory;
-  
+  const filteredInventory =
+    type === 1 ? inventory.filter((item) => !item.is_hidden) : inventory;
+
   const handleItemClick = () => {
     // Call the handleItemAdd function passed from the parent with the item
     handleItemAdd(item);
   };
 
-
-
-
-
-  const changeHide  = async (e,invetory) => {
+  const changeHide = async (e, invetory) => {
     e.preventDefault();
     const payload = {
-      is_hidden: !invetory.is_hidden
+      is_hidden: !invetory.is_hidden,
     };
     try {
-      const res = await client.patch(`inventory/inventories/${invetory.id}/`, payload);
-
+      const res = await client.patch(
+        `inventory/inventories/${invetory.id}/`,
+        payload
+      );
     } catch (error) {
-      console.error('Error submitting form data:', error.response); 
+      console.error("Error submitting form data:", error.response);
     }
     console.log("Form submitted with payload:", payload);
-    fetchItems(currentPage,"")
+    fetchItems(currentPage, "");
   };
 
-
-
-
-
   const addToCart = (inventoryId, itemName, displayid, itemId, maxquantity) => {
-
     setShowAlert(true);
 
     setTimeout(() => {
       setShowAlert(false);
-  }, 1000); 
+    }, 1000);
     // Check if the item with the same id already exists in the cart
     const itemExists = state.cartItems.some(
       (item) => item.inventory !== null && item.inventory === inventoryId
@@ -84,7 +78,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
       setIsFetching(true);
       const authToken = Cookies.get("authToken");
       const encodedSearchQuery = encodeURIComponent(searchQuery);
-        
+
       const response = await client.get(
         `inventory/inventories/?page=${page}&search_category=${category}&search=${encodedSearchQuery}`,
         {
@@ -124,7 +118,6 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     if (type === 1) {
       return (
         <div className="flex flex-col place-items-center">
-        
           {!item.item.returnable &&
             item.quantity > 0 &&
             item.quantity > item.reserved_quantity && (
@@ -284,7 +277,6 @@ const InventoryTable = ({ type, handleItemAdd }) => {
         </thead>
         <tbody className="font-semibold">
           {filteredInventory.map((item) => (
-           
             <React.Fragment key={item.id}>
               <tr
                 className={
@@ -313,7 +305,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                 </td>
                 <td className="py-2">{item.quantity}</td>
                 <td className="py-2">{item.reserved_quantity}</td>
-                
+
                 <td className="py-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
                   {item.item.category.name}
                   {/*Item Panel ----------------------------------------------------------------------------- */}
@@ -325,18 +317,27 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                           : "modal-box max-w-fit"
                       }
                     >
-                      
                       {showAlert && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="bg-green-500 text-white rounded-lg p-8">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <div className="fixed inset-0 flex items-center justify-center z-50">
+                          <div className="bg-green-500 text-white rounded-lg p-8">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="stroke-current shrink-0 h-6 w-6 mr-2"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
                             </svg>
                             <span>Item Added!</span>
+                          </div>
                         </div>
-                    </div>
-                )}
-                
+                      )}
+
                       <div
                         className={
                           item.item.returnable &&
@@ -392,14 +393,14 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                           <p className="text-gray-400 text-center text-xs font-normal mt-2">
                             ---- click outside to close ----
                           </p>
-                          {type === 2 && ( 
-                           <button
-                           className="btn btn-primary mt-8"
-                           onClick={(e) => changeHide(e, item)}
-                         >
-                           {item.is_hidden ? "Unhide item" : "Hide item"}
-                         </button>
-                        )}
+                          {type === 2 && (
+                            <button
+                              className="btn btn-primary mt-8"
+                              onClick={(e) => changeHide(e, item)}
+                            >
+                              {item.is_hidden ? "Unhide item" : "Hide item"}
+                            </button>
+                          )}
                         </div>
                         {item.item.returnable && item.quantity > 0 && (
                           <div>
@@ -419,41 +420,47 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {item.item_copies.map((copy, index) => (
-                                    <tr
-                                      key={index}
-                                      className={
-                                        index % 2 === 0 ? "bg-gray-100" : ""
-                                      }
-                                    >
-                                      <td className="py-2 px-4 border-b">
-                                        {copy.display_id}
-                                      </td>
-                                      <td className="py-2 px-4 border-b">
-                                        {copy.condition}
-                                      </td>
-                                      <td className="py-2 px-4 border-b">
-                                        {copy.is_reserved ? (
-                                          <div className="border-2 border-blue-500 rounded-lg text-sm text-blue-500 w-30 text-center px-4 py-1">
-                                            Reserved
-                                          </div>
-                                        ) : copy.condition === "Lost" ? (
-                                          <div className="border-2 border-red-900 rounded-lg text-sm text-red-900 w-30 text-center px-4 py-1">
-                                            Item Lost
-                                          </div>
-                                        ) : copy.is_borrowed ? (
-                                          <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">
-                                            Borrowed
-                                          </div>
-                                        ) : (
-                                          <div className="border-2 border-emerald-500 rounded-lg text-sm text-emerald-500 w-30 text-center px-4 py-1">
-                                            Available
-                                          </div>
-                                        )}
-                                      </td>
-                                      {CopyTable(item, copy)}
-                                    </tr>
-                                  ))}
+                                  {item.item_copies.map((copy, index) => {
+                                    if (type === 1 && copy.condition === "Lost") {
+                                      return null; // Skip rendering the row if type is 1 and copy status is Lost 
+                                    }
+
+                                    return (
+                                      <tr
+                                        key={index}
+                                        className={
+                                          index % 2 === 0 ? "bg-gray-100" : ""
+                                        }
+                                      >
+                                        <td className="py-2 px-4 border-b">
+                                          {copy.display_id}
+                                        </td>
+                                        <td className="py-2 px-4 border-b">
+                                          {copy.condition}
+                                        </td>
+                                        <td className="py-2 px-4 border-b">
+                                          {copy.is_reserved ? (
+                                            <div className="border-2 border-blue-500 rounded-lg text-sm text-blue-500 w-30 text-center px-4 py-1">
+                                              Reserved
+                                            </div>
+                                          ) : copy.condition === "Lost" ? (
+                                            <div className="border-2 border-red-900 rounded-lg text-sm text-red-900 w-30 text-center px-4 py-1">
+                                              Item Lost
+                                            </div>
+                                          ) : copy.is_borrowed ? (
+                                            <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">
+                                              Borrowed
+                                            </div>
+                                          ) : (
+                                            <div className="border-2 border-emerald-500 rounded-lg text-sm text-emerald-500 w-30 text-center px-4 py-1">
+                                              Available
+                                            </div>
+                                          )}
+                                        </td>
+                                        {CopyTable(item, copy)}
+                                      </tr>
+                                    );
+                                  })}
                                 </tbody>
                               </table>
                             </div>
@@ -467,10 +474,10 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                   </dialog>
                 </td>
                 {type === 2 && ( // Render the cell if type is 2
-                <td style={{ color: item.is_hidden ? 'red' : 'green' }}>
-                  {!item.is_hidden ? 'Visible' : 'Hidden'}
-                </td>
-              )}
+                  <td style={{ color: item.is_hidden ? "red" : "green" }}>
+                    {!item.is_hidden ? "Visible" : "Hidden"}
+                  </td>
+                )}
               </tr>
             </React.Fragment>
           ))}

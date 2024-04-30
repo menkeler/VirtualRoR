@@ -615,7 +615,7 @@ const TransactionDonation = ({ refresh }) => {
               >
                 Submit
               </button>
-              <button className="btn btn-error">Close</button>
+              <button className="btn btn-error" onClick={resetState}>Close</button>
             </form>
           </div>
         </div>

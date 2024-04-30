@@ -15,25 +15,35 @@ const NewRegularPostPage = () => {
     
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    const maxFileSize = 10 * 1024 * 1024; 
-
+    const maxFileSize = 5 * 1024 * 1024; // 5MB limit
+  
     if (file) {
+      // Check file size
       if (file.size <= maxFileSize) {
-        const currentDate = new Date();
-        const timestamp = currentDate.getTime(); 
-        const fileName = `${timestamp}_${file.name}`; 
-        const renamedFile = new File([file], fileName, { type: file.type }); 
-        setImage(renamedFile); 
-        setImagePreview(URL.createObjectURL(renamedFile)); 
+        // Check file extension
+        const extension = file.name.split(".").pop().toLowerCase();
+        if (extension === "png" || extension === "jpg" || extension === "jpeg") {
+          // Rename file with timestamp
+          const currentDate = new Date();
+          const timestamp = currentDate.getTime(); 
+          const fileName = `${timestamp}_${file.name}`; 
+          const renamedFile = new File([file], fileName, { type: file.type }); 
+          // Set image state and preview
+          setImage(renamedFile); 
+          setImagePreview(URL.createObjectURL(renamedFile)); 
+        } else {
+          alert("Only PNG and JPG images are allowed.");
+          // Clear the file input if the selected file is not a PNG or JPG
+          e.target.value = null;
+        }
       } else {
-   
-        alert("File size exceeds the limit (10 MB). Please select a smaller file.");
-       
-        e.target.value = "";
+        alert("File size exceeds the limit (5 MB). Please select a smaller file.");
+        // Clear the file input if the file size exceeds the limit
+        e.target.value = null;
       }
     }
   };
-
+  
   const handleSubmitPost = async (e) => {
     e.preventDefault();
 
@@ -123,7 +133,7 @@ const NewRegularPostPage = () => {
                 </div>
               )}
             </div>
-
+            {userData.user.staff && (
             <div className="mb-5">
               <h2 className="text-base font-bold mb-2 text-left">Type</h2>
               <select
@@ -137,6 +147,7 @@ const NewRegularPostPage = () => {
                 )}
               </select>
             </div>
+             )}
           </div>
           <button type="submit" className="btn btn-accent mb-32">
             Publish

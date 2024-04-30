@@ -82,7 +82,7 @@
             </div>
             <div class="content">
                 <p>Hello {{ inquiry.inquirer.first_name }} {{ inquiry.inquirer.last_name }},</p>
-                <p>Your inquiry regarding <strong>{{ inquiry.inquiry_type }}</strong> has been updated.</p>
+                <p>Your inquiry ID: {{ inquiry.id }} regarding <strong>{{ inquiry.inquiry_type }}</strong> has been updated.</p>
                 <p><strong>New Status:</strong> {{ inquiry.status }}</p>
                 <p><strong>Message:</strong> {{ inquiry.message }}</p>
                 <p>Thank you.</p>

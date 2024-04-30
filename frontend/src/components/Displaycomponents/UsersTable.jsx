@@ -31,14 +31,15 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
     fetchData();
   }, []);
 
-
   const openModal = (user) => {
     // Update the form data with the values from the clicked user
     setFormData({
       first_name: user.first_name,
       last_name: user.last_name,
       contact: user.contact,
-      department: user.department,
+      department: user.department ? user.department.id : null
+
+
     });
     // Show the modal
     document.getElementById(`Detail${user.user_id}`).showModal();
@@ -52,26 +53,24 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
     });
   };
 
-  const handleFormSubmit  = async (e,user) => {
+  const handleFormSubmit = async (e, user) => {
     e.preventDefault();
     // Here you can create the payload and handle the form submission
     const payload = {
       first_name: formData.first_name,
       last_name: formData.last_name,
       contact: formData.contact,
-      department: formData.department
+      department: formData.department,
     };
-
 
     try {
       const res = await client.patch(`users/users/${user}/`, formData);
-
     } catch (error) {
-      console.error('Error submitting form data:', error.response); 
+      console.error("Error submitting form data:", error.response);
     }
     console.log("Form submitted with payload:", payload);
-    setIsEditing(false)
-    fetchUsers(currentPage)
+    setIsEditing(false);
+    fetchUsers(currentPage);
   };
 
   const toggleEditing = () => {
@@ -236,7 +235,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                       className="btn btn-primary absolute top-0 right-0 m-4"
                       onClick={toggleEditing}
                     >
-                      {isEditing ? "Save Changes" : "Edit"}
+                      {isEditing ? "Close Edit" : "Edit"}
                     </button>
                   </div>
                 </div>
@@ -244,7 +243,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                   {/* Conditionally render input fields if isEditing is true */}
                   {isEditing ? (
                     <>
-                    <form onSubmit={(e) => handleFormSubmit(e, user.user_id)}>
+                      <form onSubmit={(e) => handleFormSubmit(e, user.user_id)}>
                         <div className="flex flex-col space-y-2 items-center">
                           <img
                             src={`https://randomuser.me/api/portraits/men/${user.user_id}.jpg`}
@@ -295,22 +294,23 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                                 </button>
                               )}
                           </p>
-<label>
-                  Department:
-                  <select
-                  name="department"
-                  value={formData.department}
-                  onChange={handleInputChange}
-                >
-            
-                  {departments.map((department) => (
-                    <option key={department.id} value={department.id}>
-                      {department.name}
-                    </option>
-                  ))}
-                </select>
-
-                </label>
+                          <label>
+                            Department:
+                            <select
+                              name="department"
+                              value={formData.department}
+                              onChange={handleInputChange}
+                            >
+                              {departments.map((department) => (
+                                <option
+                                  key={department.id}
+                                  value={department.id}
+                                >
+                                  {department.name}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
                           <p className="text-gray-600 mb-2">
                             <span className="font-bold">Email:</span>{" "}
                             {user.email}
