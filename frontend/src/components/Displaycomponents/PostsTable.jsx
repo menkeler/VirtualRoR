@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../wholepage/Navbar";
 
 import client from "../../api/client";
-const PostsTable = (User) => {
+const PostsTable = ({ User, Admin }) => {
   const [typeQuery, setTypeQuery] = useState("");
   const [statusQuery, setStatusQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,11 +36,13 @@ const PostsTable = (User) => {
 
   const handleChangePostStatus = async (e, post_id, status) => {
     // Display a confirmation dialog
-    const confirmAction = window.confirm("Are you sure you want to change the post status?");
-    
+    const confirmAction = window.confirm(
+      "Are you sure you want to change the post status?"
+    );
+
     // If the user cancels the action, exit the function
     if (!confirmAction) return;
-  
+
     setIsLoading(true);
     try {
       const response = await client.patch(`posts/posts/${post_id}/`, {
@@ -57,7 +59,6 @@ const PostsTable = (User) => {
       setIsLoading(false);
     }
   };
-  
 
   const handleStatusQuery = function (e, status) {
     e.preventDefault();
@@ -126,20 +127,21 @@ const PostsTable = (User) => {
         >
           <option value="">All</option>
           <option value="Regular">Regular</option>
-          <option value="News">News</option>
           <option value="Announcements">Announcements</option>
         </select>
 
-        <input
-          type="text"
-          name="my_tabs_1"
-          role="tab"
-          value={searchQuery}
-          aria-label="Search"
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search users..."
-          className="tab text-left ml-4"
-        />
+        {Admin && (
+          <input
+            type="text"
+            name="my_tabs_1"
+            role="tab"
+            value={searchQuery}
+            aria-label="Search"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search users..."
+            className="tab text-left ml-4"
+          />
+        )}
       </div>
 
       <div className=" overflow-x-auto">
@@ -264,7 +266,7 @@ const PostsTable = (User) => {
               </p>
               <div className="modal-action mt-8">
                 <form method="dialog">
-                  {post.status === "Pending" && (
+                  {post.status === "Pending" && Admin && (
                     <>
                       <button
                         className="btn bg-green-500 text-white hover:bg-blue-600"

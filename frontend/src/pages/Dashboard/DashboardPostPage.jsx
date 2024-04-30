@@ -12,7 +12,7 @@ const DashboardPostPage = ({User,userBack}) => {
                 <button className="btn btn-primary" onClick={backUsers}>Back</button>
             ) : null}
 
-                <PostsTable User={User} />
+                <PostsTable User={User} Admin={true} />
     
       
   </>
