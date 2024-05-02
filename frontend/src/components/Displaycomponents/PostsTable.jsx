@@ -10,7 +10,6 @@ const PostsTable = ({ User, Admin }) => {
   const [posts, setPosts] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const UserId = User ? User : "";
 
   useEffect(() => {
     fetchPosts(currentPage, statusQuery, typeQuery);
@@ -22,7 +21,7 @@ const PostsTable = ({ User, Admin }) => {
       const encodedSearchQuery = encodeURIComponent(searchQuery);
       const response = await client.get(
         `posts/posts/?page=${page}&status=${status}&category=${type}&user=${
-          UserId.User ? UserId.User : ""
+          User ? User : ""
         }`
       );
       setPosts(response.data.results);
