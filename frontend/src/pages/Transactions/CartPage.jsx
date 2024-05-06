@@ -55,7 +55,7 @@ const CartPage = () => {
   //Reservation Functions----------------------------------------------------------------
 
   const handleSubmit = async (e) => {
-    setIsLoading(true)
+    setIsLoading(true);
     e.preventDefault();
     const authToken = Cookies.get("authToken");
     if (message && datePreferred) {
@@ -108,7 +108,7 @@ const CartPage = () => {
             },
           }
         );
-     
+
         // if (responseinquiryItems.status === 201) {
         //   // Successful response
         //   console.log('Request was successful:', responseinquiryItems.data);
@@ -118,7 +118,7 @@ const CartPage = () => {
         // }
       } catch (error) {
         console.error("Error:", error);
-      }finally {
+      } finally {
         // Set loading state back to false to re-enable buttons
         setIsLoading(false);
       }
@@ -156,7 +156,6 @@ const CartPage = () => {
 
   return (
     <>
-  
       <div className="md:container mx-auto md:px-4">
         <div className="bg-gray-100 p-4 rounded-md mt-5 shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Your Cart</h2>
@@ -174,14 +173,23 @@ const CartPage = () => {
                 key={index}
                 className="bg-white p-4 mb-4 rounded-md shadow-md flex flex-col md:flex-row items-center justify-between"
               >
-                <div className="mb-2 md:mb-0 md:mr-4">
-                {cartItem.displayid && (
-                  <p className="text-lg font-semibold text-left">ID: {cartItem.displayid}</p>
-                )}
-                  <p className="text-lg font-semibold text-left">Name: {cartItem.name}</p>
+                <div className="mb-2 md:mb-0 md:mr-4 flex-1">
+                  {" "}
+                  {/* Added flex-1 to allow the container to grow */}
+                  {cartItem.displayid && (
+                    <p className="text-lg font-semibold text-left">
+                      ID: {cartItem.displayid}
+                    </p>
+                  )}
+                  <p className="text-lg font-semibold text-left">
+                    Name: {cartItem.name}
+                  </p>
                   {!cartItem.item && (
-                    <>
-                      <p className="text-gray-600">Quantity:</p>
+                    <div className="flex items-center">
+                      {" "}
+                      {/* Wrapped the quantity input and label in a flex container */}
+                      <p className="text-gray-600 mr-2">Quantity:</p>{" "}
+                      {/* Added margin to separate quantity label from input */}
                       <input
                         type="number"
                         value={cartItem.quantity}
@@ -210,17 +218,18 @@ const CartPage = () => {
                         }}
                         className="w-16 border border-gray-300 rounded-md p-1"
                       />
-                    </>
+                    </div>
                   )}
-                </div>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded-md"
+                   <button
+                  className="bg-red-500 text-white px-3 py-1 rounded-md w-full"
                   onClick={() =>
                     removeFromCart(cartItem.item, cartItem.inventory)
                   }
                 >
                   Remove
                 </button>
+                </div>
+               
               </div>
             ))
           )}
