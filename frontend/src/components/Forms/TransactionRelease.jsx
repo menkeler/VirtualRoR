@@ -462,7 +462,11 @@ const TransactionRelease = ({ refresh }) => {
                 type="button"
                 className="btn btn-accent mr-2 text-white"
                 onClick={handleSubmit}
-                disabled={isLoading}
+                disabled={
+                  isLoading ||
+                  (payload.transaction_items.some(item => item.item) &&
+                  !returnDate)||!payload.transaction_items.length > 0  
+                  }
               >
                 Submit
               </button>
