@@ -341,7 +341,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                       <div
                         className={
                           item.item.returnable &&
-                          item.quantity > 0 &&
+                         
                           "flex space-x-24"
                         }
                       >
