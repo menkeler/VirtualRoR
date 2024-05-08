@@ -21,7 +21,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         return email
 
     email = factory.LazyAttribute(lambda _: UserFactory.generate_email())
-    contact = factory.Faker('phone_number', locale='en_US')
+    contact = ('12345678910')
 
     @factory.post_generation
     def truncate_contact(self, create, extracted, **kwargs):
