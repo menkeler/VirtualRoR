@@ -128,7 +128,7 @@ const TransactionDonation = ({ refresh }) => {
       // console.log("Current Items", items);
     }
 
-    document.getElementById("ChooseItems").close();
+    document.getElementById("ChooseItemsDonate").close();
   };
 
   // handle quantity change of consumable items in the table
@@ -179,7 +179,7 @@ const TransactionDonation = ({ refresh }) => {
 
   const handleDonationSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    
     if (selectedUser && items.length > 0) {
       //Variables
       const createTransaction = {
@@ -219,6 +219,7 @@ const TransactionDonation = ({ refresh }) => {
         alert("Some returnable items have no copies. Not submitting.");
         return;
       }
+    
 
       //Process
       try {
@@ -324,6 +325,7 @@ const TransactionDonation = ({ refresh }) => {
         ///ADD fetch table here
       } catch (error) {
         console.error("Error:", error);
+        
       } finally {
         // Set loading state back to false to re-enable buttons
         setIsLoading(false);
@@ -611,7 +613,7 @@ const TransactionDonation = ({ refresh }) => {
                 className="btn btn-accent mr-2"
                 type="button"
                 onClick={handleDonationSubmit}
-                disabled={isLoading}
+                disabled={isLoading || !items.length > 0}
               >
                 Submit
               </button>

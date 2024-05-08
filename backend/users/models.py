@@ -2,7 +2,8 @@ from django.db import models
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin, UserManager
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUserManager(UserManager):
     def _create_user(self, email, password=None, **extra_fields):
@@ -79,4 +80,13 @@ class Staff(models.Model):
         if self.position == self.POSITION_DIRECTOR:
             Staff.objects.filter(position=self.POSITION_DIRECTOR).exclude(user=self.user).delete()
         super().save(*args, **kwargs)
-    
+        
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        # Check if "None" department exists, if not, create it
+        none_department, _ = Department.objects.get_or_create(name="None")
+
+        # Assign "None" department to the user profile
+        instance.department = none_department
+        instance.save()

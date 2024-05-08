@@ -20,22 +20,22 @@ const Departments = () => {
 
   const handleDeleteDepartment = async (e, departmentID) => {
     e.preventDefault();
-  
+
     // Display confirmation dialog
-    const confirmDelete = window.confirm("Are you sure you want to delete this department?");
-  
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this department?"
+    );
+
     // Proceed with deletion if confirmed
     if (confirmDelete) {
       try {
-
         const res = await client.delete(`users/departments/${departmentID}/`);
         fetchData();
       } catch (error) {
         alert("Error deleting department. Please try again.");
-      } 
+      }
     }
   };
-  
 
   return (
     <>
@@ -56,9 +56,7 @@ const Departments = () => {
               {/* Table head */}
               <thead>
                 <tr>
-                  <th className="px-4 py-2 text-left font-semibold text-lg">
-                  
-                  </th>
+                  <th className="px-4 py-2 text-left font-semibold text-lg"></th>
                   <th className="px-4 py-2 text-left font-semibold text-lg">
                     Name
                   </th>
@@ -70,18 +68,22 @@ const Departments = () => {
               {/* Table body */}
               <tbody>
                 {/* Render table rows dynamically */}
-                {departments.map((department,index) => (
+                {departments.map((department, index) => (
                   <tr key={department.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-lg">{index+1}</td>
+                    <td className="px-4 py-2 text-lg">{index + 1}</td>
                     <td className="px-4 py-2 text-lg">{department.name}</td>
                     <td className="px-4 py-2 text-lg">
-                    <button
-                        type="button"
-                        className="btn bg-red-400"
-                        onClick={(e) => handleDeleteDepartment(e, department.id)}
-                    >
-                        Delete
-                    </button>
+                      {department.name !== "None" && (
+                        <button
+                          type="button"
+                          className="btn bg-red-400"
+                          onClick={(e) =>
+                            handleDeleteDepartment(e, department.id)
+                          }
+                        >
+                          Delete
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

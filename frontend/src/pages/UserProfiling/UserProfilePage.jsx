@@ -118,9 +118,12 @@ function UserProfilePage() {
                   Department:
                   <select
                     name="department"
-                    value={formData.department}
+                    value={formData.department === null ? null : formData.department}
                     onChange={handleChange}
                   >
+                    <option value={userData.user.department.id}>
+                        {userData.user.department.name}
+                    </option>
                     {departments.map((department) => (
                       <option key={department.id} value={department.id}>
                         {department.name}
