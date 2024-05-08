@@ -190,7 +190,7 @@ function UserProfilePage() {
               className={activeTab === "Donations" ? "tab tab-active" : "tab"}
               role="tab"
             >
-              Donations
+              Inquiries
             </a>
             <a
               onClick={() => openTab("Transactions")}

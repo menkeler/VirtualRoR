@@ -441,7 +441,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                 onClick={(e) => handleChangeRole(e, user.user_id, "student")}
                 disabled={!user.staff}
               >
-                Student
+                Client
               </button>
               <button
                 className="btn bg-green-500"
