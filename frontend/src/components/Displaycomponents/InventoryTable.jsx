@@ -339,11 +339,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                       )}
 
                       <div
-                        className={
-                          item.item.returnable &&
-                         
-                          "flex space-x-24"
-                        }
+                        className={item.item.returnable && "flex space-x-24"}
                       >
                         <div className="max-w-[25vw]">
                           <h3 className="font-bold text-lg text-center">
@@ -376,7 +372,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                 <td>{item.reserved_quantity}</td>
                               </tr>
 
-                              {item.item.returnable && (
+                              {item.item.returnable && type !== 1 && (
                                 <React.Fragment>
                                   <tr className="border-none">
                                     <td className="text-gray-500">Borrowed:</td>
@@ -437,7 +433,9 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                               Description:
                             </p>
                             <p className="m-3 font-normal text-sm">
-                              {item.item.description}
+                              {item.item.description
+                                ? item.item.description
+                                : "Item has no description"}
                             </p>
                           </article>
                           {Actions(item)}
