@@ -24,7 +24,7 @@ def backup_database_job():
 scheduler = BackgroundScheduler()
 
 #check overdue every 10 mins
-scheduler.add_job(cancel_overdue_inquiries_job, IntervalTrigger(minutes=10))
+scheduler.add_job(cancel_overdue_inquiries_job, IntervalTrigger(minutes=5))
 
 #remind Email eveyy 9 pam at night
 scheduler.add_job(remind_Transaction_date_job, CronTrigger(hour=21))

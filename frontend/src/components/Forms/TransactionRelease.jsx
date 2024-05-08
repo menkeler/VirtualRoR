@@ -561,7 +561,7 @@ const TransactionRelease = ({ refresh }) => {
       {/* inventor ymodal */}
 
       <dialog id="SelectInventoryRelease" className="modal">
-        <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md md:w-[84vw] lg:w-[64vw]">
+      <div className="container mx-auto my-8 p-6 bg-white shadow-md rounded-md md:w-[84vw] lg:w-[64vw] overflow-y-auto max-h-[80vh]">
           <div>
             <InventoryTable handleItemAdd={handleItemAdd} />
           </div>

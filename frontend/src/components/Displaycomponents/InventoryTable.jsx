@@ -78,9 +78,9 @@ const InventoryTable = ({ type, handleItemAdd }) => {
       setIsFetching(true);
       const authToken = Cookies.get("authToken");
       const encodedSearchQuery = encodeURIComponent(searchQuery);
-
+      const hiddenParam = type === 1 ? "false" : "";
       const response = await client.get(
-        `inventory/inventories/?page=${page}&search_category=${category}&search=${encodedSearchQuery}`,
+        `inventory/inventories/?page=${page}&search_category=${category}&search=${encodedSearchQuery}&hidden=${hiddenParam}`,
         {
           headers: {
             Authorization: `Token ${authToken}`,
@@ -375,10 +375,61 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                 <td className="text-gray-500">Reserved:</td>
                                 <td>{item.reserved_quantity}</td>
                               </tr>
-                              <tr className="border-none">
-                                <td className="text-gray-500">Borrowed:</td>
-                                <td>{item.borrowed_quantity}</td>
-                              </tr>
+
+                              {item.item.returnable && (
+                                <React.Fragment>
+                                  <tr className="border-none">
+                                    <td className="text-gray-500">Borrowed:</td>
+                                    <td>
+                                      {
+                                        item.item_copies.filter(
+                                          (copy) =>
+                                            (copy.condition === "Good" ||
+                                              copy.condition ===
+                                                "Slightly Damaged") &&
+                                            copy.is_borrowed
+                                        ).length
+                                      }
+                                    </td>
+                                  </tr>
+                                  <tr className="border-none">
+                                    <td className="text-gray-500">Damaged:</td>
+                                    <td>
+                                      {
+                                        item.item_copies.filter(
+                                          (copy) =>
+                                            copy.condition === "Damaged" &&
+                                            copy.is_borrowed
+                                        ).length
+                                      }
+                                    </td>
+                                  </tr>
+                                  <tr className="border-none">
+                                    <td className="text-gray-500">Broken:</td>
+                                    <td>
+                                      {
+                                        item.item_copies.filter(
+                                          (copy) =>
+                                            copy.condition === "Broken" &&
+                                            copy.is_borrowed
+                                        ).length
+                                      }
+                                    </td>
+                                  </tr>
+                                  <tr className="border-none">
+                                    <td className="text-gray-500">Lost:</td>
+                                    <td>
+                                      {
+                                        item.item_copies.filter(
+                                          (copy) =>
+                                            copy.condition === "Lost" &&
+                                            copy.is_borrowed
+                                        ).length
+                                      }
+                                    </td>
+                                  </tr>
+                                </React.Fragment>
+                              )}
                             </tbody>
                           </table>
                           <article className="whitespace-normal">
@@ -402,7 +453,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                             </button>
                           )}
                         </div>
-                        {item.item.returnable && item.quantity > 0 && (
+                        {item.item.returnable && (
                           <div>
                             <p className="py-4 text-center">Available Copies</p>
                             <div className="overflow-x-auto">
@@ -421,9 +472,14 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                 </thead>
                                 <tbody>
                                   {item.item_copies.map((copy, index) => {
-                                    if (type === 1 && ["Lost", "Broken", "Damaged"].includes(copy.condition)) {
+                                    if (
+                                      type === 1 &&
+                                      ["Lost", "Broken", "Damaged"].includes(
+                                        copy.condition
+                                      )
+                                    ) {
                                       return null; // Skip rendering the row if type is 1 and copy status is Lost, Damaged, or Broken
-                                  }
+                                    }
 
                                     return (
                                       <tr
@@ -444,8 +500,16 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                               Reserved
                                             </div>
                                           ) : copy.condition === "Lost" ? (
-                                            <div className="border-2 border-red-900 rounded-lg text-sm text-red-900 w-30 text-center px-4 py-1">
+                                            <div className="border-2 border-red-600 bg-red-600 rounded-lg text-sm text-white w-30 text-center px-4 py-1">
                                               Item Lost
+                                            </div>
+                                          ) : copy.condition === "Broken" ? (
+                                            <div className="border-2  border-red-400 bg-red-400 rounded-lg text-sm text-white w-30 text-center px-4 py-1">
+                                              Item Broken
+                                            </div>
+                                          ) : copy.condition === "Damaged" ? (
+                                            <div className="border-2 border-red-200 bg-red-200 rounded-lg text-sm text-black w-30 text-center px-4 py-1">
+                                              Item Damaged
                                             </div>
                                           ) : copy.is_borrowed ? (
                                             <div className="border-2 border-red-500 rounded-lg text-sm text-red-500 w-30 text-center px-4 py-1">

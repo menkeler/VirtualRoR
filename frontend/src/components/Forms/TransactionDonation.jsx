@@ -94,7 +94,7 @@ const TransactionDonation = ({ refresh }) => {
       // Reset selected condition
       setSelectedCondition("Good");
     }
-    document.getElementById("AddCopy").close();
+    document.getElementById("AddCopyDonate").close();
   };
 
   // remove sinlge item in copies array so only items that have copies can be shown
@@ -579,8 +579,6 @@ const TransactionDonation = ({ refresh }) => {
                       >
                         <option value="Good">Good</option>
                         <option value="Slightly Damaged">Slightly Damaged</option>
-                        <option value="Damaged">Damaged</option>
-                        <option value="Broken">Broken</option>
                       </select>
                     </p>
                   </div>

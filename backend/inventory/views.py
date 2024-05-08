@@ -109,7 +109,7 @@ class ItemCopyViewSet(viewsets.ModelViewSet):
     def get_borrowed_and_lost_items_count(self, request):
         borrowed_items_count = ItemCopy.objects.filter(
             is_borrowed=True,
-            condition__in=['Good', 'Slightly Damaged', 'Damaged', 'Broken']
+            condition__in=['Good', 'Slightly Damaged']
         ).count()
 
         lost_items = ItemCopy.objects.filter(
@@ -164,9 +164,10 @@ class InventoryViewSet(viewsets.ModelViewSet):
             
         # Apply hidden filter
         if hidden_filter in ['true', 'True']:
-            queryset = queryset.filter(item__hidden=True)
+            queryset = queryset.filter(is_hidden=True)
         elif hidden_filter in ['false', 'False']:
-            queryset = queryset.filter(item__hidden=False)
+            queryset = queryset.filter(is_hidden=False)
+
         return queryset.order_by("id")
 
     #Different Serializer for Creation

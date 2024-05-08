@@ -61,7 +61,7 @@ const ViewItemLog = ({ item }) => {
                       className="hover:bg-green-50"
                       onClick={() =>
                         document
-                          .getElementById(`Detail${transaction.id}`)
+                          .getElementById(`DetailTransaction${transaction.id}`)
                           .showModal()
                       }
                     >
@@ -118,7 +118,7 @@ const ViewItemLog = ({ item }) => {
             {transactions.map((transaction) => (
               <TransactionDetails
                 key={`Detail${transaction.id}`}
-                transaction={transaction}
+                transaction={transaction} display={true}
               />
             ))}
           </div>

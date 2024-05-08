@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import client from "../../api/client";
-const TransactionDetails = ({ transaction, fetchTransactions }) => {
+const TransactionDetails = ({ transaction, fetchTransactions,display }) => {
   const [selectedCondition, setSelectedCondition] = useState("");
   const [selectStatus, setSelectStatus] = useState("");
 
@@ -15,11 +15,20 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
     //if status is lost change the condition to lost
     if (status === "Lost") {
       setSelectedCondition("Lost");
-    } else {
+
+    }else if (status === "Damaged") {
+
+      setSelectedCondition("Damaged");
+
+    } else if (status === "Broken") {
+
+      setSelectedCondition("Broken");
+
+    }else {
       //if selected status is lost and then change to returned reset condition for no error
       setSelectedCondition("");
     }
-    console.log(transaction)
+    console.log(transaction);
     setSelectStatus(status);
   };
 
@@ -27,7 +36,6 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
     e.preventDefault();
 
     if (selectStatus && selectedCondition) {
-      
       try {
         setLoading(true);
         if (selectStatus === "Returned") {
@@ -64,11 +72,11 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
           const payload = {
             status: "Lost",
             return_date: new Date().toISOString().split("T")[0],
-            condition: "Lost",
+            condition: selectStatus,
           };
 
           const Copypayload = {
-            condition: "Lost",
+            condition: selectStatus,
             is_borrowed: true,
             previous_is_borrowed: true,
           };
@@ -140,7 +148,10 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
               {transaction.participant.last_name}
             </div>
             <div className="mb-2">
-              Department: {transaction.participant.department? transaction.participant.department.name: "None"}
+              Department:{" "}
+              {transaction.participant.department
+                ? transaction.participant.department.name
+                : "None"}
             </div>
             <div className="mb-2">
               Position:{" "}
@@ -236,16 +247,17 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                       {/* Modal for item udpates */}
                       {item.status === "Active" && transaction.is_active && (
                         <>
-                          <button
-                            className="btn  btn-accent"
-                            onClick={() =>
-                              document
-                                .getElementById(`Update${item.item.id}`)
-                                .showModal()
-                            }
-                          >
-                            Update
-                          </button>
+                        {!display && (
+    <button
+        className="btn btn-accent"
+        onClick={() =>
+            document.getElementById(`Update${item.item.id}`).showModal()
+        }
+    >
+        Update
+    </button>
+)}
+
 
                           <dialog
                             id={`Update${item.item.id}`}
@@ -265,6 +277,29 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                                 >
                                   Returned
                                 </button>
+
+                                <button
+                                  type="button"
+                                  className={`btn  mr-2 ${
+                                    selectStatus === "Damaged"
+                                      ? "btn-accent selected"
+                                      : "btn"
+                                  }`}
+                                  onClick={() => handleselectStatus("Damaged")}
+                                >
+                                  Damaged
+                                </button>
+                                <button
+                                  type="button"
+                                  className={`btn  mr-2 ${
+                                    selectStatus === "Broken"
+                                      ? "btn-accent selected"
+                                      : "btn"
+                                  }`}
+                                  onClick={() => handleselectStatus("Broken")}
+                                >
+                                  Broken
+                                </button>
                                 <button
                                   type="button"
                                   className={`btn  mr-2 ${
@@ -273,80 +308,65 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                                       : "btn"
                                   }`}
                                   onClick={() => handleselectStatus("Lost")}
-                                 
                                 >
                                   Lost
                                 </button>
                               </div>
-                              <h3 className="font-bold text-lg mb-5">
-                                Condition!
-                              </h3>
 
-                              <h3 className="font-bold text-lg">
-                                Selected Condition:
-                              </h3>
-                              <div className="button-container">
-                                <button
-                                  type="button"
-                                  className={`btn  mr-2 ${
-                                    selectedCondition === "Good" &&
-                                    selectStatus !== "Lost"
-                                      ? "btn-accent selected"
-                                      : "btn"
-                                  }`}
-                                  onClick={() =>
-                                    handleConditionButtonClick("Good")
-                                  }
-                                  disabled={selectStatus === "Lost" || ["Slightly Damaged", "Damaged", "Broken"].includes(item.item.condition)}
-                                  >
-                                  Good
-                                </button>
-                                <button
-                                  type="button"
-                                  className={`btn  mr-2 ${
-                                    selectedCondition === "Slightly Damaged" &&
-                                    selectStatus !== "Lost"
-                                      ? "btn-accent selected"
-                                      : "btn"
-                                  }`}
-                                  onClick={() =>
-                                    handleConditionButtonClick("Slightly Damaged")
-                                  }
-                                  disabled={selectStatus === "Lost" || [ "Damaged", "Broken"].includes(item.item.condition)}
-                                >
-                                  Slightly Damaged
-                                </button>
-                                <button
-                                  type="button"
-                                  className={`btn  mr-2 ${
-                                    selectedCondition === "Damaged" &&
-                                    selectStatus !== "Lost"
-                                      ? "btn-accent selected"
-                                      : "btn"
-                                  }`}
-                                  onClick={() =>
-                                    handleConditionButtonClick("Damaged")
-                                  }
-                                  disabled={selectStatus === "Lost" || [  "Broken"].includes(item.item.condition)}
-                                >
-                                  Damaged
-                                </button>
-                                <button
-                                  type="button"
-                                  className={`btn mr-2 ${
-                                    selectedCondition === "Broken" &&
-                                    selectStatus !== "Lost"
-                                      ? "btn-accent selected"
-                                      : "btn"
-                                  }`}
-                                  onClick={() =>
-                                    handleConditionButtonClick("Broken")
-                                  }
-                                  disabled={selectStatus === "Lost"}
-                                >
-                                  Broken
-                                </button>
-                              </div>
+                              {selectStatus === "Returned" && (
+                                <>
+                                  <h3 className="font-bold text-lg mt-5">
+                                    Selected Condition:
+                                  </h3>
+                                  <div className="button-container">
+                                    <button
+                                      type="button"
+                                      className={`btn  mr-2 ${
+                                        selectedCondition === "Good" &&
+                                        selectStatus !== "Lost"
+                                          ? "btn-accent selected"
+                                          : "btn"
+                                      }`}
+                                      onClick={() =>
+                                        handleConditionButtonClick("Good")
+                                      }
+                                      disabled={
+                                        selectStatus === "Lost" ||
+                                        [
+                                          "Slightly Damaged",
+                                          "Damaged",
+                                          "Broken",
+                                        ].includes(item.item.condition)
+                                      }
+                                    >
+                                      Good
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className={`btn  mr-2 ${
+                                        selectedCondition ===
+                                          "Slightly Damaged" &&
+                                        selectStatus !== "Lost"
+                                          ? "btn-accent selected"
+                                          : "btn"
+                                      }`}
+                                      onClick={() =>
+                                        handleConditionButtonClick(
+                                          "Slightly Damaged"
+                                        )
+                                      }
+                                      disabled={
+                                        selectStatus === "Lost" ||
+                                        ["Damaged", "Broken"].includes(
+                                          item.item.condition
+                                        )
+                                      }
+                                    >
+                                      Slightly Damaged
+                                    </button>
+                                  </div>
+                                </>
+                              )}
 
                               <div className="modal-action">
                                 <form method="dialog">
@@ -386,7 +406,9 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
             <button
               className="btn"
               onClick={() =>
-                document.getElementById(`DetailTransaction${transaction.id}`).close()
+                document
+                  .getElementById(`DetailTransaction${transaction.id}`)
+                  .close()
               }
             >
               Close
