@@ -109,7 +109,7 @@ class ItemCopyViewSet(viewsets.ModelViewSet):
     def get_borrowed_and_lost_items_count(self, request):
         borrowed_items_count = ItemCopy.objects.filter(
             is_borrowed=True,
-            condition__in=['Acceptable', 'Good', 'Like new', 'Damaged']
+            condition__in=['Good', 'Slightly Damaged', 'Damaged', 'Broken']
         ).count()
 
         lost_items = ItemCopy.objects.filter(

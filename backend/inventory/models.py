@@ -40,10 +40,10 @@ class Inventory(models.Model):
 
 class ItemCopy(models.Model):
     CONDITION_CHOICES = [
-        ('Acceptable', 'Acceptable'),
         ('Good', 'Good'),
-        ('Like new', 'Like new'),
+        ('Slightly Damaged', 'Slightly Damaged'),
         ('Damaged', 'Damaged'),
+        ('Broken', 'Broken'),
         ('Lost', 'Lost'),
     ]
 

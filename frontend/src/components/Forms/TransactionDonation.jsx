@@ -576,9 +576,9 @@ const TransactionDonation = ({ refresh }) => {
                         onChange={(e) => setSelectedCondition(e.target.value)}
                       >
                         <option value="Good">Good</option>
-                        <option value="Acceptable">Acceptable</option>
-                        <option value="Like new">Like new</option>
+                        <option value="Slightly Damaged">Slightly Damaged</option>
                         <option value="Damaged">Damaged</option>
+                        <option value="Broken">Broken</option>
                       </select>
                     </p>
                   </div>
@@ -592,7 +592,7 @@ const TransactionDonation = ({ refresh }) => {
                       Submit
                     </button>
                     <button
-                      onClick={() => document.getElementById("AddCopy").close()}
+                      onClick={() => document.getElementById("AddCopyDonate").close()}
                       className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
                       type="button"
                     >
