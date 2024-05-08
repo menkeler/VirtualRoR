@@ -118,13 +118,14 @@ def send_email_on_inquiry_status_change(sender, instance, created, **kwargs):
 def update_post_status_and_send_email(sender, instance, created, **kwargs):
     if created and instance.transaction_type == 'Donation' and instance.inquiry:
         # Change the status of the related post to 'Completed' if it exists
+        # Mark the related inquiry as 'Processed'
+        instance.inquiry.status = 'Processed'
+        instance.inquiry.save()
         if instance.inquiry.post:
             instance.inquiry.post.status = 'Completed'
             instance.inquiry.post.save()
 
-            # Mark the related inquiry as 'Processed'
-            instance.inquiry.status = 'Processed'
-            instance.inquiry.save()
+            
 
             # Send email notification
             subject = 'Your Post has been Filled'
