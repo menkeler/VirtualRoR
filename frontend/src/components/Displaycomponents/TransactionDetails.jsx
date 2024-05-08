@@ -19,7 +19,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
       //if selected status is lost and then change to returned reset condition for no error
       setSelectedCondition("");
     }
-
+    console.log(transaction)
     setSelectStatus(status);
   };
 
@@ -273,6 +273,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                                       : "btn"
                                   }`}
                                   onClick={() => handleselectStatus("Lost")}
+                                 
                                 >
                                   Lost
                                 </button>
@@ -296,8 +297,8 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                                   onClick={() =>
                                     handleConditionButtonClick("Good")
                                   }
-                                  disabled={selectStatus === "Lost"}
-                                >
+                                  disabled={selectStatus === "Lost" || ["Slightly Damaged", "Damaged", "Broken"].includes(item.item.condition)}
+                                  >
                                   Good
                                 </button>
                                 <button
@@ -311,7 +312,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                                   onClick={() =>
                                     handleConditionButtonClick("Slightly Damaged")
                                   }
-                                  disabled={selectStatus === "Lost"}
+                                  disabled={selectStatus === "Lost" || [ "Damaged", "Broken"].includes(item.item.condition)}
                                 >
                                   Slightly Damaged
                                 </button>
@@ -326,7 +327,7 @@ const TransactionDetails = ({ transaction, fetchTransactions }) => {
                                   onClick={() =>
                                     handleConditionButtonClick("Damaged")
                                   }
-                                  disabled={selectStatus === "Lost"}
+                                  disabled={selectStatus === "Lost" || [  "Broken"].includes(item.item.condition)}
                                 >
                                   Damaged
                                 </button>

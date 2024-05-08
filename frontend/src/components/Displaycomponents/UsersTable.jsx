@@ -337,7 +337,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
                     <>
                       <h3 className="font-bold text-xl mb-4">{`${user.first_name} ${user.last_name}`}</h3>
                       <img
-                        src={`https://randomuser.me/api/portraits/men/${user.user_id}.jpg`}
+                        src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"
                         alt=""
                         className="mx-auto w-40 h-40  rounded-3xl mb-4"
                       />

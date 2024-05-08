@@ -421,9 +421,9 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                 </thead>
                                 <tbody>
                                   {item.item_copies.map((copy, index) => {
-                                    if (type === 1 && copy.condition === "Lost"|| copy.condition === "Broken"||copy.condition === "Damaged") {
-                                      return null; // Skip rendering the row if type is 1 and copy status is Lost ,Damaged,Broken
-                                    }
+                                    if (type === 1 && ["Lost", "Broken", "Damaged"].includes(copy.condition)) {
+                                      return null; // Skip rendering the row if type is 1 and copy status is Lost, Damaged, or Broken
+                                  }
 
                                     return (
                                       <tr
