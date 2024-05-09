@@ -243,9 +243,7 @@ function Home() {
                       </p>
                     </div>
                     <img
-                      src={`https://randomuser.me/api/portraits/men/${
-                        index + 1
-                      }.jpg`}
+                      src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"
                       alt={`Donor ${index + 1}`}
                       className="w-10 h-10 rounded-full"
                     />

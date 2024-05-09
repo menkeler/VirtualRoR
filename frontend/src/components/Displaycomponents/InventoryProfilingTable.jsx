@@ -76,7 +76,13 @@ const InventoryProfilingTable = ({ onSelectItem, Admin, type }) => {
       <>
         <div className="flex">
           <CreateItemProfile onFormSubmit={handleFormSubmitSuccess} />
-          <button className="btn btn-accent mr-2" type='button' onClick={()=>document.getElementById('CategoryList').showModal()}>Categories</button>
+          <button
+            className="btn btn-accent mr-2"
+            type="button"
+            onClick={() => document.getElementById("CategoryList").showModal()}
+          >
+            Categories
+          </button>
           {/* Search bar */}
           <div className="flex ml-2">
             <input
@@ -129,13 +135,6 @@ const InventoryProfilingTable = ({ onSelectItem, Admin, type }) => {
               <h2 className="text-lg font-semibold overflow-wrap break-word whitespace-normal mb-2">
                 {item.name}
               </h2>
-
-              <figure>
-                <img
-                  src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-                  className="w-full h-32 object-cover rounded-md mb-4"
-                />
-              </figure>
 
               <p className="text-sm text-gray-600 whitespace-nowrap mb-2">
                 {item.description}

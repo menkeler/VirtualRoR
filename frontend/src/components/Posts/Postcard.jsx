@@ -18,7 +18,7 @@ const Postcard = ({ Data, onPostClick, display, admin }) => {
           {/* User information */}
           <div className="flex items-center">
             <img
-              src="https://randomuser.me/api/portraits/men/1.jpg"
+              src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"
               alt="Profile Picture"
               className="w-10 h-10 rounded-full mr-2"
             />
@@ -31,7 +31,7 @@ const Postcard = ({ Data, onPostClick, display, admin }) => {
               </p>
             </div>
           </div>
-             {/* Post title */}
+          {/* Post title */}
           <h2 className="text-lg font-semibold text-gray-800 mb-2">
             <span className="text-blue-500 mr-1">{truncatedTitle}</span>
           </h2>
@@ -43,8 +43,6 @@ const Postcard = ({ Data, onPostClick, display, admin }) => {
 
         {/* Post content */}
         <div className="px-4 py-2">
-       
-          
           {/* Post message */}
           <div className="bg-white p-3 mb-5 rounded-lg shadow">
             <p className="text-gray-800">{Data.message}</p>
