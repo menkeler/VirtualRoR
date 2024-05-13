@@ -238,7 +238,7 @@ const TransactionDetails = ({ transaction, fetchTransactions,display }) => {
                           : ""
                       }`}
                     >
-                      {item.item ? item.item.condition : item.quantity}
+                      {item.item ? item.condition : item.quantity}
                     </td>
                     <td className="py-2 px-4 border-b ">
                       {transaction.return_date}

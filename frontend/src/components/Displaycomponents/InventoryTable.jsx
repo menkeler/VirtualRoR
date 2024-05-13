@@ -14,6 +14,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
   const { categoryData, loading, error, refetchCategory } = CategoryHook();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFetching, setIsFetching] = useState(false);
+  const [totalItems, setTotalItems] = useState("");
   const { state, dispatch } = useCart();
   const [showAlert, setShowAlert] = useState(false);
 
@@ -87,10 +88,14 @@ const InventoryTable = ({ type, handleItemAdd }) => {
           },
         }
       );
+      const totalitemsResponse = await client.get(
+        `/inventory/inventories/get_category_total_quantity/?category_name=${category}&include_hidden=${type === 1 ? false :true}`,
+      );
 
       const { results, count } = response.data;
       console.log(results);
       setInventory(results);
+      setTotalItems(totalitemsResponse.data.total_quantity)
       setTotalPages(Math.ceil(count / 30));
 
       // console.log(response.data);
@@ -252,9 +257,14 @@ const InventoryTable = ({ type, handleItemAdd }) => {
       {/* Selected Category */}
       <div className="mb-4">
         {selectedCategory && (
+          <>
           <p className="font-bold text-lg">
-            Selected Category: {selectedCategory}
+            Selected Category: {selectedCategory} 
           </p>
+           <p className="font-bold text-lg">
+          Total Items: {totalItems} 
+         </p>
+         </>
         )}
       </div>
 

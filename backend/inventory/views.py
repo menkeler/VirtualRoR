@@ -23,7 +23,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 from django.http import JsonResponse
 from django.db.models import Count
-
+from django.db.models import Sum
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name') 
@@ -193,10 +193,22 @@ class InventoryViewSet(viewsets.ModelViewSet):
             response_data.append(InventorySerializer(inventory_instance).data)
 
         return Response(response_data, status=status.HTTP_201_CREATED)
-    
-    
-    
+    @action(detail=False, methods=['get'])
+    def get_category_total_quantity(self, request):
+        category_name = request.GET.get('category_name')
+        include_hidden = request.GET.get('include_hidden', 'true').lower()  # Default to true if parameter is not provided or invalid
 
+        queryset = Inventory.objects.filter(item__category__name__icontains=category_name)
+
+        # Exclude hidden items if include_hidden parameter is set to false
+        if include_hidden == 'false':
+            queryset = queryset.filter(is_hidden=False)
+
+        total_quantity = queryset.aggregate(Sum('quantity'))['quantity__sum']
+        total_quantity = total_quantity if total_quantity is not None else 0
+        return JsonResponse({'total_quantity': total_quantity})
+        
+    
             
             
 class ExportMultipleTablesView(APIView):
