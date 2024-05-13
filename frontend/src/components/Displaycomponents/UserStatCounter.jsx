@@ -22,6 +22,7 @@ const UserStatCounter = ({ user_ID }) => {
 
   return (
     <div className="bg-gray-200 p-6 rounded-lg shadow-lg">
+      
       {userStats ? (
         <>
         <h1 className="text-3xl font-semibold mb-8">User Statistics</h1>

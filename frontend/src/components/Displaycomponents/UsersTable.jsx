@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import client from "../../api/client";
 import Cookies from "js-cookie";
 import { useAuth } from "../../contexts/AuthContext";
+import UserStatCounter from "../Displaycomponents/UserStatCounter"
+
+
+
 const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   const [users, setUsers] = useState([]);
+  const [userDetail, setUserDetail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [totalPages, setTotalPages] = useState(1);
@@ -16,6 +21,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
     contact: "",
     department: "",
   });
+ 
   const fetchData = async () => {
     try {
       const response = await client.get("users/departments/");
@@ -29,7 +35,35 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   useEffect(() => {
     fetchData();
   }, []);
+  
+  const showUserDetails = (userID) => {
+    console.log('Showing details for user:', userID);
+    
+    // Set userDetail asynchronously
+    setUserDetail(userID);
+  };
 
+  // useEffect hook to open modal when userDetail changes
+  useEffect(() => {
+    // Check if userDetail is truthy
+    if (userDetail) {
+      // Get the modal element
+      const modal = document.getElementById(`userModalStat`);
+      if (!modal) {
+        console.error('Modal element not found');
+        return;
+      }
+
+      // Attempt to open the modal
+      try {
+        modal.showModal();
+      } catch (error) {
+        console.error('Error opening modal:', error);
+      }
+    }
+  }, [userDetail]);
+  
+  
   const openModal = (user) => {
     // Update the form data with the values from the clicked user
     setFormData({
@@ -472,29 +506,7 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
         />
 
         {/* List of names */}
-        {/* <div className="mt-4 grid gap-4 grid-cols-3">
-          {users.map((user) => (
-            <div key={user.user_id} className="p-5 bg-white rounded-lg shadow-md">
-              <h2 className="text-base font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
-                {user.first_name} {user.last_name}
-              </h2>
-              <div className="avatar">
-                          <div className="mask mask-squircle w-12 h-12">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg" alt="Avatar" />
-                          </div>
-                        </div>
-              <p className="text-sm text-gray-600 overflow-hidden overflow-ellipsis whitespace-nowrap mb-2 text-truncate">
-                {user.email}
-              </p>
-              <button
-                onClick={() => handleSelectUser(user)}
-                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-              >
-                Select
-              </button>
-            </div>
-          ))}
-        </div> */}
+        
         <div class="overflow-x-auto">
           <table class="table w-full">
             <thead class="text-slate-800 bg-slate-100">
@@ -505,26 +517,48 @@ const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
               </tr>
             </thead>
 
-            <tbody class="text-slate-700">
-              {users.map((user) => (
-                <tr key={user.user_id} class="hover:bg-slate-200">
-                  <td class="px-4 py-2">
-                    {user.first_name} {user.last_name}
-                  </td>
-                  <td class="px-4 py-2">{user.email}</td>
-                  <td class="px-4 py-2">
-                    <button
-                      onClick={() => handleSelectUser(user)}
-                      class="px-3 py-1 bg-lime-500 text-white rounded hover:bg-lime-600 focus:outline-none focus:shadow-outline-lime active:bg-lime-700"
-                    >
-                      Select
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            <tbody className="text-slate-700">
+  {users.map((user) => (
+    <React.Fragment key={user.user_id}>
+      <tr className="hover:bg-slate-200">
+        <td className="px-4 py-2">
+          {user.first_name} {user.last_name}
+        </td>
+        <td className="px-4 py-2">{user.email}</td>
+        <td className="px-4 py-2">
+          <button className="btn" onClick={() => showUserDetails(user.user_id)}>Details</button>
+        </td>
+      </tr>
+      {userDetail && userDetail === user.user_id && (
+  <dialog id={`userModalStat`} className="modal">
+   <div className="modal-box w-11/12 max-w-5xl">
+      <form method="dialog">
+        {/* If there is a button in form, it will close the modal */}
+        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+      <div className="flex flex-col items-center">
+        <UserStatCounter user_ID={userDetail}/>
+        <button
+          onClick={() => {
+            handleSelectUser(user);
+            document.getElementById(`userModalStat`).close();
+          }}
+          className="px-3 py-1 bg-lime-500 text-white rounded hover:bg-lime-600 focus:outline-none focus:shadow-outline-lime active:bg-lime-700 mt-4"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  </dialog>
+)}
+
+    </React.Fragment>
+  ))}
+</tbody>
+
           </table>
         </div>
+ 
 
         {/* Pagination controls */}
         <div className="join mt-4">

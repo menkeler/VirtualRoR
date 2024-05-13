@@ -16,7 +16,7 @@ from .serializers import (
 from .models import User, Staff,Department
 from rest_framework.pagination import PageNumberPagination
 
-from transactions.models import Transaction,Inquiry
+from transactions.models import Transaction,Inquiry,TransactionItem
 from posts.models import Post
 from inventory.models import ItemCopy
 from rest_framework.exceptions import NotFound
@@ -150,7 +150,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user = request.user
         serializer = UserSerializer(user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
-
+    
     @action(detail=False, methods=['get'])
     def total_counts_for_user(self, request):
         user_id = request.query_params.get('user_id')
@@ -169,17 +169,34 @@ class UserViewSet(viewsets.ModelViewSet):
         # Total number of posts by the user
         total_posts = Post.objects.filter(author=user).count()
 
-        # Total number of damaged items for the user
-        total_damaged_items = ItemCopy.objects.filter(inventory__item__returnable=True, condition='Damaged').count()
+        # Total number of damaged items used in transactions by the user
+        total_damaged_items = TransactionItem.objects.filter(
+ 
+            condition='Damaged',
+            transaction__participant=user
+        ).count()
 
-        # Total number of broken items for the user
-        total_broken_items = ItemCopy.objects.filter(inventory__item__returnable=True, condition='Broken').count()
+        # Total number of broken items used in transactions by the user
+        total_broken_items = TransactionItem.objects.filter(
 
-        # Total number of lost items for the user
-        total_lost_items = ItemCopy.objects.filter(inventory__item__returnable=True, condition='Lost').count()
+            condition='Broken',
+            transaction__participant=user
+        ).count()
+
+        # Total number of lost items used in transactions by the user
+        total_lost_items = TransactionItem.objects.filter(
+
+            condition='Lost',
+            transaction__participant=user
+        ).count()
+
 
         # Total number of donated items for the user
-        total_completed_donated_items = Transaction.objects.filter(participant=user, transaction_type='Donation', is_active=True).count()
+        total_completed_donated_items = Transaction.objects.filter(
+            participant=user,
+            transaction_type='Donation',
+            is_active=True
+        ).count()
 
         return Response({
             'total_transactions': total_transactions,
