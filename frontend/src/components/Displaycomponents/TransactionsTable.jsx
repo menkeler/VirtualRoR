@@ -5,7 +5,7 @@ import Select from "react-select";
 import TransactionDetails from "./TransactionDetails";
 
 import TransactionsHook from "../../hooks/TransactionsHook";
-const TransactionsTable = ({ User, rerenderFlag }) => {
+const TransactionsTable = ({ User, rerenderFlag ,display}) => {
   const [selectedUserId, setSelectedUserId] = useState(User || "");
 
   const {
@@ -166,6 +166,7 @@ const TransactionsTable = ({ User, rerenderFlag }) => {
             fetchTransactions={fetchTransactions}
             key={`Detail${transaction.id}`}
             transaction={transaction}
+            display={display ? true : false}
           />
         ))}
       </div>

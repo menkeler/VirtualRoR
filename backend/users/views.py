@@ -16,6 +16,10 @@ from .serializers import (
 from .models import User, Staff,Department
 from rest_framework.pagination import PageNumberPagination
 
+from transactions.models import Transaction,Inquiry
+from posts.models import Post
+from inventory.models import ItemCopy
+from rest_framework.exceptions import NotFound
 
 class UserPagination(PageNumberPagination):
     page_size = 30
@@ -147,3 +151,42 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = UserSerializer(user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'])
+    def total_counts_for_user(self, request):
+        user_id = request.query_params.get('user_id')
+        
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise NotFound(detail="User not found")
+
+        # Total number of transactions for the user
+        total_transactions = Transaction.objects.filter(participant=user).count()
+
+        # Total number of inquiries for the user
+        total_inquiries = Inquiry.objects.filter(inquirer=user).count()
+
+        # Total number of posts by the user
+        total_posts = Post.objects.filter(author=user).count()
+
+        # Total number of damaged items for the user
+        total_damaged_items = ItemCopy.objects.filter(inventory__item__returnable=True, condition='Damaged').count()
+
+        # Total number of broken items for the user
+        total_broken_items = ItemCopy.objects.filter(inventory__item__returnable=True, condition='Broken').count()
+
+        # Total number of lost items for the user
+        total_lost_items = ItemCopy.objects.filter(inventory__item__returnable=True, condition='Lost').count()
+
+        # Total number of donated items for the user
+        total_completed_donated_items = Transaction.objects.filter(participant=user, transaction_type='Donation', is_active=True).count()
+
+        return Response({
+            'total_transactions': total_transactions,
+            'total_inquiries': total_inquiries,
+            'total_posts': total_posts,
+            'total_damaged_items': total_damaged_items,
+            'total_broken_items': total_broken_items,
+            'total_lost_items': total_lost_items,
+            'total_donated_items': total_completed_donated_items,
+        }, status=status.HTTP_200_OK)

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import client from "../../api/client";
 import Cookies from "js-cookie";
-import SemiCircleGauge from "./SemiCircleGauge";
 import { useAuth } from "../../contexts/AuthContext";
 const UsersTable = ({ type, user, onSelectUser, onSelectType }) => {
   const [users, setUsers] = useState([]);

@@ -247,17 +247,18 @@ const TransactionDetails = ({ transaction, fetchTransactions,display }) => {
                       {/* Modal for item udpates */}
                       {item.status === "Active" && transaction.is_active && (
                         <>
-                        {!display && (
-    <button
-        className="btn btn-accent"
-        onClick={() =>
-            document.getElementById(`Update${item.item.id}`).showModal()
-        }
-    >
-        Update
-    </button>
-)}
-
+                          {!display && (
+                            <button
+                              className="btn btn-accent"
+                              onClick={() =>
+                                document
+                                  .getElementById(`Update${item.item.id}`)
+                                  .showModal()
+                              }
+                            >
+                              Update
+                            </button>
+                          )}
 
                           <dialog
                             id={`Update${item.item.id}`}

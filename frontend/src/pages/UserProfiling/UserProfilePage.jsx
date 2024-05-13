@@ -6,6 +6,7 @@ import Footer from "../../components/wholepage/Footer";
 import TransactionsTable from "../../components/Displaycomponents/TransactionsTable";
 import InquiryTable from "../../components/Displaycomponents/InquiryTable";
 import PostsTable from "../../components/Displaycomponents/PostsTable";
+import UserStatCounter from "../../components/Displaycomponents/UserStatCounter";
 function UserProfilePage() {
   const { isLoggedIn, userData, fetchData } = useAuth();
   const [editing, setEditing] = useState(false);
@@ -182,6 +183,12 @@ function UserProfilePage() {
           </div>
         </div>
 
+
+        <div className="bg-gray-100 my-2 p-6 rounded-lg text-gray-600">
+          <UserStatCounter user_ID={userData.user.user_id}/>
+        </div>
+
+
         <div className="bg-gray-100 my-2 p-6 rounded-lg text-gray-600">
           <h1 className="text-3xl font-semibold mb-8">My Activities</h1>
         </div>
@@ -219,7 +226,7 @@ function UserProfilePage() {
           )}
           {activeTab === "Transactions" && (
             <div>
-              <TransactionsTable User={userData.user.user_id} />
+              <TransactionsTable User={userData.user.user_id} display={true} />
             </div>
           )}
           {activeTab === "Post" && (
