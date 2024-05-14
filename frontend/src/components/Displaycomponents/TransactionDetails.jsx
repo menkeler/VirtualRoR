@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import client from "../../api/client";
-const TransactionDetails = ({ transaction, fetchTransactions,display }) => {
+const TransactionDetails = ({ transaction, fetchTransactions, display }) => {
   const [selectedCondition, setSelectedCondition] = useState("");
   const [selectStatus, setSelectStatus] = useState("");
 
@@ -15,16 +15,11 @@ const TransactionDetails = ({ transaction, fetchTransactions,display }) => {
     //if status is lost change the condition to lost
     if (status === "Lost") {
       setSelectedCondition("Lost");
-
-    }else if (status === "Damaged") {
-
+    } else if (status === "Damaged") {
       setSelectedCondition("Damaged");
-
     } else if (status === "Broken") {
-
       setSelectedCondition("Broken");
-
-    }else {
+    } else {
       //if selected status is lost and then change to returned reset condition for no error
       setSelectedCondition("");
     }
@@ -122,11 +117,27 @@ const TransactionDetails = ({ transaction, fetchTransactions,display }) => {
             <h3 className="font-bold text-lg mb-4">Transaction Details</h3>
             <div className="mb-2">ID: {transaction.id}</div>
             <div className="mb-2">
-              Date: {new Date(transaction.date_created).toLocaleString("en-US", {
-                      dateStyle: "medium",
-                      timeStyle: "medium",
-                    })}
+              Date:{" "}
+              {new Date(transaction.date_created).toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "medium",
+              })}
             </div>
+            <div className="mb-2">
+              {transaction?.location ? (
+                <p>Location: {transaction.location}</p>
+              ) : (
+                <p>Location: None</p>
+              )}
+            </div>
+            <div className="mb-2">
+              {transaction?.org_name && (
+                <p>
+                  Organization Name: <strong>{transaction.org_name}</strong>
+                </p>
+              )}
+            </div>
+
             <div className="mb-2">Type: {transaction.transaction_type}</div>
             <div className="mb-2">
               {transaction.is_active ? (

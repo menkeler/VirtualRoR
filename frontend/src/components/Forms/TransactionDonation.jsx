@@ -18,7 +18,20 @@ const TransactionDonation = ({ refresh }) => {
   const [transactionItems, setTransactionItems] = useState([]);
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [organization, setOrganization] = useState('');
+  const [location, setLocation] = useState('');
 
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
+  const handleTextFieldChange = (event) => {
+    setOrganization(event.target.value);
+  };
+  const handleLocationChange = (event) => {
+    setLocation(event.target.value);
+  };
   const handleSelectInquiry = (inquiry) => {
     setSelectedInquiry(inquiry);
     console.log("Selected Inquiry:", inquiry);
@@ -32,6 +45,8 @@ const TransactionDonation = ({ refresh }) => {
     setSelectedCondition("Good");
     setRemarks("");
     setTransactionItems([]);
+    setOrganization("")
+    setLocation("")
   };
 
   useEffect(() => {
@@ -168,10 +183,10 @@ const TransactionDonation = ({ refresh }) => {
   //handle selected user for transaction
   const handleSelectUser = (selectedUser) => {
     // console.log(`Selected user in TransactionDonation:`, selectedUser);
-
-    const { user_id, first_name, last_name, email } = selectedUser;
-
-    setSelectedUser({ user_id, first_name, last_name, email });
+   
+    const { user_id, first_name, last_name, email,staff } = selectedUser;
+    console.log(`Selected user in TransactionDonation:`, selectedUser)
+    setSelectedUser({ user_id, first_name, last_name, email,staff });
     document.getElementById("ChooseUserDonate").close();
   };
 
@@ -188,6 +203,8 @@ const TransactionDonation = ({ refresh }) => {
         is_active: false,
         participant: selectedUser.user_id,
         inquiry: selectedInquiry ? selectedInquiry.id : null,
+        location: location,
+        org_name: organization
       };
 
       const itemsData = items.map((item) => ({
@@ -383,6 +400,9 @@ const TransactionDonation = ({ refresh }) => {
                 </button>
               </div>
             </h1>
+
+
+
             {/* User Modal Content */}
             <dialog id="ChooseUserDonate" className="modal">
               <div className="modal-box w-11/12 max-w-5xl h-full">
@@ -396,6 +416,49 @@ const TransactionDonation = ({ refresh }) => {
               </div>
             </dialog>
           </div>
+                
+        
+
+          {selectedUser && selectedUser.staff && selectedUser.staff.position === "Director" && (
+        <div className="mb-2">
+          <label className="inline-flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={isChecked}
+              onChange={handleCheckboxChange}
+              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+           
+            />
+            <span className="text-lg font-bold">Outside Donation</span>
+          </label>
+          {isChecked && (
+            <div>
+              <label>
+              <span className="text-lg font-bold">From: </span>
+                <input
+                  type="text"
+                  value={organization}
+                  onChange={handleTextFieldChange}
+                  className="input input-bordered w-full max-w-xs"
+                  placeholder="Enter organization name or individual"
+                />
+              </label>
+            </div>
+          )}
+        </div>
+      )}
+
+        <label>
+              <span className="text-md font-bold mr-1">Location: </span>
+                <input
+                  type="text"
+                  value={location}
+                  onChange={handleLocationChange}
+                  className="input input-bordered w-full max-w-xs"
+                  placeholder="Location"
+                />
+          </label>
+
           <h3 className="font-bold text-lg">Inquiry</h3>
           <InquirySelect
             user={selectedUser}
