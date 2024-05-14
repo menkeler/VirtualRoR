@@ -133,6 +133,7 @@ function LoginButton() {
       navigate("/home");
       // Always remove the authentication token cookie
       Cookies.remove("authToken");
+      sessionStorage.removeItem('encryptedCartData');
       navigate("/home");
       window.location.reload();
       console.log("Token Removed");
