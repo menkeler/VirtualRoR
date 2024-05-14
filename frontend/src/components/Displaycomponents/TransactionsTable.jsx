@@ -68,6 +68,10 @@ const TransactionsTable = ({ User, rerenderFlag ,display}) => {
           <option value="">All</option>
           <option value="Donation">Donation</option>
           <option value="Release">Release</option>
+          {!display &&(
+            <option value="Maintenance">Maintenance</option>
+          )}
+         
         </select>
         {/* Search bar */}
 

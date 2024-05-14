@@ -280,7 +280,7 @@ def process_reserved_items(inquiry):
 
 
 @api_view(['POST'])
-def process_transaction(request):
+def process_transaction(request,transaction_type=None):
     # Extract data from the request body
     transaction_items = request.data.get('transaction_items', [])
     remarks = request.data.get('remarks', '')
@@ -315,7 +315,7 @@ def process_transaction(request):
                 transaction_instance = Transaction.objects.create(
                     inquiry=inquiry,
                     participant=inquiry.inquirer,
-                    transaction_type='Release',
+                    transaction_type=transaction_type,
                     remarks=remarks,
                     return_date=returnDate
                 )
@@ -324,7 +324,7 @@ def process_transaction(request):
                 transaction_instance = Transaction.objects.create(
                     inquiry=None,
                     participant=user,
-                    transaction_type='Release',
+                    transaction_type=transaction_type,
                     remarks=remarks,
                     return_date=returnDate
                 )
@@ -359,7 +359,10 @@ def process_transaction(request):
                         quantity=item_data.get('quantity', 1),  # Default to 1 if quantity is not provided
                         status="Active"
                     )
-                    is_active = True
+                    if transaction_type == "Maintenance":
+                        is_active = False
+                    else:
+                        is_active = True
                 else:
                     # Extract the inventory ID from the dictionary
                     inventory_id = item_data['inventory']['id']
@@ -386,9 +389,9 @@ def process_transaction(request):
             # If no exceptions were raised during transaction processing, commit the transaction
             transaction_instance.is_active = is_active
             transaction_instance.save()
-
+        serializer = TransactionSerializer(transaction_instance)
         # Return a response indicating a successful transaction
-        return Response({'detail': 'Transaction processed successfully.'}, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     except ValidationError as e:
         if transaction_instance:

@@ -202,7 +202,7 @@ function Home() {
             <div className="card w-80 bg-base-100 shadow-xl my-5">
               <span className="text-xl font-bold text-center mb-2">
                 Top 10 Donors of{" "}
-                {new Date().toLocaleString("default", { month: "long" })}
+                {new Date().toLocaleString("default", { month: "long", year: "numeric" })}
               </span>
               <div className="grid grid-cols-1 gap-4">
                 {/* Individual donor card */}

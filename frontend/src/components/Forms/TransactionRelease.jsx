@@ -220,7 +220,7 @@ const TransactionRelease = ({ refresh }) => {
         // Now you can use the updatedPayload in your application
 
         const responseTransaction = await client.post(
-          `transactions/process_transaction/`,
+          `transactions/process_transaction/Release/`,
           updatedPayload,
           {
             headers: {

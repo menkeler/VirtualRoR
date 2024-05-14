@@ -10,7 +10,7 @@ router.register('transaction_items', views.TransactionItemViewSet, basename='tra
 
 urlpatterns = router.urls + [
     path('confirm_reservation/<int:inquiry_id>/<str:purpose>/', views.confirm_reservation, name='confirm_reservation'),
-    path('process_transaction/', views.process_transaction, name='process_transaction'),
+    path('process_transaction/<str:transaction_type>/', views.process_transaction, name='process_transaction_with_type'),
     path('cancel_reserved_items/<int:inquiry_id>/', views.cancel_reserved_items, name='cancel_reserved_items'),
 
 

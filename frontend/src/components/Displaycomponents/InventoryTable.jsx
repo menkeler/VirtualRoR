@@ -188,9 +188,13 @@ const InventoryTable = ({ type, handleItemAdd }) => {
       );
     } else if (type === 2) {
       return (
+        <>
+
         <td className="py-2 px-4 border-b">
-          <ViewItemLog item={copy} />
+        <ViewItemLog item={copy} refetch={() => fetchItems(currentPage, selectedCategory)} />
+
         </td>
+        </>
       );
     } else {
       return (
@@ -208,11 +212,9 @@ const InventoryTable = ({ type, handleItemAdd }) => {
     }
   };
   const CopyTable2 = () => {
-    if (type !== 2) {
+   
       return <th className="py-2 px-4 border-b">Action</th>;
-    } else {
-      return <div></div>;
-    }
+   
   };
   return (
     <div className="container mx-auto p-4 md:w-[75vw] lg:w-[60vw]">
@@ -475,6 +477,7 @@ const InventoryTable = ({ type, handleItemAdd }) => {
                                     <th className="py-2 px-4 border-b">
                                       Status
                                     </th>
+                                    
                                     {CopyTable2()}
                                   </tr>
                                 </thead>

@@ -48,6 +48,7 @@ class Transaction(models.Model):
     TRANSACTION_TYPES = [
         ('Release', 'Release'),
         ('Donation', 'Donation'),
+        ('Maintenance', 'Maintenance'),
     ]
     
     date_created = models.DateTimeField(auto_now_add=True)
