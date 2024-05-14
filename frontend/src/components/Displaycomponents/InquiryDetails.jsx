@@ -76,7 +76,10 @@ const InquiryDetails = ({ inquiry, Admin, fetchData }) => {
             <h3 className="font-bold text-lg mb-4">inquiry Details</h3>
             <div className="mb-2">ID: {inquiry.id}</div>
             <div className="mb-2">
-              Date: {new Date(inquiry.date_created).toLocaleDateString()}
+              Date: {new Date(inquiry.date_created).toLocaleString("en-US", {
+                      dateStyle: "medium",
+                      timeStyle: "medium",
+                    })}
             </div>
             <div className="mb-2">Type: {inquiry.inquiry_type}</div>
             <div className="mb-2">

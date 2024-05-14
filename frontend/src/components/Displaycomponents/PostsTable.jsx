@@ -178,8 +178,11 @@ const PostsTable = ({ User, Admin }) => {
                       : post.message}
                   </td>
                   <td className="py-4 px-6 border-b ">
-                    {post.created_at &&
-                      new Date(post.created_at).toLocaleString()}
+             
+                       {new Date(post.created_at).toLocaleString("en-US", {
+                      dateStyle: "medium",
+                      timeStyle: "medium",
+                    })}
                   </td>
                   <td
                     className={`py-4 px-6 border-b text-center ${

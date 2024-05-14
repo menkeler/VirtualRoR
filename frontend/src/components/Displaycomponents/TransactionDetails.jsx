@@ -122,7 +122,10 @@ const TransactionDetails = ({ transaction, fetchTransactions,display }) => {
             <h3 className="font-bold text-lg mb-4">Transaction Details</h3>
             <div className="mb-2">ID: {transaction.id}</div>
             <div className="mb-2">
-              Date: {new Date(transaction.date_created).toLocaleDateString()}
+              Date: {new Date(transaction.date_created).toLocaleString("en-US", {
+                      dateStyle: "medium",
+                      timeStyle: "medium",
+                    })}
             </div>
             <div className="mb-2">Type: {transaction.transaction_type}</div>
             <div className="mb-2">
