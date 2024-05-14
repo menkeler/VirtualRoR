@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import client from "../../api/client";
 import Cookies from "js-cookie";
 import TransactionDetails from "./TransactionDetails";
-const ViewItemLog = ({ item,refetch }) => {
+const ViewItemLog = ({ item, refetch }) => {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const authToken = Cookies.get("authToken");
@@ -12,7 +12,7 @@ const ViewItemLog = ({ item,refetch }) => {
     transaction_items: [{ item: item }],
     return_date: new Date().toISOString().split("T")[0],
   };
-    
+
   const [Transactionpayload, setTransactionPayload] = useState(
     initialTransactionPayload
   );
@@ -22,18 +22,18 @@ const ViewItemLog = ({ item,refetch }) => {
   const handleConditionButtonClick = (condition) => {
     setSelectedCondition(condition);
   };
-  
+
   useEffect(() => {
     setTransactionPayload({
       ...initialTransactionPayload,
       transaction_items: [{ item: item }],
     });
   }, [item]);
-  
+
   const handleReset = () => {
     setTransactionPayload(initialTransactionPayload);
-    setSelectStatus("")
-    setSelectedCondition("")
+    setSelectStatus("");
+    setSelectedCondition("");
   };
   const handleselectStatus = (status) => {
     //if status is lost change the condition to lost
@@ -68,17 +68,15 @@ const ViewItemLog = ({ item,refetch }) => {
     document.getElementById(`ViewItemLogs${item.display_id}`).showModal();
   };
 
-
   const handleSubmit = async (e, itemId) => {
     e.preventDefault();
-    console.log("Selected item" , item);
+    console.log("Selected item", item);
     const transactionItems = initialTransactionPayload.transaction_items;
 
-// Logging the transaction_items array
-console.log("Transaction Items from payload fucker:", transactionItems);
+    // Logging the transaction_items array
+    console.log("Transaction Items from payload fucker:", transactionItems);
     if (selectStatus && selectedCondition) {
       try {
-
         const responseTransaction = await client.post(
           `transactions/process_transaction/Maintenance/`,
           Transactionpayload,
@@ -100,7 +98,7 @@ console.log("Transaction Items from payload fucker:", transactionItems);
             return_date: new Date().toISOString().split("T")[0],
             condition: selectedCondition,
           };
-            
+
           const Copypayload = {
             condition: selectedCondition,
             is_borrowed: false,
@@ -154,15 +152,13 @@ console.log("Transaction Items from payload fucker:", transactionItems);
           );
           // console.log("Updated Item Copy:", updatedItemCopy);
         }
-       
       } catch (error) {
         console.error("Error Accept:", error);
       } finally {
-        handleReset()
-        fetchItems()
+        handleReset();
+        fetchItems();
         refetch();
         document.getElementById(`UpdateItemStatusMaintain${item.id}`).close();
-   
       }
     }
   };
@@ -173,11 +169,27 @@ console.log("Transaction Items from payload fucker:", transactionItems);
       <button
         className="btn bg-emerald-500"
         onClick={() =>
-          document.getElementById(`UpdateItemStatusMaintain${item.id}`).showModal()  
+          document
+            .getElementById(`UpdateItemStatusMaintain${item.id}`)
+            .showModal()
         }
-        disabled={item.is_borrowed && (item.condition === "Good" || item.condition === "Slightly Damaged")}
+        disabled={
+          item.is_borrowed &&
+          (item.condition === "Good" ||
+            item.condition === "Slightly Damaged" ||
+            item.condition === "Lost" ||
+            item.condition === "Broken" ||
+            item.condition === "Damaged")
+        }
       >
-        Update Item
+        {item.is_borrowed &&
+        (item.condition === "Good" ||
+          item.condition === "Slightly Damaged" ||
+          item.condition === "Lost" ||
+          item.condition === "Broken" ||
+          item.condition === "Damaged")
+          ? "Unchangeable"
+          : "Update Item"}
       </button>
 
       <button className="btn bg-emerald-500" onClick={openModal}>
