@@ -24,6 +24,7 @@ from openpyxl.styles import PatternFill
 from django.http import JsonResponse
 from django.db.models import Count
 from django.db.models import Sum
+from django.utils.dateparse import parse_date
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name') 
@@ -216,7 +217,12 @@ class ExportMultipleTablesView(APIView):
         # Construct filename with the current date and time
         current_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         filename = f'VirtualRorData_{current_datetime}.xlsx'
-
+        
+        start_date_str = request.query_params.get('start_date')
+        end_date_str = request.query_params.get('end_date')
+        
+        start_date = parse_date(start_date_str) if start_date_str else None
+        end_date = parse_date(end_date_str) if end_date_str else None
         # Specify desktop path
         desktop_path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')
 
@@ -310,6 +316,9 @@ class ExportMultipleTablesView(APIView):
             Items=Count('transaction_items'),
             Active=F('is_active'),
         ).values('TransactionID','Type','DateCreated','ParticipantName','Items','Active')
+        
+        if start_date and end_date:
+            transaction_queryset = transaction_queryset.filter(date_created__range=(start_date, end_date))
 
         if transaction_queryset.exists():
             # Convert transaction queryset to a DataFrame
@@ -342,6 +351,9 @@ class ExportMultipleTablesView(APIView):
             ReservedItems=Count('reserved_items'),
         ).values('InquiryID', 'InquirerName', 'InquiryType', 'Status', 'DateCreated', 'ReservedItems')
         
+        if start_date and end_date:
+            inquiry_queryset = inquiry_queryset.filter(date_created__range=(start_date, end_date))
+
         if inquiry_queryset.exists():
             # Convert inquiry queryset to a DataFrame
             inquiry_df = pd.DataFrame(list(inquiry_queryset))
