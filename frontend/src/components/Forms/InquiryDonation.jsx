@@ -90,6 +90,7 @@ const InquiryDonation = ({postID}) => {
                 name="datePreferred"
                 value={datePreferred}
                 onChange={(e) => setDatePreferred(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
                 required
                 className={`border rounded-md p-2 w-full ${inputError && !datePreferred ? 'border-red-500' : ''}`}
               />

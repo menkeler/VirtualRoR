@@ -13,6 +13,7 @@ import ExportDataPage from "./ExportDataPage";
 import DashboardPostPage from "../Dashboard/DashboardPostPage";
 import CreateItemProfile from "../../components/CustomButtons/Inventory/CreateItemProfile";
 import Departments from "../../components/CustomButtons/Users/Departments";
+import CalendarInquiry from "../Dashboard/CalendarInquiry";
 const AdminDashboard = () => {
   // State to track the selected page
   const [selectedPage, setSelectedPage] = useState("dashboard");
@@ -71,6 +72,19 @@ const AdminDashboard = () => {
               >
                 <i className="fa-solid fa-chart-line"></i>
                 <span className="text-xl"> Stats</span>
+              </button>
+            </li>
+
+             {/* Calendar */}
+             <li className="mb-2 flex justify-center ">
+              <button
+                onClick={() => handlePageChange("calendar")}
+                className={`text-gray-300 hover:bg-gray-700 px-4 py-2 w-full block ${
+                  selectedPage === "users" ? "bg-gray-700" : ""
+                }`}
+              >
+                <i className="fa-solid fa-calendar"></i>
+                <span className="text-xl"> Calendar</span>
               </button>
             </li>
             {/* Users */}
@@ -145,8 +159,8 @@ const AdminDashboard = () => {
                 <span className="text-xl"> Posts</span>
               </button>
             </li>
-  {/* Export */}
-  <li className="mb-2 flex justify-center ">
+        {/* Export */}
+      <li className="mb-2 flex justify-center ">
               <button
                 onClick={() => handlePageChange("exports")}
                 className={`text-gray-300 hover:bg-gray-700 px-4 py-2 w-full block ${
@@ -193,6 +207,13 @@ const AdminDashboard = () => {
                   <AdminDashBoardStats />
                 </section>
               )}
+               {/* Calendar */}
+               {selectedPage === "calendar" && (
+                <section className="mb-8">
+                <CalendarInquiry/>
+                </section>
+              )}
+              
               {/* Users */}
               {selectedPage === "users" && (
                 <section className="mb-8">
