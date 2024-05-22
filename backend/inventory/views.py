@@ -236,15 +236,17 @@ class ExportMultipleTablesView(APIView):
         inventory_queryset = Inventory.objects.all().annotate(
             ItemID=F('id'),
             ItemName=F('item__name'),
+            ItemDescription=F('item__description'),  # Add the item description field
             Type=F('item__returnable'),
             Quantity=F('quantity'),
-            Reserved=F('reserved_quantity')
-        ).values('ItemID', 'ItemName', 'Type', 'Quantity', 'Reserved')
-        
+            Reserved=F('reserved_quantity'),
+            IsHidden=F('is_hidden')
+        ).values('ItemID', 'ItemName', 'ItemDescription', 'Type', 'Quantity', 'Reserved', 'IsHidden')  # Include ItemDescription in values
+
         # Apply default ascending order by id
         inventory_queryset = inventory_queryset.order_by('ItemID')
 
-        # Replace True and False with Borrowable and Consumable
+        # Replace True and False with Borrowable and Consumable for Type
         for item in inventory_queryset:
             item['Type'] = 'Borrowable' if item['Type'] else 'Consumable'
 
@@ -253,14 +255,18 @@ class ExportMultipleTablesView(APIView):
 
         # Write inventory DataFrame to the first sheet
         inventory_df.to_excel(output, sheet_name='Inventory', index=False)
-        
+
+        # Define column widths for all columns
         inventory_column_widths = {
             'ItemID': 15,
             'ItemName': 30,
+            'ItemDescription': 50,  # Adjust width for ItemDescription
             'Type': 15,
             'Quantity': 15,
             'Reserved': 15,
+            'IsHidden': 15
         }
+
         # Access the worksheet for inventory
         inventory_worksheet = output.sheets['Inventory']
 
@@ -268,6 +274,8 @@ class ExportMultipleTablesView(APIView):
         for col_name, width in inventory_column_widths.items():
             column_index = inventory_df.columns.get_loc(col_name)
             inventory_worksheet.set_column(column_index, column_index, width)
+
+
         
 
         # Fetch data from the ItemCopy table with selected columns
