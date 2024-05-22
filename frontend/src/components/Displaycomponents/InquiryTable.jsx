@@ -223,7 +223,11 @@ const InquiryTable = ({ User, Admin }) => {
                   </td>
                   <td className="py-2 px-4 border-b">{inquiry.inquiry_type}</td>
                   <td className="py-2 px-4 border-b">
-                    {inquiry.date_preferred}
+                  {new Date(inquiry.date_preferred).toLocaleString("en-US", {
+                      dateStyle: "medium",
+                      timeStyle: "medium",
+                    })}
+              
                   </td>
                   <td className="py-2 px-4 border-b">
                     {inquiry.post !== null ? inquiry.post.id : "None"}

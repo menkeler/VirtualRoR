@@ -24,7 +24,7 @@ class Inquiry(models.Model):
     message = models.TextField()
     inquiry_type = models.CharField(max_length=20, choices=INQUIRY_TYPES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    date_preferred = models.DateField()
+    date_preferred = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='inquiries', null=True, blank=True) 
     status_updated_at = models.DateTimeField(default=timezone.now)  # Add a field to track the last update time of the status

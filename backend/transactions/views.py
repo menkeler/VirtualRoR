@@ -75,6 +75,20 @@ class InquiryViewSet(viewsets.ModelViewSet):
         latest_inquiry = Inquiry.objects.latest('id')  # Assuming 'created_at' is the field indicating the creation timestamp
         serializer = self.get_serializer(latest_inquiry)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['GET'])
+    def accepted_donation_inquiries(self, request):
+        """
+        Retrieve inquiries that are donations and have been accepted.
+        """
+        # Filter inquiries based on donation type and accepted status
+        accepted_donation_inquiries = Inquiry.objects.filter(inquiry_type='Donation', status='Accepted')
+
+        # Serialize the queryset
+        serializer = InquirySerializer(accepted_donation_inquiries, many=True)
+
+        # Return the serialized data
+        return Response(serializer.data, status=status.HTTP_200_OK)
  
     
 class TransactionPagination(PageNumberPagination):
