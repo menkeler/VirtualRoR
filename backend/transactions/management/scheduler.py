@@ -9,7 +9,12 @@ def cancel_overdue_inquiries_job():
     print("Executing cancel_overdue_inquiries_job...")
     call_command('cancel_overdue_inquiries')
     print("cancel_overdue_inquiries_job executed successfully.")
-    
+
+def cancel_overdue_donations_job():
+    print("Executing cancel_overdue_donations_job...")
+    call_command('cancel_overdue_donations')
+    print("cancel_overdue_donations_job executed successfully.")
+     
 
 def remind_Transaction_date_job():
     print("Executing remind_Transaction_date_job...")
@@ -21,10 +26,14 @@ def backup_database_job():
     call_command('backup_database')
     print("backup_database_job executed successfully.")
 
+
 scheduler = BackgroundScheduler()
 
-#check overdue every 10 mins
-scheduler.add_job(cancel_overdue_inquiries_job, IntervalTrigger(minutes=5))
+#check overdue every 1 min
+scheduler.add_job(cancel_overdue_inquiries_job, IntervalTrigger(minutes=1))
+
+#check overduedonations every 1 min
+scheduler.add_job(cancel_overdue_donations_job, IntervalTrigger(minutes=1))
 
 #remind Email eveyy 9 pam at night
 scheduler.add_job(remind_Transaction_date_job, CronTrigger(hour=21))
