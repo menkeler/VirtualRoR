@@ -336,7 +336,7 @@ const TransactionDonation = ({ refresh }) => {
         console.log("TransactionDonation closed")
         document.getElementById("TransactionDonation").close();
         refresh();
-       
+        alert("Donation Completed");
        
         //Step 4 is at the use effect
         ///ADD fetch table here

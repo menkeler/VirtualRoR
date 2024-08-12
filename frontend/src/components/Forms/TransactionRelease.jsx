@@ -253,6 +253,7 @@ const TransactionRelease = ({ refresh }) => {
 
       handleReset();
       refresh();
+      alert("Realease Completed");
       document.getElementById("CreateTransaction").close();
     }
   };
